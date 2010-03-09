@@ -409,7 +409,7 @@ public class MeetingSubGUI extends javax.swing.JFrame {
         
         try {
             Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM Sitzungsart";
+            String sql = "SELECT * FROM Sitzungsart ORDER BY Name ASC";
             ResultSet rst = stmt.executeQuery(sql);
 
             while(rst.next()) {
