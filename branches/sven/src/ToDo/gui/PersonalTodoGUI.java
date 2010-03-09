@@ -41,28 +41,4 @@ public final class PersonalTodoGUI extends JFrame {
         
     }
 
-    /*public static void main(String[] args) {
-        Frame frame;
-        WindowListener exitListener;
-
-        exitListener = new WindowAdapter() {
-
-        public void windowClosing(WindowEvent e) {
-            Window window = e.getWindow();
-            window.setVisible(false);
-            window.dispose();
-            System.exit(0);
-        }
-    };
-
-    frame = new PersonalTodoGUI(emp, stat);
-    frame.addWindowListener(exitListener);
-    frame.pack();
-    frame.setExtendedState(MAXIMIZED_BOTH);
-    frame.setVisible(true);
-	 }*/
-
-
-
-
 }

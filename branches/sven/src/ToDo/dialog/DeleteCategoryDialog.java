@@ -95,18 +95,6 @@ public class DeleteCategoryDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_jButtonOkActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DeleteCategoryDialog(new javax.swing.JFrame(), true,
-                        catID, catName, catDescription).setVisible(true);
-            }
-        });
-    }
-    
     public void deleteCategory(int catID) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();

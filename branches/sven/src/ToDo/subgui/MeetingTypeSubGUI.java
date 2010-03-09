@@ -93,17 +93,6 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonSaveAndExit1ActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MeetingTypeSubGUI(status, meetingTypeID, meetingType).setVisible(true);
-            }
-        });
-    }*/
-    
     public void newMeetingTypeInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));
         jLabelError.setText("Es müssen alle Felder ausgewählt werden");

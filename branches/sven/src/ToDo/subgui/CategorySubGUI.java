@@ -100,17 +100,6 @@ public class CategorySubGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonSaveAndExit1ActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CategorySubGUI(status, catID, catName, catDescription).setVisible(true);
-            }
-        });
-    }*/
-    
     public void newCategoryInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));
         jLabelError.setText("Es müssen alle Felder ausgewählt werden");

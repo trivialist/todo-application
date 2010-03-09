@@ -92,19 +92,7 @@ public class DeleteInstitutionDialog extends javax.swing.JDialog {
         deleteInstitution(institutionID);
         setVisible(false);
     }//GEN-LAST:event_jButtonOkActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DeleteMeetingTypeDialog(new javax.swing.JFrame(), true, 
-                            institutionID, institution).setVisible(true);
-            }
-        });
-    }
-    
+       
     public void deleteInstitution(int institutionID) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();

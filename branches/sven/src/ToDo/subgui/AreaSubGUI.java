@@ -101,18 +101,7 @@ public class AreaSubGUI extends javax.swing.JFrame {
                 jLabelError.setText("Fehler bei Ausführung des Befehls!");
         }
     }//GEN-LAST:event_jButtonSaveAndExitActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AreaSubGUI(status, areaID, areaName, areaDescription).setVisible(true);
-            }
-        });
-    }*/
-    
+     
     public void newAreaInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));
         jLabelError.setText("Es müssen alle Felder ausgewählt werden");

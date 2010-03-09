@@ -94,18 +94,6 @@ public class DeleteMeetingTypeDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_jButtonCancelActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DeleteMeetingTypeDialog(new javax.swing.JFrame(), true, 
-                            meetingTypeID, meetingType).setVisible(true);
-            }
-        });
-    }
-    
     public void deleteMeetingType(int meetingTypeID) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();

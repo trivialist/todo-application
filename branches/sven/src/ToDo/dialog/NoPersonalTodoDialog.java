@@ -60,18 +60,7 @@ public class NoPersonalTodoDialog extends javax.swing.JDialog {
     private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
         dispose();
     }//GEN-LAST:event_jButtonOkActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NoPersonalTodoDialog(new javax.swing.JFrame(), true, employee).setVisible(true);
-            }
-        });
-    }
-    
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
     private javax.swing.JLabel jLabel1;

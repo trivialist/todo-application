@@ -134,18 +134,7 @@ public class AreaGUI extends javax.swing.JFrame {
         AreaSubGUI newArea = new AreaSubGUI(0, areaID, areaName, areaDescription);
         newArea.setVisible(true);
     }//GEN-LAST:event_jButtonNewAreaActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AreaGUI().setVisible(true);
-            }
-        });
-    }*/
-    
+      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDeleteArea;
     private javax.swing.JButton jButtonEditArea;

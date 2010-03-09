@@ -97,18 +97,6 @@ public class DeleteTodoDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_jButtonOkActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DeleteTodoDialog(new javax.swing.JFrame(), true, todoID,
-                        cat, topic, area).setVisible(true);
-            }
-        });
-    }
-    
     public void deleteElement(int todoID) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();

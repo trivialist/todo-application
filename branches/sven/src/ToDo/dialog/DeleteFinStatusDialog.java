@@ -93,18 +93,6 @@ public class DeleteFinStatusDialog extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_jButtonOkActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DeleteMeetingTypeDialog(new javax.swing.JFrame(), true, 
-                            statusID, statusName).setVisible(true);
-            }
-        });
-    }
-    
     public void deleteFinStatus(int statusID) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();

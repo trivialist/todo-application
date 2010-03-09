@@ -146,19 +146,7 @@ public class TodoGUI extends javax.swing.JFrame {
         TodoSubGUI newTodo = new TodoSubGUI(0, meetingID,  "", "", 0);
         newTodo.setVisible(true);
     }//GEN-LAST:event_jButtonNewMeetingActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TodoGUI(meetingID).setVisible(true);
-                
-            }
-        });
-    }*/
-    
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDeleteMeeting;
     private javax.swing.JButton jButtonEditMeeting;

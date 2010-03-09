@@ -196,20 +196,6 @@ public class MeetingSubGUI extends javax.swing.JFrame {
         }
 }//GEN-LAST:event_jCalendarComboBoxDateStateChanged
     
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MeetingSubGUI(status, meetingID, meetingType, date, otherPart).setVisible(true);
-            }
-        });
-    }*/
-    
-    /*
-     *  
-     */
     public void newMeetingInit() {
         jComboBoxMeetingType.addItem("Bitte wählen...");
         jComboBoxProt.addItem("Bitte wählen...");

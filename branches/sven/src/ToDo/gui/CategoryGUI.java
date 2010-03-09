@@ -129,17 +129,6 @@ public class CategoryGUI extends javax.swing.JFrame {
         newCat.setVisible(true);
     }//GEN-LAST:event_jButtonNewInstitutionActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CategoryGUI().setVisible(true);
-            }
-        });
-    }*/
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDeleteInstitution;
     private javax.swing.JButton jButtonEditInstitution;

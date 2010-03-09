@@ -603,17 +603,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonMemoActionPerformed
     
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TodoSubGUI(status, meetingID, cat, topic, todoID).setVisible(true);
-            }
-        });
-    }*/
-
     public void stateChanged(ChangeEvent e) {}
 
     public void initComboBoxes() {

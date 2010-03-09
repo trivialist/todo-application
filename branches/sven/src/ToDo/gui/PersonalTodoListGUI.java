@@ -166,17 +166,6 @@ public class PersonalTodoListGUI extends javax.swing.JFrame {
             }
     }//GEN-LAST:event_jButtonDetailsActionPerformed
 
-    /**
-    * @param args the command line arguments
-    */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PersonalTodoListGUI(empID, statID).setVisible(true);
-            }
-        });
-    }*/
-
     public int getMeetingIdByTodoID(int todoID) {
         int mID = 0;
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();

@@ -102,18 +102,6 @@ public class DeleteTopicDialog extends javax.swing.JDialog {
         setVisible(false);
 }//GEN-LAST:event_jButtonOkActionPerformed
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DeleteTopicDialog(new javax.swing.JFrame(), true,
-                        topicID, name, description).setVisible(true);
-            }
-        });
-    }
-
     public void deleteTopic(int topicID) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();

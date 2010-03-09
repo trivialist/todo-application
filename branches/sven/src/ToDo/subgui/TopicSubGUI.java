@@ -124,17 +124,6 @@ public class TopicSubGUI extends javax.swing.JFrame {
         }
 }//GEN-LAST:event_jButtonSaveAndExitActionPerformed
 
-    /**
-    * @param args the command line arguments
-    */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TopicSubGUI(status, topicID, name, description).setVisible(true);
-            }
-        });
-    }*/
-
     public void newTopicInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));
         jLabelError.setText("Es müssen alle Felder ausgewählt werden");

@@ -95,19 +95,7 @@ public class DeleteAreaDialog extends javax.swing.JDialog {
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
         setVisible(false);
     }//GEN-LAST:event_jButtonCancelActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DeleteAreaDialog(new javax.swing.JFrame(), true,
-                        areaID, areaName, areaDescription).setVisible(true);
-            }
-        });
-    }
-    
+        
     public void deleteArea(int areaID) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();

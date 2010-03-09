@@ -186,18 +186,7 @@ public class ParticipantsGUI extends javax.swing.JFrame {
             jTable2.setModel(new ParticipantsTableModel(participants, meetingID));
         }
     }//GEN-LAST:event_formWindowGainedFocus
-    
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ParticipantsGUI(participants, others, meetingID).setVisible(true);
-            }
-        });
-    }*/
-
+ 
     /**
      * Diese Funktion hinterlegt die Daten der Teilnehmer einer Sitzung in
      * der Tabelle Sitzungsdaten(Teilnehmer, Sonstige) der Datenbank.
