@@ -96,13 +96,13 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MeetingTypeSubGUI(status, meetingTypeID, meetingType).setVisible(true);
             }
         });
-    }
+    }*/
     
     public void newMeetingTypeInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));

@@ -98,13 +98,13 @@ public class InstitutionSubGUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new InstitutionSubGUI(status, institutionID, institution).setVisible(true);
             }
         });
-    }
+    }*/
     
     public void newInstitutionInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));

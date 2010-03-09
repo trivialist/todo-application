@@ -111,10 +111,12 @@ public class TodoTableModel extends AbstractTableModel{
                 td.setReDate(rst.getDate("Wiedervorlagedatum"));
                 td.setTodoID(rst.getInt("ToDoID"));
 				td.setHeading(rst.getString("Überschrift"));
+				td.setContent(rst.getString("Inhalt"));
                 todoObjects.add(new Todo(td.getCategoryID(), td.getCategory(),
                                          td.getTBZ_ID(), td.getArea(),
                                          td.getTopic(), td.getReDate(),
-                                         td.getTodoID(), td.getHeading()));
+                                         td.getTodoID(), td.getHeading(),
+										 td.getContent()));
             }
             rst.close();
             stmt.close();

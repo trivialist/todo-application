@@ -41,7 +41,7 @@ public final class PersonalTodoGUI extends JFrame {
         
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Frame frame;
         WindowListener exitListener;
 
@@ -60,7 +60,7 @@ public final class PersonalTodoGUI extends JFrame {
     frame.pack();
     frame.setExtendedState(MAXIMIZED_BOTH);
     frame.setVisible(true);
-  }
+	 }*/
 
 
 

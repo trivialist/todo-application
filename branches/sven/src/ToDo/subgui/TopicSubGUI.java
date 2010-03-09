@@ -127,13 +127,13 @@ public class TopicSubGUI extends javax.swing.JFrame {
     /**
     * @param args the command line arguments
     */
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TopicSubGUI(status, topicID, name, description).setVisible(true);
             }
         });
-    }
+    }*/
 
     public void newTopicInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));

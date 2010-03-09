@@ -540,6 +540,32 @@ public class MainGUI extends javax.swing.JFrame {
         Vector prot = new Vector();
         Vector part = new Vector();
         prot.add(actMeeting.getProt());
+
+		//erzeuge Tagesordnung
+		StringBuilder agenda = new StringBuilder();
+
+		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		try {
+			Statement stmt = con.createStatement();
+			String sql = "SELECT Überschrift FROM Protokollelement WHERE SitzungsID = " + actMeeting.getMeetingID();
+
+			ResultSet rst = stmt.executeQuery(sql);
+
+			int counter = 1;
+			while(rst.next())
+			{
+				agenda.append("TOP " + counter + " " + rst.getString("Überschrift") + "\n");
+				counter++;
+			}
+			
+			stmt.close();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		DB_ToDo_Connect.closeDB(con);
         
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("SitzName", actMeeting.getMeetingType());
@@ -548,6 +574,8 @@ public class MainGUI extends javax.swing.JFrame {
         params.put("Protokollant", getNameAndLastNameByID(prot));
         params.put("Teilnehmer", getNameAndLastNameByID(getIdsFromIdString(actMeeting.getPartic())));
         params.put("Sonstige", actMeeting.getOtherPaticipants());
+		params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
+		params.put("Tagesordnung", agenda.toString());
         td = loadTodoData();
         
         JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(td);
@@ -1176,6 +1204,7 @@ public class MainGUI extends javax.swing.JFrame {
             String sql = "SELECT * FROM Protokollelement WHERE SitzungsID=" +
                             actMeeting.getMeetingID();
             ResultSet rst = stmt.executeQuery(sql);
+			int counter = 1;
 
             while(rst.next()) {
                 HashMap<String,String> fields = new HashMap<String, String>();
@@ -1187,6 +1216,7 @@ public class MainGUI extends javax.swing.JFrame {
                 fields.put("Status", getStatByID(rst.getInt("StatusID")));
                 fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
                 fields.put("Inhalt", rst.getString("Inhalt"));
+                fields.put("Ueberschrift", "TOP " + counter + " " + rst.getString("Überschrift"));
                 rd = rst.getDate("Wiedervorlagedatum");
                 if(rd != null) {
                     fields.put("Wiedervorlagedatum", sdf.format(rd));
@@ -1198,6 +1228,7 @@ public class MainGUI extends javax.swing.JFrame {
                 fields.put("Beteiligte",
                         getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
                 todoData.add(fields);
+				counter++;
             }
             rst.close();
             stmt.close();

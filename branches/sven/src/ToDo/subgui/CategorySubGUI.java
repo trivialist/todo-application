@@ -103,13 +103,13 @@ public class CategorySubGUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    /*public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new CategorySubGUI(status, catID, catName, catDescription).setVisible(true);
             }
         });
-    }
+    }*/
     
     public void newCategoryInit() {
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));

@@ -48,7 +48,7 @@ public class Todo {
         this.todoID = todoID;
     }
 
-    public Todo(int categoryID, String category, int tbz_id, String area, String topic, Date reDate, int todoID, String heading) {
+    public Todo(int categoryID, String category, int tbz_id, String area, String topic, Date reDate, int todoID, String heading, String content) {
         this.categoryID = categoryID;
         this.category = category;
         this.tbz_id = tbz_id;
@@ -57,6 +57,7 @@ public class Todo {
         this.reDate = reDate;
         this.todoID = todoID;
 		this.heading = heading;
+		this.content = content;
     }
 
     public int getTodoID() {
