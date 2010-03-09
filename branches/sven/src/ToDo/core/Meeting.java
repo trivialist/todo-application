@@ -24,7 +24,6 @@ public class Meeting {
     public int prot;
     public String partic;
     public int meetingTypeID;
-    public String curric;
     public String meetingType;
     public String otherPart;
     
@@ -63,10 +62,6 @@ public class Meeting {
         return meetingTypeID;
     }
     
-    public String getCurric() {
-        return curric;
-    }
-    
     public String getMeetingType() {
         return meetingType;
     }
@@ -93,10 +88,6 @@ public class Meeting {
     
     public void setPartic(String partic) {
         this.partic = partic;
-    }
-    
-    public void setCurric(String curric) {
-        this.curric = curric;
     }
     
     public void setMeetingTypeID(int meetingTypeID) {

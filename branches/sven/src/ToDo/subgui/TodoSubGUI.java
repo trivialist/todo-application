@@ -69,8 +69,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
             editTodoInit();
         }
         setCalendarChooser();
-        jTextAreaContent.setLineWrap(true);
-        jTextAreaContent.setWrapStyleWord(true);
         jTableEmployees.setAutoCreateRowSorter(true);
         jTableInvolved.setAutoCreateRowSorter(true);
         jTableResponsibles.setAutoCreateRowSorter(true);
@@ -109,7 +107,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         jLabel2 = new javax.swing.JLabel();
         jLabelStatus = new javax.swing.JLabel();
         jLabelTopicAndArea = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableEmployees = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
@@ -119,15 +116,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableInvolved = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
-        jScrollPaneContent = new javax.swing.JScrollPane();
-        jTextAreaContent = new javax.swing.JTextArea();
         jLabelError = new javax.swing.JLabel();
         jButtonSendTask = new javax.swing.JButton();
         jComboBoxReMeetType = new javax.swing.JComboBox();
         jLabelReDateAndMeetType = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextHeading = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Protokolleinträge erstellen und bearbeiten");
+        setMinimumSize(new java.awt.Dimension(550, 530));
+        setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -137,8 +136,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setMinimumSize(new java.awt.Dimension(520, 700));
-        jPanel1.setPreferredSize(new java.awt.Dimension(520, 700));
+        jPanel1.setMinimumSize(new java.awt.Dimension(520, 530));
+        jPanel1.setPreferredSize(new java.awt.Dimension(520, 530));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButtonMemo.setText("Bearbeitungs-Notiz");
@@ -187,7 +186,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 jButtonAddResponsibleActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonAddResponsible, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 450, 50, -1));
+        jPanel1.add(jButtonAddResponsible, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 280, 50, -1));
 
         jButtonAddInvolved.setText(">");
         jButtonAddInvolved.addActionListener(new java.awt.event.ActionListener() {
@@ -195,7 +194,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 jButtonAddInvolvedActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonAddInvolved, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 570, 50, -1));
+        jPanel1.add(jButtonAddInvolved, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 400, 50, -1));
 
         jButtonRemoveInvolved.setText("<");
         jButtonRemoveInvolved.addActionListener(new java.awt.event.ActionListener() {
@@ -203,7 +202,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 jButtonRemoveInvolvedActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonRemoveInvolved, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 610, 50, -1));
+        jPanel1.add(jButtonRemoveInvolved, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 440, 50, -1));
 
         jButtonRemoveResponsible.setText("<");
         jButtonRemoveResponsible.addActionListener(new java.awt.event.ActionListener() {
@@ -211,7 +210,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 jButtonRemoveResponsibleActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonRemoveResponsible, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 490, 50, -1));
+        jPanel1.add(jButtonRemoveResponsible, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 320, 50, -1));
 
         jButtonSaveAndExit.setText("Speichern und Schliessen");
         jButtonSaveAndExit.addActionListener(new java.awt.event.ActionListener() {
@@ -219,7 +218,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 jButtonSaveAndExitActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 660, -1, -1));
+        jPanel1.add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 490, -1, -1));
 
         jComboBoxCategory.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -276,9 +275,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         jLabelTopicAndArea.setBorder(javax.swing.BorderFactory.createTitledBorder("Bereich und                                  Thema"));
         jPanel1.add(jLabelTopicAndArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 510, 50));
 
-        jLabel6.setText("Inhalt");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
-
         jTableEmployees.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -289,10 +285,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         ));
         jScrollPane1.setViewportView(jTableEmployees);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 430, 220, 220));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 220, 220));
 
         jLabel7.setText("Mitarbeiter");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 410, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, -1, -1));
 
         jTableResponsibles.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -304,10 +300,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         ));
         jScrollPane2.setViewportView(jTableResponsibles);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 430, 210, 90));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 260, 210, 90));
 
         jLabel8.setText("Verantwortliche");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 410, -1, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 240, -1, -1));
 
         jTableInvolved.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -319,17 +315,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         ));
         jScrollPane3.setViewportView(jTableInvolved);
 
-        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 550, 210, 100));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 380, 210, 100));
 
         jLabel9.setText("Beteiligte");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 520, -1, -1));
-
-        jScrollPaneContent.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        jTextAreaContent.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jScrollPaneContent.setViewportView(jTextAreaContent);
-
-        jPanel1.add(jScrollPaneContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 500, 190));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 360, -1, -1));
         jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 690, 500, 30));
 
         jButtonSendTask.setText("Aufgabe erstellen");
@@ -339,13 +328,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 jButtonSendTaskActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonSendTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 660, -1, -1));
+        jPanel1.add(jButtonSendTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 490, -1, -1));
         jPanel1.add(jComboBoxReMeetType, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 80, 120, -1));
 
         jLabelReDateAndMeetType.setBorder(javax.swing.BorderFactory.createTitledBorder("Wiedervorlage am           bei Sitzung"));
         jPanel1.add(jLabelReDateAndMeetType, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 60, 260, 70));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 550, 730));
+        jLabel3.setText("Überschrift bzw. Tagesordnungspunkt");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
+        jPanel1.add(jTextHeading, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 510, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 550, 530));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -572,7 +565,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 
         TaskRequest task = new TaskRequest("TOP x: " + jComboBoxArea.getSelectedItem().toString() + " - " +
                 jComboBoxTopic.getSelectedItem().toString(), jComboBoxArea.getSelectedItem().toString(),
-                jComboBoxTopic.getSelectedItem().toString(), jTextAreaContent.getText(),
+                jComboBoxTopic.getSelectedItem().toString(), "REMOVED",
                 jCalendarComboBoxReDate.getCalendar().getTime(), respMailVec);
         if(task.isSet()) {
             task.create();
@@ -674,7 +667,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         else {
             jButtonSendTask.setVisible(false);
         }
-        setInputDisabled();
     }
     
 
@@ -715,7 +707,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                     jCalendarComboBoxReDate.setEnabled(false);
                     jCheckBoxNoReDate.setSelected(true);
                 }
-                jTextAreaContent.setText(rst.getString("Inhalt"));
                 td.setResponse(rst.getString("Verantwortliche"));
                 td.setOthers(rst.getString("Beteiligte"));
                 getAllResponsibles();
@@ -752,7 +743,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         jComboBoxArea.setEnabled(false);
         jComboBoxTopic.setEnabled(false);
         jButtonEditTopicAndArea.setVisible(false);
-        jTextAreaContent.setEnabled(false);
+		jTextHeading.setEnabled(false);
         jTableEmployees.setEnabled(false);
         jTableResponsibles.setEnabled(false);
         jTableInvolved.setEnabled(false);
@@ -833,8 +824,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         reDate = jCalendarComboBoxReDate.getCalendar().getTime();
         td.setReDate(reDate);
 
-        td.setContent(jTextAreaContent.getText());
-        
+		td.setHeading(jTextHeading.getText());
+
         //Beteiligte
         Enumeration othersEnum = involved.elements ();
         while (othersEnum.hasMoreElements()) {
@@ -859,13 +850,14 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 Statement stmt = con.createStatement();
                 String sql = "INSERT INTO Protokollelement (KategorieID, SitzungsID, " +
                        "StatusID, InstitutionsID, BereichID, Thema, Inhalt, Wiedervorlagedatum, " +
-                       "Verantwortliche, Beteiligte, TBZuordnung_ID, WV_Sitzungsart) VALUES (" + td.getCategoryID() +
+                       "Verantwortliche, Beteiligte, TBZuordnung_ID, WV_Sitzungsart, Überschrift) " +
+					   "VALUES (" + td.getCategoryID() +
                        ", " + meetingID + ", " + td.getStatusID() +
                        ", " + td.getInstitutionID() + ", " + td.getAreaID() +
                        ", '" + td.getTopic() + "', '" + td.getContent() +
                        "', '" + dat + "', '" + td.getRespons() +
                        "', '" + td.getOthers()  + "', " + tbz_id + 
-                       ", " + td.getReMeetType() + ")";
+                       ", " + td.getReMeetType() + ",'" + td.getHeading() + "')";
 
                 stmt.executeUpdate(sql);
                 stmt.close();
@@ -1762,7 +1754,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
     private javax.swing.JComboBox jComboBoxTopic;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -1774,14 +1766,13 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPaneContent;
     private javax.swing.JTable jTableEmployees;
     private javax.swing.JTable jTableInvolved;
     private javax.swing.JTable jTableResponsibles;
-    private javax.swing.JTextArea jTextAreaContent;
     private javax.swing.JTextField jTextFieldDay;
     private javax.swing.JTextField jTextFieldMonth;
     private javax.swing.JTextField jTextFieldYear;
+    private javax.swing.JTextField jTextHeading;
     // End of variables declaration//GEN-END:variables
     
 }

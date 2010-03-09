@@ -546,7 +546,6 @@ public class MainGUI extends javax.swing.JFrame {
         params.put("Datum", sdf.format(actMeeting.getDate()));
         params.put("Ort", actMeeting.getPlace());
         params.put("Protokollant", getNameAndLastNameByID(prot));
-        params.put("Tagesordnung", actMeeting.getCurric());
         params.put("Teilnehmer", getNameAndLastNameByID(getIdsFromIdString(actMeeting.getPartic())));
         params.put("Sonstige", actMeeting.getOtherPaticipants());
         td = loadTodoData();
@@ -1934,7 +1933,6 @@ public class MainGUI extends javax.swing.JFrame {
                     actMeeting.setMeetingTypeID(rst.getInt("SitzungsartID"));
                     actMeeting.setPlace(rst.getString("Ort"));
                     actMeeting.setProt(rst.getInt("Protokollant"));
-                    actMeeting.setCurric(rst.getString("Tagesordnung"));
                     actMeeting.setPartic(rst.getString("Teilnehmer"));
                 }
             }
@@ -1982,7 +1980,6 @@ public class MainGUI extends javax.swing.JFrame {
                 actMeeting.setMeetingTypeID(rst.getInt("SitzungsartID"));
                 actMeeting.setPlace(rst.getString("Ort"));
                 actMeeting.setProt(rst.getInt("Protokollant"));
-                actMeeting.setCurric(rst.getString("Tagesordnung"));
                 actMeeting.setPartic(rst.getString("Teilnehmer"));
                 actMeeting.setOtherParticipants(rst.getString("Sonstige"));
             }

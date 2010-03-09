@@ -34,6 +34,7 @@ public class Todo {
     public String involved;
     public String category;
     public String status;
+	public String heading;
     
     
     /** Creates a new instance of Todo */
@@ -47,7 +48,7 @@ public class Todo {
         this.todoID = todoID;
     }
 
-    public Todo(int categoryID, String category, int tbz_id, String area, String topic, Date reDate, int todoID) {
+    public Todo(int categoryID, String category, int tbz_id, String area, String topic, Date reDate, int todoID, String heading) {
         this.categoryID = categoryID;
         this.category = category;
         this.tbz_id = tbz_id;
@@ -55,6 +56,7 @@ public class Todo {
         this.topic = topic;
         this.reDate = reDate;
         this.todoID = todoID;
+		this.heading = heading;
     }
 
     public int getTodoID() {
@@ -124,6 +126,10 @@ public class Todo {
     public String getStatus() {
         return status;
     }
+
+	public String getHeading() {
+		return heading;
+	}
     
     public void setTodoID(int todoID) {
         this.todoID = todoID;
@@ -192,6 +198,10 @@ public class Todo {
     public void setStatus(String status) {
         this.status = status;
     }
+
+	public void setHeading(String heading) {
+		this.heading = heading;
+	}
        
     public void clear() {
         todoID = 0;
@@ -208,6 +218,7 @@ public class Todo {
         involved = "";
         category = "";
         status = "";
+		heading = "";
     }
     
 }

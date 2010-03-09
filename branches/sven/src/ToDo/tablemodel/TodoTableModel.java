@@ -27,7 +27,7 @@ public class TodoTableModel extends AbstractTableModel{
     
     /* Todo-Objekte welche zeilenweise agezeigt werden sollen */
     protected ArrayList<Todo> todoObjects = new ArrayList<Todo>();
-    private String[] columnNames = new String[5];
+    private String[] columnNames = new String[6];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con; 
     private static int meetingID;
@@ -56,6 +56,8 @@ public class TodoTableModel extends AbstractTableModel{
             }
         case 4:
             return this.todoObjects.get(zeile).getTodoID();
+		case 5:
+			return this.todoObjects.get(zeile).getHeading();
         default:
           return null;
         }
@@ -108,10 +110,11 @@ public class TodoTableModel extends AbstractTableModel{
                 td.setTopic(getTopicNameByTBZ_ID(tbz_id));
                 td.setReDate(rst.getDate("Wiedervorlagedatum"));
                 td.setTodoID(rst.getInt("ToDoID"));
+				td.setHeading(rst.getString("Überschrift"));
                 todoObjects.add(new Todo(td.getCategoryID(), td.getCategory(),
                                          td.getTBZ_ID(), td.getArea(),
                                          td.getTopic(), td.getReDate(),
-                                         td.getTodoID()));
+                                         td.getTodoID(), td.getHeading()));
             }
             rst.close();
             stmt.close();
@@ -129,6 +132,7 @@ public class TodoTableModel extends AbstractTableModel{
         colNam.add("Thema");
         colNam.add("Wiedervorlage");
         colNam.add("Nummer");
+		colNam.add("Überschrift");
         colNam.toArray(columnNames);
     }
     

@@ -16,6 +16,7 @@ import todo.gui.ParticipantsGUI;
 import java.sql.*;
 import java.util.*;
 import java.util.StringTokenizer;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -74,19 +75,18 @@ public class MeetingSubGUI extends javax.swing.JFrame {
         jButtonMeetingType = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldPlace = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
         jComboBoxProt = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
         jButtonParticipants = new javax.swing.JButton();
         jButtonSaveAndExit = new javax.swing.JButton();
-        jLabelError = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextAreaCurriculum = new javax.swing.JTextArea();
         jCalendarComboBoxDate = new de.wannawork.jcalendar.JCalendarComboBox();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sitzung verwalten");
+        setMinimumSize(new java.awt.Dimension(480, 210));
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Datum");
@@ -104,13 +104,10 @@ public class MeetingSubGUI extends javax.swing.JFrame {
         jLabel2.setText("Ort");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
         getContentPane().add(jTextFieldPlace, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 140, -1));
-
-        jLabel3.setText("Tagesordnung");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
-        getContentPane().add(jComboBoxProt, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 220, -1));
+        getContentPane().add(jComboBoxProt, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 220, -1));
 
         jLabel4.setText("Protokollant");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 60, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 60, -1));
 
         jButtonParticipants.setText("Teilnehmer verwalten");
         jButtonParticipants.addActionListener(new java.awt.event.ActionListener() {
@@ -126,19 +123,11 @@ public class MeetingSubGUI extends javax.swing.JFrame {
                 jButtonSaveAndExitActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 380, -1, -1));
-
-        jLabelError.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        getContentPane().add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 430, 420, 40));
+        getContentPane().add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 160, -1, -1));
 
         jButton1.setText("Mitarbeiter verwalten");
         jButton1.setEnabled(false);
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 330, 140, -1));
-
-        jTextAreaCurriculum.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jScrollPane1.setViewportView(jTextAreaCurriculum);
-
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 460, 190));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 110, 140, -1));
 
         jCalendarComboBoxDate.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -146,6 +135,9 @@ public class MeetingSubGUI extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jCalendarComboBoxDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, 140, 20));
+
+        jLabel3.setText(" ");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 190, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -184,8 +176,7 @@ public class MeetingSubGUI extends javax.swing.JFrame {
                 setVisible(false);
                 break;
             default:
-                jLabelError.setForeground(new java.awt.Color(255, 0, 0));
-                jLabelError.setText("Fehler bei Ausführung des Befehls!");
+				JOptionPane.showMessageDialog(rootPane, "Fehler bei Ausführung des Befehls!");
         }
     }//GEN-LAST:event_jButtonSaveAndExitActionPerformed
 
@@ -253,7 +244,6 @@ public class MeetingSubGUI extends javax.swing.JFrame {
         cal.setTime(meet.getDate());
         jCalendarComboBoxDate.setCalendar(cal);
         jTextFieldPlace.setText(meet.getPlace());
-        jTextAreaCurriculum.setText(meet.getCurric());
         jComboBoxProt.setSelectedItem(getNameOfProt(meet.getProt()));
         jComboBoxMeetingType.setSelectedItem(meet.getMeetingType());
     }
@@ -266,7 +256,6 @@ public class MeetingSubGUI extends javax.swing.JFrame {
         meet.setMeetingType(String.valueOf(jComboBoxMeetingType.getSelectedItem()));
         meet.setMeetingTypeID(getMeetingTypeIDByName(meet.getMeetingType()));
         meet.setPlace(jTextFieldPlace.getText());
-        meet.setCurric(jTextAreaCurriculum.getText());
         if(!String.valueOf(jComboBoxProt.getSelectedItem()).equals("Bitte wählen...")) {
             meet.setProt(getProtIDByName(String.valueOf(jComboBoxProt.getSelectedItem())));
         } else {
@@ -280,10 +269,10 @@ public class MeetingSubGUI extends javax.swing.JFrame {
                 Statement stmt = con.createStatement();
                 //Verantwortliche
                 java.sql.Date dat = new java.sql.Date(meet.getDate().getTime());
-                String sql = "INSERT INTO Sitzungsdaten (Datum, SitzungsartID, " +
-                        "Ort, Tagesordnung, Protokollant) VALUES ('" + dat
+				String sql = "INSERT INTO Sitzungsdaten (Datum, SitzungsartID, " +
+                        "Ort, Protokollant) VALUES ('" + dat
                       + "', " + meet.getMeetingTypeID() + ", '" + meet.getPlace() 
-                      + "', '" + meet.getCurric() + "', " + meet.getProt() + ")";
+                      + "', '" + meet.getProt() + "')";
                 stmt.executeUpdate(sql);
                 stmt.close();
             } catch(Exception e) {
@@ -293,7 +282,7 @@ public class MeetingSubGUI extends javax.swing.JFrame {
             dbCon.closeDB(con);
         }
         else {
-            jLabelError.setText("Die Felder Datum, Sitzungsart und Ort müssen ausgefüllt werden!");
+            JOptionPane.showMessageDialog(rootPane, "Die Felder Datum, Sitzungsart und Ort müssen ausgefüllt werden!");
         }    
     }
     
@@ -307,7 +296,6 @@ public class MeetingSubGUI extends javax.swing.JFrame {
         meet.setMeetingType(String.valueOf(jComboBoxMeetingType.getSelectedItem()));
         meet.setMeetingTypeID(getMeetingTypeIDByName(meet.getMeetingType()));
         meet.setPlace(jTextFieldPlace.getText());
-        meet.setCurric(jTextAreaCurriculum.getText());
         if(!String.valueOf(jComboBoxProt.getSelectedItem()).equals("Bitte wählen...")) {
             meet.setProt(getProtIDByName(String.valueOf(jComboBoxProt.getSelectedItem())));
         } else {
@@ -321,10 +309,9 @@ public class MeetingSubGUI extends javax.swing.JFrame {
                 Statement stmt = con.createStatement();
                 //Verantwortliche
                 java.sql.Date dat = new java.sql.Date(meet.getDate().getTime());
-                String sql = "UPDATE Sitzungsdaten SET Datum = '"+ dat
+				String sql = "UPDATE Sitzungsdaten SET Datum = '"+ dat
                       +  "', SitzungsartID = " + meet.getMeetingTypeID() 
                       +  ", Ort = '" + meet.getPlace() 
-                      +  "', Tagesordnung = '" + meet.getCurric()
                       +  "', Protokollant = " + meet.getProt() 
                       +  " WHERE SitzungsdatenID = " + meetingID; 
                 stmt.executeUpdate(sql);
@@ -336,7 +323,7 @@ public class MeetingSubGUI extends javax.swing.JFrame {
             dbCon.closeDB(con);
         }
         else {
-            jLabelError.setText("Die Felder Datum, Sitzungsart und Ort müssen ausgefüllt werden!");
+            JOptionPane.showMessageDialog(rootPane, "Die Felder Datum, Sitzungsart und Ort müssen ausgefüllt werden!");
         }    
     }
     
@@ -441,7 +428,6 @@ public class MeetingSubGUI extends javax.swing.JFrame {
             while(rst.next()) {
                 meet.setDate(rst.getDate("Datum"));
                 meet.setPlace(rst.getString("Ort"));
-                meet.setCurric(rst.getString("Tagesordnung"));
                 meet.setProt(rst.getInt("Protokollant"));
                 meet.setPartic(rst.getString("Teilnehmer"));
                 meet.setOtherParticipants(rst.getString("Sonstige"));
@@ -604,9 +590,6 @@ public class MeetingSubGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabelError;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextAreaCurriculum;
     private javax.swing.JTextField jTextFieldPlace;
     // End of variables declaration//GEN-END:variables
     

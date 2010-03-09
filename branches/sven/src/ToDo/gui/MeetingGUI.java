@@ -61,7 +61,7 @@ public class MeetingGUI extends javax.swing.JFrame {
                 jButtonDeleteMeetingActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonDeleteMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 20, 140, -1));
+        jPanel1.add(jButtonDeleteMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 20, 150, -1));
 
         jButtonChooseMeeting.setText("Sitzung wählen");
         jButtonChooseMeeting.setToolTipText("Als aktive Sitzung festlegen");
@@ -70,7 +70,7 @@ public class MeetingGUI extends javax.swing.JFrame {
                 jButtonChooseMeetingActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonChooseMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 130, -1));
+        jPanel1.add(jButtonChooseMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 140, -1));
 
         jButtonEditMeeting.setText("Sitzung bearbeiten");
         jButtonEditMeeting.addActionListener(new java.awt.event.ActionListener() {
@@ -78,7 +78,7 @@ public class MeetingGUI extends javax.swing.JFrame {
                 jButtonEditMeetingActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonEditMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 20, 130, -1));
+        jPanel1.add(jButtonEditMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 20, 140, -1));
 
         jButtonNewMeeting.setText("Neue Sitzung");
         jButtonNewMeeting.addActionListener(new java.awt.event.ActionListener() {
@@ -86,7 +86,7 @@ public class MeetingGUI extends javax.swing.JFrame {
                 jButtonNewMeetingActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonNewMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 20, 120, -1));
+        jPanel1.add(jButtonNewMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, 130, -1));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -98,9 +98,9 @@ public class MeetingGUI extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 550, 470));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 600, 470));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 590, 550));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 640, 550));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
