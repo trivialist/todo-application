@@ -114,7 +114,7 @@ public class TodoGUI extends javax.swing.JFrame {
             Object cat = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
             Object area = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Object top = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
-            Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), 4);
+            Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(tdID));
             int tID = temp.intValue();
             if(cat != null) {
@@ -129,7 +129,7 @@ public class TodoGUI extends javax.swing.JFrame {
         if(jTable1.getSelectedRow() != -1) {
             Object cat = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
             Object top = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
-            Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), 4);
+            Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(tdID));
             int tID = temp.intValue();
             if(cat != null) {

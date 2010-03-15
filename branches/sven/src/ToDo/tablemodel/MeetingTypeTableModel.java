@@ -24,7 +24,7 @@ public class MeetingTypeTableModel extends AbstractTableModel{
     
     /* Sitzungsarten-Objekte welche zeilenweise agezeigt werden sollen */
     protected ArrayList<MeetingType> meetingTypeObjects = new ArrayList<MeetingType>();
-    private String[] columnNames = new String[2];
+    private String[] columnNames = new String[1];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con; 
 
@@ -35,9 +35,9 @@ public class MeetingTypeTableModel extends AbstractTableModel{
     
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
-        case 0 :
+        case -1 :
             return this.meetingTypeObjects.get(zeile).getMeetingTypeID();
-        case 1 :
+        case 0 :
             return this.meetingTypeObjects.get(zeile).getMeetingType();
         default:
           return null;
@@ -95,7 +95,6 @@ public class MeetingTypeTableModel extends AbstractTableModel{
     }
     
     public void setColumnNames() {
-        colNam.add("Nummer");
         colNam.add("Sitzungsart");
         colNam.toArray(columnNames);
     }

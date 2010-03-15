@@ -92,8 +92,8 @@ public class MeetingTypeGUI extends javax.swing.JFrame {
 
     private void jButtonEditMeetingTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditMeetingTypeActionPerformed
          if(jTable1.getSelectedRow() != -1) {
-            Object meetingType = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object meetingTypeID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object meetingType = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object meetingTypeID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(meetingTypeID));
             int mtID = temp.intValue();
             if(meetingType != null) {
@@ -105,8 +105,8 @@ public class MeetingTypeGUI extends javax.swing.JFrame {
 
     private void jButtonDeleteMeetingTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteMeetingTypeActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object meetingType = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object meetingTypeID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object meetingType = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object meetingTypeID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(meetingTypeID));
             int mtID = temp.intValue();
             if(meetingType != null) {

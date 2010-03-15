@@ -106,14 +106,13 @@ public class TopicGUI extends javax.swing.JFrame {
 
     private void jButtonEditTopicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditTopicActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object TopicID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Object name = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object description = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
+            Object TopicID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
+            String name = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            String description = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Integer temp = new Integer(String.valueOf(TopicID));
             int tID = temp.intValue();
             if(name != null) {
-                TopicSubGUI newTopic = new TopicSubGUI(1, tID,
-                        String.valueOf(name), String.valueOf(description));
+                TopicSubGUI newTopic = new TopicSubGUI(1, tID, name, description);
                 newTopic.setVisible(true);
             }
         }
@@ -121,9 +120,9 @@ public class TopicGUI extends javax.swing.JFrame {
 
     private void jButtonDeleteTopicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteTopicActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object TopicID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Object name = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object description = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
+            Object TopicID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
+            Object name = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object description = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Integer temp = new Integer(String.valueOf(TopicID));
             int tID = temp.intValue();
             if(name != null) {

@@ -115,8 +115,6 @@ public class PersonalTodoListGUI extends javax.swing.JFrame {
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         if(evt.WINDOW_GAINED_FOCUS != 1) {
             jTable1.setModel(new PersonalTodoTableModel(empID, statID));
-            jTable1.getColumn("ID").setMaxWidth(0);
-            jTable1.getColumn("ID").setMinWidth(0);
             jTable1.getColumn("Wiedervorlage").setMaxWidth(__WV_MAX_WIDTH);
             jTable1.getColumn("Wiedervorlage").setMinWidth(__WV_MIN_WIDTH);
             jTable1.getColumn("Status").setMaxWidth(__STATUS_MAX_WIDTH);
@@ -137,9 +135,9 @@ public class PersonalTodoListGUI extends javax.swing.JFrame {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
          if(evt.getClickCount() == 2) {
             if(jTable1.getSelectedRow() != -1) {
-                Object cat = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
-                Object top = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-                Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+                Object cat = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
+                Object top = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+                Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
                 Integer temp = new Integer(String.valueOf(tdID));
                 int tID = temp.intValue();
                 if(cat != null) {
@@ -153,9 +151,9 @@ public class PersonalTodoListGUI extends javax.swing.JFrame {
 
     private void jButtonDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDetailsActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-                Object cat = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
-                Object top = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-                Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+                Object cat = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
+                Object top = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+                Object tdID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
                 Integer temp = new Integer(String.valueOf(tdID));
                 int tID = temp.intValue();
                 if(cat != null) {

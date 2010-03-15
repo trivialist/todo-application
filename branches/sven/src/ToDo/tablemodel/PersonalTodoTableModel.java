@@ -21,7 +21,7 @@ import javax.swing.*;
 public class PersonalTodoTableModel extends AbstractTableModel{
     /* Sitzungdaten-Objekte welche zeilenweise agezeigt werden sollen */
     protected ArrayList<Todo> ptdObjects = new ArrayList<Todo>();
-    private String[] columnNames = new String[6];
+    private String[] columnNames = new String[5];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con;
     private int status = -1;
@@ -53,21 +53,21 @@ public class PersonalTodoTableModel extends AbstractTableModel{
 
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
-        case 0 :
+        case -1 :
             return this.ptdObjects.get(zeile).getTodoID();
-        case 1 :
+        case 0 :
             return this.ptdObjects.get(zeile).getTopic();
-        case 2 :
+        case 1 :
             return this.ptdObjects.get(zeile).getCategory();
-        case 3 :
+        case 2 :
             if(this.ptdObjects.get(zeile).getReDate() != null) {
                 return sdf.format(this.ptdObjects.get(zeile).getReDate());
             } else {
                 return "kein";
             }
-        case 4 :
+        case 3 :
             return this.ptdObjects.get(zeile).getStatus();
-        case 5 :
+        case 4 :
             return this.ptdObjects.get(zeile).getContent();
         default:
           return null;
@@ -182,7 +182,6 @@ public class PersonalTodoTableModel extends AbstractTableModel{
     }
 
     public void setColumnNames() {
-        colNam.add("ID");
         colNam.add("Thema");
         colNam.add("Kategorie");
         colNam.add("Wiedervorlage");

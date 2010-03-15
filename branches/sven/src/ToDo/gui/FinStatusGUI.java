@@ -92,8 +92,8 @@ public class FinStatusGUI extends javax.swing.JFrame {
 
     private void jButtonDeleteFinStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteFinStatusActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object statusName = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object statusID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object statusName = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object statusID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(statusID));
             int fsID = temp.intValue();
             if(statusName != null) {
@@ -105,8 +105,8 @@ public class FinStatusGUI extends javax.swing.JFrame {
 
     private void jButtonEditFinStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditFinStatusActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object statusName = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object statusID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object statusName = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object statusID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(statusID));
             int fsID = temp.intValue();
             if(statusName != null) {

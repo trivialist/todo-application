@@ -11,6 +11,7 @@ import todo.dialog.DeleteMeetingDialog;
 import todo.tablemodel.MeetingTableModel;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -157,7 +158,7 @@ public class MeetingGUI extends javax.swing.JFrame {
         if(jTable1.getSelectedRow() != -1) {
             java.util.Date d = new java.util.Date();
             java.sql.Date date = new java.sql.Date(d.getTime());
-            Object meetingID = jTable1.getValueAt(jTable1.getSelectedRow(), 3);
+			Object meetingID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(meetingID));
             int mID = temp.intValue();
             Object place = jTable1.getValueAt(jTable1.getSelectedRow(), 1);

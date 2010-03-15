@@ -93,12 +93,13 @@ public class AreaGUI extends javax.swing.JFrame {
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         if(evt.WINDOW_GAINED_FOCUS != 1) {
             jTable1.setModel(new AreaTableModel());
+			//jTable1.getColumnModel().removeColumn(jTable1.getColumnModel().getColumn(0));
         }
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void jButtonDeleteAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteAreaActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object areaID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object areaID = jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0);
             Object areaName = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Object areaDescription = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
             Integer temp = new Integer(String.valueOf(areaID));
@@ -114,9 +115,9 @@ public class AreaGUI extends javax.swing.JFrame {
 
     private void jButtonEditAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditAreaActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object areaID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Object areaName = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object areaDescription = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
+            Object areaID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
+            Object areaName = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object areaDescription = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Integer temp = new Integer(String.valueOf(areaID));
             int aID = temp.intValue();
             if(areaName != null) {

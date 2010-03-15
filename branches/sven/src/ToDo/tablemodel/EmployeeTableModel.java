@@ -24,7 +24,7 @@ public class EmployeeTableModel extends AbstractTableModel{
     
     /* Mitarbeiter-Objekte welche zeilenweise angezeigt werden sollen */
     protected ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
-    private String[] columnNames = new String[3];
+    private String[] columnNames = new String[2];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con; 
     
@@ -38,11 +38,11 @@ public class EmployeeTableModel extends AbstractTableModel{
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
         case 0 :
-            return this.employeeObjects.get(zeile).getEmployeeID();
-        case 1 :
             return this.employeeObjects.get(zeile).getLastName();
-        case 2 :
+        case 1 :
             return this.employeeObjects.get(zeile).getName();
+        case -1 :
+            return this.employeeObjects.get(zeile).getEmployeeID();
         default:
           return null;
         }
@@ -100,7 +100,6 @@ public class EmployeeTableModel extends AbstractTableModel{
     }
     
     public void setColumnNames() {
-        colNam.add("Nummer");
         colNam.add("Nachname");
         colNam.add("Vorname");
         colNam.toArray(columnNames);

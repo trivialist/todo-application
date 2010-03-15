@@ -549,7 +549,7 @@ public class MainGUI extends javax.swing.JFrame {
 		con = DB_ToDo_Connect.getCon();
 		try {
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Überschrift FROM Protokollelement WHERE SitzungsID = " + actMeeting.getMeetingID();
+			String sql = "SELECT Überschrift FROM Protokollelement WHERE SitzungsID = " + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
 
 			ResultSet rst = stmt.executeQuery(sql);
 
@@ -1202,7 +1202,7 @@ public class MainGUI extends javax.swing.JFrame {
         try {
             Statement stmt = con.createStatement();
             String sql = "SELECT * FROM Protokollelement WHERE SitzungsID=" +
-                            actMeeting.getMeetingID();
+                            actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
             ResultSet rst = stmt.executeQuery(sql);
 			int counter = 1;
 

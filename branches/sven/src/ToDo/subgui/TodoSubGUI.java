@@ -461,7 +461,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 
     private void jButtonRemoveInvolvedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveInvolvedActionPerformed
         if(jTableInvolved.getSelectedRow() != -1) {
-            Object invID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), 0);
+            Object invID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(invID));
             int iID = temp.intValue();
             if(involved.contains(iID)) {
@@ -473,7 +473,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 
     private void jButtonAddInvolvedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddInvolvedActionPerformed
         if(jTableEmployees.getSelectedRow() != -1) {
-            Object invID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), 0);
+            Object invID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(invID));
             int iID = temp.intValue();
             if(!involved.contains(iID)) {
@@ -485,7 +485,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 
     private void jButtonRemoveResponsibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveResponsibleActionPerformed
     if(jTableResponsibles.getSelectedRow() != -1) {
-            Object respID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), 0);
+            Object respID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(respID));
             int rID = temp.intValue();
             if(responsible.contains(rID)) {
@@ -497,7 +497,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 
     private void jButtonAddResponsibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddResponsibleActionPerformed
         if(jTableEmployees.getSelectedRow() != -1) {
-            Object respID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), 0);
+            Object respID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(respID));
             int rID = temp.intValue();
             if(!responsible.contains(rID)) {

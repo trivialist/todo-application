@@ -25,7 +25,7 @@ public class MeetingTableModel extends AbstractTableModel{
     
     /* Sitzungdaten-Objekte welche zeilenweise agezeigt werden sollen */
     protected ArrayList<Meeting> meetingObjects = new ArrayList<Meeting>();
-    private String[] columnNames = new String[4];
+    private String[] columnNames = new String[3];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con;
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -43,7 +43,7 @@ public class MeetingTableModel extends AbstractTableModel{
             return this.meetingObjects.get(zeile).getPlace();
         case 2 :
             return this.meetingObjects.get(zeile).getMeetingType();
-        case 3 :
+        case -1 :
             return this.meetingObjects.get(zeile).getMeetingID();
         default:
           return null;
@@ -117,7 +117,6 @@ public class MeetingTableModel extends AbstractTableModel{
         colNam.add("Datum");
         colNam.add("Ort");
         colNam.add("Sitzungsart");
-        colNam.add("ID");
         colNam.toArray(columnNames);
     }
     

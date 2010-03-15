@@ -86,8 +86,8 @@ public class InstitutionGUI extends javax.swing.JFrame {
 
     private void jButtonDeleteInstitutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteInstitutionActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object institution = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object institutionID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object institution = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object institutionID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(institutionID));
             int instID = temp.intValue();
             if(institution != null) {
@@ -100,8 +100,8 @@ public class InstitutionGUI extends javax.swing.JFrame {
 
     private void jButtonEditInstitutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditInstitutionActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object institution = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object institutionID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object institution = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object institutionID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(institutionID));
             int instID = temp.intValue();
             if(institution != null) {

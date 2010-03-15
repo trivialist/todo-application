@@ -25,7 +25,7 @@ public class CategoryTableModel extends AbstractTableModel{
     
     /* Kategorieobjekte welche zeilenweise angezeigt werden sollen */
     protected ArrayList<Category> catObjects = new ArrayList<Category>();
-    private String[] columnNames = new String[3];
+    private String[] columnNames = new String[2];
     private Vector colNam = new Vector();
     private static Connection con; 
     
@@ -37,17 +37,15 @@ public class CategoryTableModel extends AbstractTableModel{
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
         case 0 :
-            return this.catObjects.get(zeile).getCatID();
-        case 1 :
             return this.catObjects.get(zeile).getCatName();
-        case 2:
+        case 1:
             return this.catObjects.get(zeile).getCatDescription();
+        case -1 :
+            return this.catObjects.get(zeile).getCatID();
         default:
           return null;
         }
     }
-    
-    
     
     /*
      * return Anzahl der Kategorien
@@ -101,7 +99,6 @@ public class CategoryTableModel extends AbstractTableModel{
     }
     
     public void setColumnNames() {
-        colNam.add("Nummer");
         colNam.add("Kategorie");
         colNam.add("Beschreibung");
         colNam.toArray(columnNames);

@@ -92,9 +92,9 @@ public class CategoryGUI extends javax.swing.JFrame {
 
     private void jButtonDeleteInstitutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteInstitutionActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object catID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Object catName = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object catDescription = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
+            Object catID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
+            Object catName = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object catDescription = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Integer temp = new Integer(String.valueOf(catID));
             int cID = temp.intValue();
             if(catName != null) {
@@ -108,9 +108,9 @@ public class CategoryGUI extends javax.swing.JFrame {
 
     private void jButtonEditInstitutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditInstitutionActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object catID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Object catName = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
-            Object catDescription = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
+            Object catID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
+            Object catName = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object catDescription = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Integer temp = new Integer(String.valueOf(catID));
             int cID = temp.intValue();
             if(catName != null) {

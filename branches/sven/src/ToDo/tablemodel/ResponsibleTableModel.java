@@ -26,7 +26,7 @@ public class ResponsibleTableModel extends AbstractTableModel {
     
     /* Sitzungsarten-Objekte welche zeilenweise agezeigt werden sollen */
     protected ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
-    private String[] columnNames = new String[3];
+    private String[] columnNames = new String[2];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con; 
     private Vector responsible = new Vector();
@@ -41,11 +41,11 @@ public class ResponsibleTableModel extends AbstractTableModel {
     
    public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
-        case 0 :
+        case -1 :
             return this.employeeObjects.get(zeile).getEmployeeID();
-        case 1 :
+        case 0 :
             return this.employeeObjects.get(zeile).getLastName();
-        case 2 :
+        case 1 :
             return this.employeeObjects.get(zeile).getName();
         default:
           return null;
@@ -119,7 +119,6 @@ public class ResponsibleTableModel extends AbstractTableModel {
     }
     
     public void setColumnNames() {
-        colNam.add("Nummer");
         colNam.add("Nachname");
         colNam.add("Vorname");
         colNam.toArray(columnNames);

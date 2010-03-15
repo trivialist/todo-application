@@ -27,7 +27,7 @@ public class TodoTableModel extends AbstractTableModel{
     
     /* Todo-Objekte welche zeilenweise agezeigt werden sollen */
     protected ArrayList<Todo> todoObjects = new ArrayList<Todo>();
-    private String[] columnNames = new String[6];
+    private String[] columnNames = new String[5];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con; 
     private static int meetingID;
@@ -41,7 +41,9 @@ public class TodoTableModel extends AbstractTableModel{
     
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
-        case 0 :
+        case -1:
+            return this.todoObjects.get(zeile).getTodoID();
+		case 0 :
             return this.todoObjects.get(zeile).getCategory();
         case 1 :
             return this.todoObjects.get(zeile).getArea();
@@ -54,9 +56,7 @@ public class TodoTableModel extends AbstractTableModel{
             } else {
                 return sdf.format(reDate);
             }
-        case 4:
-            return this.todoObjects.get(zeile).getTodoID();
-		case 5:
+		case 4:
 			return this.todoObjects.get(zeile).getHeading();
         default:
           return null;
@@ -133,7 +133,6 @@ public class TodoTableModel extends AbstractTableModel{
         colNam.add("Bereich");
         colNam.add("Thema");
         colNam.add("Wiedervorlage");
-        colNam.add("Nummer");
 		colNam.add("Überschrift");
         colNam.toArray(columnNames);
     }

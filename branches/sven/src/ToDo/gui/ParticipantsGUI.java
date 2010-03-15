@@ -158,7 +158,7 @@ public class ParticipantsGUI extends javax.swing.JFrame {
 
     private void jButtonRemoveParticipantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveParticipantActionPerformed
         if(jTable2.getSelectedRow() != -1) {
-            Object empID = jTable2.getValueAt(jTable2.getSelectedRow(), 0);
+            Object empID = jTable2.getValueAt(jTable2.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(empID));
             int ID = temp.intValue();
             if(participants.contains(ID)) {
@@ -170,7 +170,7 @@ public class ParticipantsGUI extends javax.swing.JFrame {
 
     private void jButtonAddParticipantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddParticipantActionPerformed
         if(jTable1.getSelectedRow() != -1) {
-            Object empID = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            Object empID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(empID));
             int ID = temp.intValue();
             if(!participants.contains(ID)) {

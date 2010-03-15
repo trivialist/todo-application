@@ -27,11 +27,11 @@ public class TopicSubGUI extends javax.swing.JFrame {
     private Topic topic;
     private Connection con;
     /** Creates new form TopicSubGUI */
-    public TopicSubGUI(int status, int areaID, String areaName, String areaDescription) {
+    public TopicSubGUI(int status, int topicID, String areaName, String areaDescription) {
         this.status = status;
         this.topicID = topicID;
-        this.name = name;
-        this.description = description;
+        this.name = areaName;
+        this.description = areaDescription;
         initComponents();
         if(status == 0) {
             //Neuer Bereich soll angelegt werden

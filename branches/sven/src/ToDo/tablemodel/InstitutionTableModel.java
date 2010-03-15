@@ -24,7 +24,7 @@ public class InstitutionTableModel extends AbstractTableModel{
     
     /* Institutionen-Objekte welche zeilenweise agezeigt werden sollen */
     protected ArrayList<Institution> institutionObjects = new ArrayList<Institution>();
-    private String[] columnNames = new String[2];
+    private String[] columnNames = new String[1];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con; 
     
@@ -35,9 +35,9 @@ public class InstitutionTableModel extends AbstractTableModel{
     
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
-        case 0 :
+        case -1 :
             return this.institutionObjects.get(zeile).getInstitutionID();
-        case 1 :
+        case 0 :
             return this.institutionObjects.get(zeile).getInstitution();
         default:
           return null;
@@ -95,7 +95,6 @@ public class InstitutionTableModel extends AbstractTableModel{
     }
     
     public void setColumnNames() {
-        colNam.add("Nummer");
         colNam.add("Institution");
         colNam.toArray(columnNames);
     }

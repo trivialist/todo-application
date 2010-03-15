@@ -20,7 +20,7 @@ public class TopicTableModel extends AbstractTableModel {
 
     /* Themenobjekte welche zeilenweise angezeigt werden sollen */
     protected ArrayList<Topic> topicObjects = new ArrayList<Topic>();
-    private String[] columnNames = new String[3];
+    private String[] columnNames = new String[2];
     private Vector colNam = new Vector();
     private static Connection con;
 
@@ -31,11 +31,11 @@ public class TopicTableModel extends AbstractTableModel {
 
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
-        case 0 :
+        case -1 :
             return this.topicObjects.get(zeile).getTopicID();
-        case 1 :
+        case 0 :
             return this.topicObjects.get(zeile).getName();
-        case 2:
+        case 1:
             return this.topicObjects.get(zeile).getDescription();
         default:
           return null;
@@ -95,7 +95,6 @@ public class TopicTableModel extends AbstractTableModel {
     }
 
     public void setColumnNames() {
-        colNam.add("Nummer");
         colNam.add("Bereich");
         colNam.add("Beschreibung");
         colNam.toArray(columnNames);

@@ -23,7 +23,7 @@ public class AreaTableModel extends AbstractTableModel {
     
     /* Kategorieobjekte welche zeilenweise angezeigt werden sollen */
     protected ArrayList<Area> areaObjects = new ArrayList<Area>();
-    private String[] columnNames = new String[3];
+    private String[] columnNames = new String[2];
     private Vector colNam = new Vector();
     private static Connection con; 
     
@@ -35,11 +35,11 @@ public class AreaTableModel extends AbstractTableModel {
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
         case 0 :
-            return this.areaObjects.get(zeile).getAreaID();
-        case 1 :
             return this.areaObjects.get(zeile).getAreaName();
-        case 2:
+        case 1:
             return this.areaObjects.get(zeile).getAreaDescription();
+        case -1:
+            return this.areaObjects.get(zeile).getAreaID();
         default:
           return null;
         }
@@ -98,7 +98,6 @@ public class AreaTableModel extends AbstractTableModel {
     }
     
     public void setColumnNames() {
-        colNam.add("Nummer");
         colNam.add("Bereich");
         colNam.add("Beschreibung");
         colNam.toArray(columnNames);
