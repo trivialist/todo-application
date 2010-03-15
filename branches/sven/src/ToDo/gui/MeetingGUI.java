@@ -6,10 +6,8 @@
 
 package todo.gui;
 
+import ToDo.subgui.MeetingSearchSubGUI;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import todo.subgui.MeetingSubGUI;
 import todo.dialog.DeleteMeetingDialog;
 import todo.tablemodel.MeetingTableModel;
@@ -17,7 +15,6 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import javax.swing.JOptionPane;
 import todo.dbcon.DB_ToDo_Connect;
 
 /**
@@ -27,7 +24,10 @@ import todo.dbcon.DB_ToDo_Connect;
 public class MeetingGUI extends javax.swing.JFrame {
     
     private static MeetingGUI meetGUI = new MeetingGUI();
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private String keyword = "";
+	private String field = "";
+	
     /** Creates new form MeetingGUI */
     public MeetingGUI() {
         initComponents();
@@ -50,6 +50,7 @@ public class MeetingGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Verwaltung der eingetragenen Sitzungen");
@@ -117,6 +118,14 @@ public class MeetingGUI extends javax.swing.JFrame {
         });
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 140, -1));
 
+        jButton2.setText("Sitzung suchen");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 130, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 640, 550));
 
         pack();
@@ -124,7 +133,7 @@ public class MeetingGUI extends javax.swing.JFrame {
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         if(evt.WINDOW_GAINED_FOCUS != 1) {
-            jTable1.setModel(new MeetingTableModel());
+            jTable1.setModel(new MeetingTableModel(keyword, field));
             jTable1.setAutoCreateRowSorter(true);
         }
     }//GEN-LAST:event_formWindowGainedFocus
@@ -236,9 +245,25 @@ public class MeetingGUI extends javax.swing.JFrame {
 			dispose();
         }
 	}//GEN-LAST:event_jButton1ActionPerformed
-    
+
+	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
+	{//GEN-HEADEREND:event_jButton2ActionPerformed
+		MeetingSearchSubGUI search = new MeetingSearchSubGUI(this);
+		search.setLocation(jButton2.getX()-40, jButton2.getY()+60);
+		search.setVisible(true);
+	}//GEN-LAST:event_jButton2ActionPerformed
+
+	public void updateSearch(String keyword, String field)
+	{
+		this.keyword = keyword;
+		this.field = field;
+		jTable1.setModel(new MeetingTableModel(keyword, field));
+        jTable1.setAutoCreateRowSorter(true);
+	}
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonChooseMeeting;
     private javax.swing.JButton jButtonDeleteMeeting;
     private javax.swing.JButton jButtonEditMeeting;

@@ -17,7 +17,6 @@ import javax.swing.table.AbstractTableModel;
 import java.sql.*;
 import java.util.Vector;
 import java.util.Date;
-import java.text.SimpleDateFormat;
 /**
  *
  * @author Marcus Hertel
@@ -32,7 +31,11 @@ public class MeetingTableModel extends AbstractTableModel{
     
     /** Creates a new instance of MeetingTableModel */
     public MeetingTableModel() {
-        this.loadData();
+        this.loadData(null, null);
+    }
+
+	public MeetingTableModel(String keyword, String field) {
+        this.loadData(keyword, field);
     }
 
     public Object getValueAt(final int zeile, final int spalte) {
@@ -75,14 +78,21 @@ public class MeetingTableModel extends AbstractTableModel{
         return false;
     }
     
-    protected void loadData() {
+    protected void loadData(String keyword, String field) {
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
         dbCon.openDB();
         con = dbCon.getCon();
-        
+
+		String whereCondition = "";
+		if(!keyword.equals("") && !field.equals(""))
+		{
+			if(field.equals("Sitzungsart"))field = "Name";
+			whereCondition = "WHERE " + field + " LIKE '%" + keyword + "' OR " + field + " LIKE '" + keyword + "%' OR " + field + " LIKE '%" + keyword + "%'";
+		}
+
         try {
             Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM Sitzungsdaten ORDER BY Datum DESC";
+            String sql = "SELECT * FROM Sitzungsart INNER JOIN Sitzungsdaten ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID " + whereCondition + " ORDER BY Datum DESC";
             ResultSet rst = stmt.executeQuery(sql);
 
             while(rst.next()) {
@@ -107,7 +117,7 @@ public class MeetingTableModel extends AbstractTableModel{
             stmt.close();
         }
         catch(Exception e) {
-            System.out.println(e.toString()); 
+            e.printStackTrace();
             System.exit(1); 
         }
         dbCon.closeDB(con);
