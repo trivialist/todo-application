@@ -6,12 +6,19 @@
 
 package todo.gui;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import todo.subgui.MeetingSubGUI;
 import todo.dialog.DeleteMeetingDialog;
 import todo.tablemodel.MeetingTableModel;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import javax.swing.table.TableModel;
+import javax.swing.JOptionPane;
+import todo.dbcon.DB_ToDo_Connect;
 
 /**
  *
@@ -42,6 +49,7 @@ public class MeetingGUI extends javax.swing.JFrame {
         jButtonNewMeeting = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Verwaltung der eingetragenen Sitzungen");
@@ -99,7 +107,15 @@ public class MeetingGUI extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 600, 470));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 600, 440));
+
+        jButton1.setText("Sitzung kopieren");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 140, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 640, 550));
 
@@ -174,8 +190,55 @@ public class MeetingGUI extends javax.swing.JFrame {
         }
         dispose();
     }//GEN-LAST:event_jButtonChooseMeetingActionPerformed
+
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+	{//GEN-HEADEREND:event_jButton1ActionPerformed
+		if(jTable1.getSelectedRow() != -1)
+		{
+			int meetingID = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), -1).toString());
+			int insertId = -1;
+			ResultSet results = null;
+
+			DB_ToDo_Connect.openDB();
+			Connection con = DB_ToDo_Connect.getCon();
+
+			try {
+				con.setAutoCommit(false);
+				
+				Statement id = con.createStatement();
+				ResultSet rst = id.executeQuery("SELECT MAX(SitzungsdatenID) FROM Sitzungsdaten");
+				rst.next();
+				insertId = rst.getInt(1)+1;
+
+				Statement stmt = con.createStatement();
+				String sql = "INSERT INTO Sitzungsdaten (SitzungsdatenID, Datum, Ort, Tagesordnung, " +
+						"SitzungsartID, Protokollant, Teilnehmer, Sonstige) SELECT " + insertId +
+						" AS SitzungsdatenID, Datum, Ort, Tagesordnung, SitzungsartID, Protokollant, " +
+						"Teilnehmer, Sonstige FROM Sitzungsdaten WHERE SitzungsdatenID = " + meetingID;
+				stmt.executeUpdate(sql);
+				stmt.close();
+
+				con.commit();
+				con.setAutoCommit(true);
+
+				Statement data = con.createStatement();
+				results = data.executeQuery("SELECT * FROM Sitzungsart INNER JOIN "+
+						"Sitzungsdaten ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID " +
+						"WHERE Sitzungsdaten.SitzungsdatenID=" + insertId);
+				results.next();
+				MainGUI.setActMeeting(insertId, results.getString("Ort"), results.getDate("Datum"), results.getString("Name"));
+			}
+			catch(Exception ex) {
+				ex.printStackTrace();
+			}
+			
+			DB_ToDo_Connect.closeDB(con);
+			dispose();
+        }
+	}//GEN-LAST:event_jButton1ActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonChooseMeeting;
     private javax.swing.JButton jButtonDeleteMeeting;
     private javax.swing.JButton jButtonEditMeeting;

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import java.sql.*;
 import java.util.Vector;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 /**
  *
@@ -28,17 +29,16 @@ public class MeetingTableModel extends AbstractTableModel{
     private String[] columnNames = new String[3];
     private Vector colNam = new Vector();   //Zwischenspeicher für Array columnNames
     private static Connection con;
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     
     /** Creates a new instance of MeetingTableModel */
     public MeetingTableModel() {
         this.loadData();
     }
-    
+
     public Object getValueAt(final int zeile, final int spalte) {
         switch (spalte) {
         case 0 :
-            return sdf.format(this.meetingObjects.get(zeile).getDate());
+			return this.meetingObjects.get(zeile).getDate();
         case 1 :
             return this.meetingObjects.get(zeile).getPlace();
         case 2 :
@@ -119,5 +119,11 @@ public class MeetingTableModel extends AbstractTableModel{
         colNam.add("Sitzungsart");
         colNam.toArray(columnNames);
     }
-    
+
+	@Override
+	public Class<?> getColumnClass(int columnIndex)
+	{
+		if(columnIndex == 0)return Date.class;
+		return super.getColumnClass(columnIndex);
+	}
 }
