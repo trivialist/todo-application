@@ -101,7 +101,6 @@ public class MeetingSearchSubGUI extends javax.swing.JFrame
 		setVisible(false);
 		parentGui.updateSearch(jTextField1.getText(), jComboBox1.getSelectedItem().toString());
 	}//GEN-LAST:event_jButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboBox1;

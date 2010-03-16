@@ -6,6 +6,9 @@
 
 package todo.subgui;
 
+import ToDo.subgui.TodoNoteSubGUI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import todo.core.*;
 import todo.joc.*;
 import todo.dbcon.*;
@@ -17,9 +20,9 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.util.Calendar;
-import de.wannawork.jcalendar.*;
 import java.awt.Color;
-import java.text.SimpleDateFormat;
+import java.awt.EventQueue;
+import java.util.concurrent.CountDownLatch;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
@@ -756,6 +759,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         jButtonRemoveInvolved.setVisible(false);
         jCalendarComboBoxReDate.setEnabled(false);
 		jTextAreaContent.setEnabled(false);
+		jButtonSendTask.setEnabled(false);
     }
     
     /*
@@ -894,7 +898,25 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
             td.setReMeetType(-1);
         }
 
-        td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());
+		TodoNoteSubGUI subgui = null;
+
+		if(jComboBoxStatus.getSelectedItem().toString().equals("erledigt") && 
+				jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe"))
+		{
+
+			//final CountDownLatch loginSignal = new CountDownLatch(1);
+
+			subgui = new TodoNoteSubGUI(this, true);
+			subgui.setVisible(true);
+		}
+
+		if(subgui != null)
+		{
+			JOptionPane.showMessageDialog(jTextAreaContent, subgui.getNote());
+		}
+		return;
+
+        /*td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());
 
         // ### Update Prtotokollelement
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
@@ -915,7 +937,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
             System.out.println(e.toString());
             System.exit(1);
         }
-        dbCon.closeDB(con);
+        dbCon.closeDB(con);*/
    }
     
     public ArrayList getAllCategories() {
