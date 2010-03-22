@@ -8,7 +8,7 @@
  *
  * Created on 15.03.2010, 11:54:44
  */
-package ToDo.subgui;
+package todo.subgui;
 
 import todo.gui.MeetingGUI;
 

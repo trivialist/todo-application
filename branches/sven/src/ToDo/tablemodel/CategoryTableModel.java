@@ -7,7 +7,6 @@
  * the Source Creation and Management node. Right-click the template and choose
  * Open. You can then make changes to the template in the Source Editor.
  */
-
 package todo.tablemodel;
 
 import todo.core.Category;
@@ -21,87 +20,98 @@ import java.util.Vector;
  *
  * @author Marcus Hertel
  */
-public class CategoryTableModel extends AbstractTableModel{
-    
-    /* Kategorieobjekte welche zeilenweise angezeigt werden sollen */
-    protected ArrayList<Category> catObjects = new ArrayList<Category>();
-    private String[] columnNames = new String[2];
-    private Vector colNam = new Vector();
-    private static Connection con; 
-    
-    /** Creates a new instance of CategoryTableModel */
-    public CategoryTableModel() {
-        this.loadData();
-    }
-    
-    public Object getValueAt(final int zeile, final int spalte) {
-        switch (spalte) {
-        case 0 :
-            return this.catObjects.get(zeile).getCatName();
-        case 1:
-            return this.catObjects.get(zeile).getCatDescription();
-        case -1 :
-            return this.catObjects.get(zeile).getCatID();
-        default:
-          return null;
-        }
-    }
-    
-    /*
-     * return Anzahl der Kategorien
-     */
-    public int getRowCount() {
-        return this.catObjects.size();
-    }
-    
-    public int getColumnCount() {
-        return  this.columnNames.length;
-    }
-    
-    public String getColumnName(final int spalte) {
-        setColumnNames();
-        if(spalte < this.getColumnCount()) {
-            return columnNames[spalte];
-        }
-        else {
-            return super.getColumnName(spalte);
-        }
-    }
-    
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return false;
-    }
-    
-    protected void loadData() {
-        DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-        dbCon.openDB();
-        con = dbCon.getCon();
-        
-        try {
-            Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM Kategorie";
-            ResultSet rst = stmt.executeQuery(sql);
+public class CategoryTableModel extends AbstractTableModel
+{
 
-            while(rst.next()) {
-                int catID = rst.getInt("KategorieID");
-                String catName = rst.getString("Name");
-                String catDescription = rst.getString("Beschreibung");                
-                catObjects.add(new Category(catID, catName, catDescription));
-            }
-            rst.close();
-            stmt.close();
-        }
-        catch(Exception e) {
-            System.out.println(e.toString()); 
-            System.exit(1); 
-        }
-        dbCon.closeDB(con);
-    }
-    
-    public void setColumnNames() {
-        colNam.add("Kategorie");
-        colNam.add("Beschreibung");
-        colNam.toArray(columnNames);
-    }
-    
+	/* Kategorieobjekte welche zeilenweise angezeigt werden sollen */
+	protected ArrayList<Category> catObjects = new ArrayList<Category>();
+	private Vector<String> columnNames = new Vector<String>();
+	private static Connection con;
+
+	/** Creates a new instance of CategoryTableModel */
+	public CategoryTableModel()
+	{
+		setColumnNames();
+		this.loadData();
+	}
+
+	public Object getValueAt(final int zeile, final int spalte)
+	{
+		switch (spalte)
+		{
+			case 0:
+				return this.catObjects.get(zeile).getCatName();
+			case 1:
+				return this.catObjects.get(zeile).getCatDescription();
+			case -1:
+				return this.catObjects.get(zeile).getCatID();
+			default:
+				return null;
+		}
+	}
+
+	/*
+	 * return Anzahl der Kategorien
+	 */
+	public int getRowCount()
+	{
+		return this.catObjects.size();
+	}
+
+	public int getColumnCount()
+	{
+		return this.columnNames.size();
+	}
+
+	public String getColumnName(final int spalte)
+	{
+		if (spalte < this.getColumnCount())
+		{
+			return columnNames.elementAt(spalte);
+		}
+		else
+		{
+			return super.getColumnName(spalte);
+		}
+	}
+
+	public boolean isCellEditable(int rowIndex, int columnIndex)
+	{
+		return false;
+	}
+
+	protected void loadData()
+	{
+		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Kategorie";
+			ResultSet rst = stmt.executeQuery(sql);
+
+			while (rst.next())
+			{
+				int catID = rst.getInt("KategorieID");
+				String catName = rst.getString("Name");
+				String catDescription = rst.getString("Beschreibung");
+				catObjects.add(new Category(catID, catName, catDescription));
+			}
+			rst.close();
+			stmt.close();
+		} catch (Exception e)
+		{
+			System.out.println(e.toString());
+			System.exit(1);
+		}
+		DB_ToDo_Connect.closeDB(con);
+	}
+
+	public void setColumnNames()
+	{
+		columnNames.add("Kategorie");
+		columnNames.add("Beschreibung");
+	}
 }

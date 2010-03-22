@@ -6,12 +6,13 @@
 
 package todo.gui;
 
-import ToDo.subgui.MeetingSearchSubGUI;
+import todo.subgui.MeetingSearchSubGUI;
+import todo.tablemodel.DateFormater;
 import java.sql.Connection;
+import java.sql.Date;
 import todo.subgui.MeetingSubGUI;
 import todo.dialog.DeleteMeetingDialog;
 import todo.tablemodel.MeetingTableModel;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -159,7 +160,7 @@ public class MeetingGUI extends javax.swing.JFrame {
         if(jTable1.getSelectedRow() != -1) {
             Object meetType = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
             Object date = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Object meetingID = jTable1.getValueAt(jTable1.getSelectedRow(), 3);
+            Object meetingID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Integer temp = new Integer(String.valueOf(meetingID));
             int meetID = temp.intValue();
             if(meetType != null) {
@@ -188,12 +189,7 @@ public class MeetingGUI extends javax.swing.JFrame {
             int mID = temp.intValue();
             Object place = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Object meetType = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
-            String tempDate = (String.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0)));
-            try {
-                date = new Date(sdf.parse(tempDate).getTime());
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+            date = (Date) ((DateFormater)jTable1.getValueAt(jTable1.getSelectedRow(), 0)).getDate();
             MainGUI.setActMeeting(mID, String.valueOf(place), date,
                             String.valueOf(meetType));
         }

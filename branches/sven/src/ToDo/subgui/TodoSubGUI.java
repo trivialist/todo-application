@@ -6,9 +6,7 @@
 
 package todo.subgui;
 
-import ToDo.subgui.TodoNoteSubGUI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import todo.dialog.TodoNoteDialog;
 import todo.core.*;
 import todo.joc.*;
 import todo.dbcon.*;
@@ -21,8 +19,6 @@ import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.util.Calendar;
 import java.awt.Color;
-import java.awt.EventQueue;
-import java.util.concurrent.CountDownLatch;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
@@ -827,7 +823,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         }
         
         reDate = jCalendarComboBoxReDate.getCalendar().getTime();
-        td.setReDate(reDate);
+		td.setReDate(reDate);
+		
+        if(!jCheckBoxNoReDate.isSelected())
+		{
+			td.setReMeetingEnabled(true);
+		}
 
 		td.setHeading(jTextHeading.getText());
 		td.setContent(jTextAreaContent.getText());
@@ -848,22 +849,24 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
         td.setResponse(String.valueOf(dbStringResponsible));
         //if(tbz_ok) {
             DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-            dbCon.openDB();
-            con = dbCon.getCon();
+            DB_ToDo_Connect.openDB();
+            con = DB_ToDo_Connect.getCon();
             Date dat = new Date(td.getReDate().getTime());
             System.out.println("Datum: " + dat);
             try {
                 Statement stmt = con.createStatement();
                 String sql = "INSERT INTO Protokollelement (KategorieID, SitzungsID, " +
                        "StatusID, InstitutionsID, BereichID, Thema, Inhalt, Wiedervorlagedatum, " +
-                       "Verantwortliche, Beteiligte, TBZuordnung_ID, WV_Sitzungsart, Überschrift) " +
+                       "Verantwortliche, Beteiligte, TBZuordnung_ID, WV_Sitzungsart, Überschrift," +
+					   "WiedervorlageGesetzt) " +
 					   "VALUES (" + td.getCategoryID() +
                        ", " + meetingID + ", " + td.getStatusID() +
                        ", " + td.getInstitutionID() + ", " + td.getAreaID() +
                        ", '" + td.getTopic() + "', '" + td.getContent() +
                        "', '" + dat + "', '" + td.getRespons() +
                        "', '" + td.getOthers()  + "', " + tbz_id + 
-                       ", " + td.getReMeetType() + ",'" + td.getHeading() + "')";
+                       ", " + td.getReMeetType() + ",'" + td.getHeading() + "'," +
+					   td.getReMeetingEnabled() + ")";
 
                 stmt.executeUpdate(sql);
                 stmt.close();
@@ -872,7 +875,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 System.out.println(e.toString());
                 System.exit(1);
             }
-            dbCon.closeDB(con);
+            DB_ToDo_Connect.closeDB(con);
         //}
     }
 
@@ -898,7 +901,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
             td.setReMeetType(-1);
         }
 
-		TodoNoteSubGUI subgui = null;
+		TodoNoteDialog subgui = null;
 
 		if(jComboBoxStatus.getSelectedItem().toString().equals("erledigt") && 
 				jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe"))
@@ -906,7 +909,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 
 			//final CountDownLatch loginSignal = new CountDownLatch(1);
 
-			subgui = new TodoNoteSubGUI(this, true);
+			subgui = new TodoNoteDialog(this, true);
 			subgui.setVisible(true);
 		}
 

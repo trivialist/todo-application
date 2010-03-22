@@ -8,7 +8,7 @@
  *
  * Created on 16.03.2010, 17:27:04
  */
-package ToDo.subgui;
+package todo.dialog;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,11 +23,11 @@ import todo.dbcon.DB_Mitarbeiter_Connect;
  *
  * @author sven
  */
-public class TodoNoteSubGUI extends javax.swing.JDialog
+public class TodoNoteDialog extends javax.swing.JDialog
 {
 
 	/** Creates new form TodoNoteSubGUI */
-	public TodoNoteSubGUI(java.awt.Frame parent, boolean modal)
+	public TodoNoteDialog(java.awt.Frame parent, boolean modal)
 	{
 		super(parent, modal);
 		initComponents();
@@ -136,7 +136,7 @@ public class TodoNoteSubGUI extends javax.swing.JDialog
 			return;
 		}
 
-		PRODUCE ERROR HERE SINCE APP ISNT ABLE TO RUN CORRECTLY
+		//PRODUCE ERROR HERE SINCE APP ISNT ABLE TO RUN CORRECTLY
 				
 		dispose();
 	}//GEN-LAST:event_jButton1ActionPerformed

@@ -35,7 +35,7 @@ public class Todo {
     public String category;
     public String status;
 	public String heading;
-    
+	public boolean reMeetingEnabled;
     
     /** Creates a new instance of Todo */
     public Todo() {
@@ -48,7 +48,7 @@ public class Todo {
         this.todoID = todoID;
     }
 
-    public Todo(int categoryID, String category, int tbz_id, String area, String topic, Date reDate, int todoID, String heading, String content) {
+    public Todo(int categoryID, String category, int tbz_id, String area, String topic, Date reDate, int todoID, String heading, String content, boolean enabled) {
         this.categoryID = categoryID;
         this.category = category;
         this.tbz_id = tbz_id;
@@ -58,7 +58,13 @@ public class Todo {
         this.todoID = todoID;
 		this.heading = heading;
 		this.content = content;
+		this.reMeetingEnabled = enabled;
     }
+
+	public boolean getReMeetingEnabled()
+	{
+		return reMeetingEnabled;
+	}
 
     public int getTodoID() {
         return todoID;
@@ -130,6 +136,11 @@ public class Todo {
 
 	public String getHeading() {
 		return heading;
+	}
+
+	public void setReMeetingEnabled(boolean status)
+	{
+		reMeetingEnabled = status;
 	}
     
     public void setTodoID(int todoID) {
