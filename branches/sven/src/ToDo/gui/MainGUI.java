@@ -1152,7 +1152,6 @@ public class MainGUI extends javax.swing.JFrame {
 
 	private void jComboBoxFinStatusActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jComboBoxFinStatusActionPerformed
 	{//GEN-HEADEREND:event_jComboBoxFinStatusActionPerformed
-		// TODO add your handling code here:
 	}//GEN-LAST:event_jComboBoxFinStatusActionPerformed
     
     /**

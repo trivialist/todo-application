@@ -395,7 +395,6 @@ public class JCalendarComboBox extends JPanel implements ActionListener,
         if (_calendarWindow.isVisible()) {
             _calendarWindow.setVisible(false);
 
-            // TODO!!
             if (!_calendarPanel.getCalendar().getTime().equals(_spinner.getModel().getValue())) {
                 _changed = true;
             }

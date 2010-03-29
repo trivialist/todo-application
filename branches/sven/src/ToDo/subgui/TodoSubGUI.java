@@ -580,7 +580,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
                 jCalendarComboBoxReDate.getCalendar().getTime(), respMailVec);
         if(task.isSet()) {
             task.create();
-            //TODO: Timestamp setzen und in DB speichern
+            //Timestamp setzen und in DB speichern
             //INSERT INTO Task VALUES (ProtElemID, created)
         }else {
             JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
@@ -599,7 +599,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
     }//GEN-LAST:event_jComboBoxCategoryItemStateChanged
 
     private void jButtonMemoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMemoActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonMemoActionPerformed
     
     public void stateChanged(ChangeEvent e) {}

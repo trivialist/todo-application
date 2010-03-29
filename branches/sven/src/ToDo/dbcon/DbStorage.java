@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @todo multiple generated fields
@@ -21,6 +23,7 @@ import java.util.Iterator;
  * @todo save status in hidden field
  * @todo externalize datatype stuff
  * @todo better load behaviour
+ * @todo load with sort criterias
  * @author sven
  */
 public class DbStorage
@@ -118,11 +121,11 @@ public class DbStorage
 		try
 		{
 			Statement st = con.createStatement();
-			//st.execute(sql);
 			System.out.println(sql);
+			st.execute(sql);
 		} catch (SQLException ex)
 		{
-			throw new DbStorageException("The storage engine was unable to create a new object in the database.");
+			throw new DbStorageException("The storage engine was unable to create a new object in the database.\n" + ex.getMessage());
 		}
 
 		DB_ToDo_Connect.closeDB(con);
@@ -140,7 +143,7 @@ public class DbStorage
 		try
 		{
 			Statement st = con.createStatement();
-			//st.execute(sql);
+			st.execute(sql);
 			System.out.println(sql);
 		} catch (SQLException ex)
 		{
@@ -162,7 +165,7 @@ public class DbStorage
 		try
 		{
 			Statement st = con.createStatement();
-			//st.execute(sql);
+			st.execute(sql);
 			System.out.println(sql);
 		} catch (SQLException ex)
 		{
@@ -183,8 +186,8 @@ public class DbStorage
 		try
 		{
 			Statement st = con.createStatement();
-			//st.execute(sql);
 			System.out.println(sql);
+			st.execute(sql);
 		} catch (SQLException ex)
 		{
 			throw new DbStorageException("The storage engine was unable to load the given object from the database.");
@@ -201,34 +204,31 @@ public class DbStorage
 			switch (type)
 			{
 				case STRING:
-					return "'" + (String) f.get(e) + "'";
+					return "'" + (String) e + "'";
 
 				case DATE:
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/mm/dd h:m:s");
-					return "#" + sdf.format((Date) f.get(e)) + "#";
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+					return "'" + sdf.format((Date) e) + "'";
 
 				case BOOLEAN:
-					return Boolean.toString((Boolean) f.get(e));
+					return Boolean.toString((Boolean) e);
 
 				case DOUBLE:
-					return Double.toString((Double) f.get(e));
+					return Double.toString((Double) e);
 
 				case FLOAT:
-					return Float.toString((Float) f.get(e));
+					return Float.toString((Float) e);
 
 				case LONG:
-					return Long.toString((Long) f.get(e));
+					return Long.toString((Long) e);
 
 				case INTEGER:
-					return Integer.toString((Integer) f.get(e));
+					return Integer.toString((Integer) e);
 
 				default:
 					throw new DbStorageException("Unknown datatype in given input.");
 			}
 		} catch (IllegalArgumentException ex)
-		{
-			throw new DbStorageException(ex.getMessage());
-		} catch (IllegalAccessException ex)
 		{
 			throw new DbStorageException(ex.getMessage());
 		}
@@ -239,25 +239,36 @@ public class DbStorage
 		StringBuilder sql = new StringBuilder("INSERT INTO " + tableName + " (");
 		StringBuilder values = new StringBuilder();
 
-		Iterator<String> i = fields.keySet().iterator();
-		while (i.hasNext())
+		try
 		{
-			String tmp = i.next();
-			if (i.hasNext())
-			{
-				sql.append(tmp + ", ");
-				values.append(getEscapedValue(fields.get(tmp), e) + ", ");
-			}
-			else
-			{
-				sql.append(tmp);
-				values.append(getEscapedValue(fields.get(tmp), e));
-			}
-		}
 
-		sql.append(") VALUES (");
-		sql.append(values);
-		sql.append(")");
+			Iterator<String> i = fields.keySet().iterator();
+			while (i.hasNext())
+			{
+				String tmp = i.next();
+				if (i.hasNext())
+				{
+					sql.append(tmp + ", ");
+					values.append(getEscapedValue(fields.get(tmp), fields.get(tmp).get(e)) + ", ");
+				}
+				else
+				{
+					sql.append(tmp);
+					values.append(getEscapedValue(fields.get(tmp), fields.get(tmp).get(e)));
+				}
+			}
+
+			sql.append(") VALUES (");
+			sql.append(values);
+			sql.append(")");
+
+		} catch (IllegalArgumentException ex)
+		{
+			throw new DbStorageException(ex.toString());
+		} catch (IllegalAccessException ex)
+		{
+			throw new DbStorageException(ex.toString());
+		}
 
 		return sql.toString();
 	}
@@ -267,24 +278,34 @@ public class DbStorage
 		StringBuilder sql = new StringBuilder("UPDATE " + tableName + " SET ");
 		StringBuilder where = new StringBuilder("");
 
-		//data
-		Iterator<String> i = fields.keySet().iterator();
-		while (i.hasNext())
+		try
 		{
-			String tmp = i.next();
-			if (i.hasNext())
-			{
-				sql.append(tmp + " = " + getEscapedValue(fields.get(tmp), e) + ", ");
-			}
-			else
-			{
-				sql.append(tmp + " = " + getEscapedValue(fields.get(tmp), e));
-			}
-		}
 
-		//where condition
-		where.append(generatedColumn + " = " + getEscapedValue(generatedField, e));
-		sql.append(" WHERE " + where);
+			//data
+			Iterator<String> i = fields.keySet().iterator();
+			while (i.hasNext())
+			{
+				String tmp = i.next();
+				if (i.hasNext())
+				{
+					sql.append(tmp + " = " + getEscapedValue(fields.get(tmp), fields.get(tmp).get(e)) + ", ");
+				}
+				else
+				{
+					sql.append(tmp + " = " + getEscapedValue(fields.get(tmp), fields.get(tmp).get(e)));
+				}
+			}
+			//where condition
+			where.append(generatedColumn + " = " + getEscapedValue(generatedField, generatedField.get(e)));
+			sql.append(" WHERE " + where);
+
+		} catch (IllegalArgumentException ex)
+		{
+			throw new DbStorageException(ex.toString());
+		} catch (IllegalAccessException ex)
+		{
+			throw new DbStorageException(ex.toString());
+		}
 
 		return sql.toString();
 	}
@@ -292,22 +313,57 @@ public class DbStorage
 	private String createDeleteStatement(Object e) throws DbStorageException
 	{
 		StringBuilder sql = new StringBuilder("DELETE FROM " + tableName + " WHERE ");
-
-		//where condition
-		sql.append(generatedColumn + " = " + getEscapedValue(generatedField, e));
+		try
+		{
+			//where condition
+			sql.append(generatedColumn + " = " + getEscapedValue(generatedField, generatedField.get(e)));
+		} catch (IllegalArgumentException ex)
+		{
+			throw new DbStorageException(ex.toString());
+		} catch (IllegalAccessException ex)
+		{
+			throw new DbStorageException(ex.toString());
+		}
 
 		return sql.toString();
+	}
+
+	private Field findField(Object e, String columnName) throws DbStorageException
+	{
+		Field retField = null;
+
+		//check for proper input data
+		Class<?> c = (Class<?>) e.getClass();
+		if (!c.isAnnotationPresent(DbEntity.class) || !c.isAnnotationPresent(DbTable.class))
+		{
+			throw new DbStorageException("Referenced object hasn't got the right annotation's present.");
+		}
+
+		//find columns
+		Field[] f = c.getDeclaredFields();
+		for (Field x : f)
+		{
+			x.setAccessible(true);
+			if ((x.isAnnotationPresent(DbColumn.class) && x.getAnnotation(DbColumn.class).name().equals(columnName)) || x.getName().equals(columnName))
+			{
+				return x;
+			}
+		}
+
+		return retField;
 	}
 
 	private String createSelectStatement(Object e, HashMap<String, Object> params) throws DbStorageException
 	{
 		StringBuilder sql = new StringBuilder("SELECT * FROM " + tableName + " WHERE ");
 
-		//where condition
-		sql.append(generatedColumn + " = " + getEscapedValue(generatedField, e));
+		for (String column : params.keySet())
+		{
+			Field colName = findField(e, column);
 
-		throw new DbStorageException("not implemented right now!");
+			sql.append(colName.getAnnotation(DbColumn.class).name() + "=" + getEscapedValue(colName, params.get(column)));
+		}
 
-		//return sql.toString();
+		return sql.toString();
 	}
 }
