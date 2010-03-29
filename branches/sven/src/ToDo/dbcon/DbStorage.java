@@ -6,7 +6,9 @@ package todo.dbcon;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,7 +19,6 @@ import java.util.Iterator;
  * @todo relations
  * @todo loadByParam
  * @todo save status in hidden field
- * @todo correct date format
  * @todo externalize datatype stuff
  * @todo better load behaviour
  * @author sven
@@ -42,7 +43,7 @@ public class DbStorage
 		Class<?> c = (Class<?>) e.getClass();
 		if (!c.isAnnotationPresent(DbEntity.class) || !c.isAnnotationPresent(DbTable.class))
 		{
-			throw new DbStorageException();
+			throw new DbStorageException("Referenced object hasn't got the right annotation's present.");
 		}
 
 		//find table name
@@ -105,7 +106,7 @@ public class DbStorage
 		return type;
 	}
 
-	public void insert(Object e) throws Exception
+	public void insert(Object e) throws DbStorageException
 	{
 		findFields(e);
 
@@ -114,14 +115,20 @@ public class DbStorage
 		DB_ToDo_Connect.openDB();
 		Connection con = DB_ToDo_Connect.getCon();
 
-		Statement st = con.createStatement();
-		//st.execute(sql);
-		System.out.println(sql);
+		try
+		{
+			Statement st = con.createStatement();
+			//st.execute(sql);
+			System.out.println(sql);
+		} catch (SQLException ex)
+		{
+			throw new DbStorageException("The storage engine was unable to create a new object in the database.");
+		}
 
 		DB_ToDo_Connect.closeDB(con);
 	}
 
-	public void update(Object e) throws Exception
+	public void update(Object e) throws DbStorageException
 	{
 		findFields(e);
 
@@ -130,14 +137,20 @@ public class DbStorage
 		DB_ToDo_Connect.openDB();
 		Connection con = DB_ToDo_Connect.getCon();
 
-		Statement st = con.createStatement();
-		//st.execute(sql);
-		System.out.println(sql);
+		try
+		{
+			Statement st = con.createStatement();
+			//st.execute(sql);
+			System.out.println(sql);
+		} catch (SQLException ex)
+		{
+			throw new DbStorageException("The storage engine was unable to update the given object in the database.");
+		}
 
 		DB_ToDo_Connect.closeDB(con);
 	}
 
-	public void delete(Object e) throws Exception
+	public void delete(Object e) throws DbStorageException
 	{
 		findFields(e);
 
@@ -146,14 +159,20 @@ public class DbStorage
 		DB_ToDo_Connect.openDB();
 		Connection con = DB_ToDo_Connect.getCon();
 
-		Statement st = con.createStatement();
-		//st.execute(sql);
-		System.out.println(sql);
+		try
+		{
+			Statement st = con.createStatement();
+			//st.execute(sql);
+			System.out.println(sql);
+		} catch (SQLException ex)
+		{
+			throw new DbStorageException("The storage engine was unable to delete the given object in the database.");
+		}
 
 		DB_ToDo_Connect.closeDB(con);
 	}
 
-	public void load(Object e, HashMap<String, Object> params) throws Exception
+	public void load(Object e, HashMap<String, Object> params) throws DbStorageException
 	{
 		findFields(e);
 
@@ -161,10 +180,15 @@ public class DbStorage
 
 		DB_ToDo_Connect.openDB();
 		Connection con = DB_ToDo_Connect.getCon();
-
-		Statement st = con.createStatement();
-		//st.execute(sql);
-		System.out.println(sql);
+		try
+		{
+			Statement st = con.createStatement();
+			//st.execute(sql);
+			System.out.println(sql);
+		} catch (SQLException ex)
+		{
+			throw new DbStorageException("The storage engine was unable to load the given object from the database.");
+		}
 
 		DB_ToDo_Connect.closeDB(con);
 	}
@@ -180,11 +204,12 @@ public class DbStorage
 					return "'" + (String) f.get(e) + "'";
 
 				case DATE:
-					return "#" + (Date) f.get(e) + "#";
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/mm/dd h:m:s");
+					return "#" + sdf.format((Date) f.get(e)) + "#";
 
 				case BOOLEAN:
 					return Boolean.toString((Boolean) f.get(e));
-					
+
 				case DOUBLE:
 					return Double.toString((Double) f.get(e));
 
@@ -193,19 +218,19 @@ public class DbStorage
 
 				case LONG:
 					return Long.toString((Long) f.get(e));
-				
+
 				case INTEGER:
 					return Integer.toString((Integer) f.get(e));
 
 				default:
-					throw new DbStorageException();
+					throw new DbStorageException("Unknown datatype in given input.");
 			}
 		} catch (IllegalArgumentException ex)
 		{
-			throw new DbStorageException();
+			throw new DbStorageException(ex.getMessage());
 		} catch (IllegalAccessException ex)
 		{
-			throw new DbStorageException();
+			throw new DbStorageException(ex.getMessage());
 		}
 	}
 
@@ -215,10 +240,10 @@ public class DbStorage
 		StringBuilder values = new StringBuilder();
 
 		Iterator<String> i = fields.keySet().iterator();
-		while(i.hasNext())
+		while (i.hasNext())
 		{
 			String tmp = i.next();
-			if(i.hasNext())
+			if (i.hasNext())
 			{
 				sql.append(tmp + ", ");
 				values.append(getEscapedValue(fields.get(tmp), e) + ", ");
@@ -244,10 +269,10 @@ public class DbStorage
 
 		//data
 		Iterator<String> i = fields.keySet().iterator();
-		while(i.hasNext())
+		while (i.hasNext())
 		{
 			String tmp = i.next();
-			if(i.hasNext())
+			if (i.hasNext())
 			{
 				sql.append(tmp + " = " + getEscapedValue(fields.get(tmp), e) + ", ");
 			}
@@ -281,8 +306,8 @@ public class DbStorage
 		//where condition
 		sql.append(generatedColumn + " = " + getEscapedValue(generatedField, e));
 
-		CREATE ERROR HERE
+		throw new DbStorageException("not implemented right now!");
 
-		return sql.toString();
+		//return sql.toString();
 	}
 }
