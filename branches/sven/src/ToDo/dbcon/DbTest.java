@@ -18,6 +18,7 @@ public class DbTest
 	public static void main(String[] args) throws Exception
 	{
 		DbStorage dbs = new DbStorage();
+		dbs.setDebugEnabled(true);
 		/*Memo m = new Memo();
 
 		m.setComment("xxx");
@@ -32,6 +33,7 @@ public class DbTest
 
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put("MemoID", 8);
+		hm.put("comment", "bbb");
 		Object[] x = dbs.load(new Memo(), hm);
 
 		if(x != null)

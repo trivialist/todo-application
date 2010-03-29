@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * @todo multiple generated fields
@@ -31,10 +32,17 @@ import java.util.LinkedList;
 public class DbStorage
 {
 
-	String tableName = "";
-	HashMap<String, Field> fields = new HashMap<String, Field>();
-	String generatedColumn = "";
-	Field generatedField = null;
+	private String tableName = "";
+	private HashMap<String, Field> fields = new HashMap<String, Field>();
+	private String generatedColumn = "";
+	private Field generatedField = null;
+	private int generatedId = -1;
+	private boolean debugEnabled = false;
+
+	public DbStorage()
+	{
+		DB_ToDo_Connect.openDB();
+	}
 
 	private enum DATA_TYPE
 	{
@@ -111,70 +119,70 @@ public class DbStorage
 		return type;
 	}
 
-	public void insert(Object e) throws DbStorageException
+	public void setDebugEnabled(boolean debugEnabled)
 	{
-		findFields(e);
+		this.debugEnabled = debugEnabled;
+	}
 
-		String sql = createInsertStatement(e);
-
-		DB_ToDo_Connect.openDB();
+	private ResultSet runSqlStatement(String sqlClause, boolean isQuery) throws DbStorageException
+	{
+		ResultSet returnResult = null;
 		Connection con = DB_ToDo_Connect.getCon();
+
+		if (debugEnabled)
+		{
+			System.out.println(sqlClause);
+		}
 
 		try
 		{
 			Statement st = con.createStatement();
-			System.out.println(sql);
-			st.execute(sql);
+
+			if (isQuery)
+			{
+				returnResult = st.executeQuery(sqlClause);
+			}
+			else
+			{
+				con.setAutoCommit(false);
+
+				st.execute(sqlClause);
+
+				ResultSet rs = st.executeQuery("SELECT MAX(" + generatedColumn + ") FROM " + tableName);
+				rs.next();
+				generatedId = rs.getInt(1);
+
+				con.commit();
+				con.setAutoCommit(true);
+			}
+
 		} catch (SQLException ex)
 		{
-			throw new DbStorageException("The storage engine was unable to create a new object in the database.\n" + ex.getMessage());
+			throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
 		}
 
-		DB_ToDo_Connect.closeDB(con);
+		return returnResult;
+	}
+
+	public void insert(Object e) throws DbStorageException
+	{
+		findFields(e);
+		String sql = createInsertStatement(e);
+		runSqlStatement(sql, false);
 	}
 
 	public void update(Object e) throws DbStorageException
 	{
 		findFields(e);
-
 		String sql = createUpdateStatement(e);
-
-		DB_ToDo_Connect.openDB();
-		Connection con = DB_ToDo_Connect.getCon();
-
-		try
-		{
-			Statement st = con.createStatement();
-			st.execute(sql);
-			System.out.println(sql);
-		} catch (SQLException ex)
-		{
-			throw new DbStorageException("The storage engine was unable to update the given object in the database.");
-		}
-
-		DB_ToDo_Connect.closeDB(con);
+		runSqlStatement(sql, false);
 	}
 
 	public void delete(Object e) throws DbStorageException
 	{
 		findFields(e);
-
 		String sql = createDeleteStatement(e);
-
-		DB_ToDo_Connect.openDB();
-		Connection con = DB_ToDo_Connect.getCon();
-
-		try
-		{
-			Statement st = con.createStatement();
-			st.execute(sql);
-			System.out.println(sql);
-		} catch (SQLException ex)
-		{
-			throw new DbStorageException("The storage engine was unable to delete the given object in the database.");
-		}
-
-		DB_ToDo_Connect.closeDB(con);
+		runSqlStatement(sql, false);
 	}
 
 	public Object[] load(Object e, HashMap<String, Object> params) throws DbStorageException
@@ -186,21 +194,22 @@ public class DbStorage
 
 		String sql = createSelectStatement(e, params);
 
-		DB_ToDo_Connect.openDB();
-		Connection con = DB_ToDo_Connect.getCon();
 		try
 		{
-			Statement st = con.createStatement();
-			System.out.println(sql);
-			ResultSet rst = st.executeQuery(sql);
+			ResultSet rst = runSqlStatement(sql, true);
 
-			while(rst.next())
+			if (rst == null)
+			{
+				return retObjects;
+			}
+
+			while (rst.next())
 			{
 				try
 				{
 					Object x = e.getClass().newInstance();
 
-					for(String col : fields.keySet())
+					for (String col : fields.keySet())
 					{
 						Field f = fields.get(col);
 						setObjectValue(f, rst.getObject(col), x);
@@ -219,10 +228,9 @@ public class DbStorage
 
 		} catch (SQLException ex)
 		{
-			throw new DbStorageException("The storage engine was unable to load the given object from the database.");
+			throw new DbStorageException("The storage engine was unable to load the given object from the database. " +
+					"Reason:\n" + ex.toString());
 		}
-
-		DB_ToDo_Connect.closeDB(con);
 
 		return retList.toArray(new Object[retList.size()]);
 	}
@@ -245,19 +253,31 @@ public class DbStorage
 					return Boolean.toString((Boolean) e);
 
 				case DOUBLE:
-					if(e instanceof java.lang.String)return (String) e;
+					if (e instanceof java.lang.String)
+					{
+						return (String) e;
+					}
 					return Double.toString((Double) e);
 
 				case FLOAT:
-					if(e instanceof java.lang.String)return (String) e;
+					if (e instanceof java.lang.String)
+					{
+						return (String) e;
+					}
 					return Float.toString((Float) e);
 
 				case LONG:
-					if(e instanceof java.lang.String)return (String) e;
+					if (e instanceof java.lang.String)
+					{
+						return (String) e;
+					}
 					return Long.toString((Long) e);
 
 				case INTEGER:
-					if(e instanceof java.lang.String)return (String) e;
+					if (e instanceof java.lang.String)
+					{
+						return (String) e;
+					}
 					return Integer.toString((Integer) e);
 
 				default:
@@ -277,7 +297,7 @@ public class DbStorage
 			switch (type)
 			{
 				case STRING:
-					f.set(to, (String)from);
+					f.set(to, (String) from);
 					break;
 
 				case DATE:
@@ -426,7 +446,7 @@ public class DbStorage
 			}
 		}
 
-		if(generatedField.getAnnotation(DbId.class).name().equals(columnName) || generatedField.getName().equals(columnName))
+		if (generatedField.getAnnotation(DbId.class).name().equals(columnName) || generatedField.getName().equals(columnName))
 		{
 			return generatedField;
 		}
@@ -438,8 +458,10 @@ public class DbStorage
 	{
 		StringBuilder sql = new StringBuilder("SELECT * FROM " + tableName + " WHERE ");
 
-		for (String column : params.keySet())
+		Iterator<String> it = (Iterator<String>) params.keySet().iterator();
+		while (it.hasNext())
 		{
+			String column = it.next();
 			Field colName = findField(e, column);
 
 			if (colName.isAnnotationPresent(DbColumn.class))
@@ -450,8 +472,18 @@ public class DbStorage
 			{
 				sql.append(colName.getAnnotation(DbId.class).name() + "=" + getEscapedValue(colName, params.get(column)));
 			}
+
+			if (it.hasNext())
+			{
+				sql.append(" AND ");
+			}
 		}
 
 		return sql.toString();
+	}
+
+	public int getGeneratedKey()
+	{
+		return generatedId;
 	}
 }

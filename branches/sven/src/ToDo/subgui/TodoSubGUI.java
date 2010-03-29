@@ -6,6 +6,8 @@
 
 package todo.subgui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import todo.dialog.TodoNoteDialog;
 import todo.core.*;
 import todo.joc.*;
@@ -905,9 +907,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 		if(jComboBoxStatus.getSelectedItem().toString().equals("erledigt") && 
 				jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe"))
 		{
-
-			//final CountDownLatch loginSignal = new CountDownLatch(1);
-
 			subgui = new TodoNoteDialog(this, true);
 			subgui.setVisible(true);
 		}
@@ -915,15 +914,30 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
 		if(subgui != null)
 		{
 			JOptionPane.showMessageDialog(jTextAreaContent, subgui.getNote());
-		}
-		return;
 
-        /*td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());
+			Memo newMemo = new Memo();
+			newMemo.setComment(subgui.getNote());
+			newMemo.setDate(subgui.getDate());
+			newMemo.setTodoID(todoID);
+			newMemo.setUser(subgui.getUser());
+
+			DbStorage dbs = new DbStorage();
+			dbs.setDebugEnabled(true);
+			try
+			{
+				dbs.insert(newMemo);
+			} catch (DbStorageException ex)
+			{
+				Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+
+        td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());
 
         // ### Update Prtotokollelement
         DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-        dbCon.openDB();
-        con = dbCon.getCon();
+        DB_ToDo_Connect.openDB();
+        con = DB_ToDo_Connect.getCon();
         Date dat = new Date(td.getReDate().getTime());
 
         try {
@@ -939,7 +953,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener {
             System.out.println(e.toString());
             System.exit(1);
         }
-        dbCon.closeDB(con);*/
+        DB_ToDo_Connect.closeDB(con);
    }
     
     public ArrayList getAllCategories() {

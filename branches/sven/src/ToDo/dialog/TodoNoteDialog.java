@@ -135,9 +135,7 @@ public class TodoNoteDialog extends javax.swing.JDialog
 			JOptionPane.showMessageDialog(rootPane, "Das Feld für Bemerkungen bzw. Notizen muss ausgefüllt werden.");
 			return;
 		}
-
-		//PRODUCE ERROR HERE SINCE APP ISNT ABLE TO RUN CORRECTLY
-				
+	
 		dispose();
 	}//GEN-LAST:event_jButton1ActionPerformed
 
