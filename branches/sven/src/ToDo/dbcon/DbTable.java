@@ -8,8 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- *
- * @author sven
+ * @author Sven Skrabal
  */
 @Retention(value=RetentionPolicy.RUNTIME)
 public @interface DbTable

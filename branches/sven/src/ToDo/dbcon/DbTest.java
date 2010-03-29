@@ -2,19 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package todo.dbcon;
 
-import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import todo.core.Memo;
 
 /**
- *
  * @author sven
  */
 public class DbTest
 {
+
 	public static void main(String[] args) throws Exception
 	{
 		DbStorage dbs = new DbStorage();
@@ -34,15 +33,13 @@ public class DbTest
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put("MemoID", 8);
 		hm.put("comment", "bbb");
-		Object[] x = dbs.load(new Memo(), hm);
+		LinkedList<Object> x = dbs.load(new Memo(), hm);
 
-		if(x != null)
+
+		for (Object c : x)
 		{
-			for(Object c : x)
-			{
-				Memo tmp = (Memo) c;
-				System.out.println(tmp.getComment());
-			}
+			Memo tmp = (Memo) c;
+			System.out.println(tmp.getComment());
 		}
 	}
 }

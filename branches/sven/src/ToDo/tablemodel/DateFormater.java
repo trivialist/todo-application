@@ -9,49 +9,56 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
- * @author sven
+ * @author Sven Skrabal
  */
 public class DateFormater implements Comparable
 {
-	private Date d;
-	private boolean flag;
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+	private Date displayDate;
+	private boolean dateNotSetFlag;
+	private SimpleDateFormat dateFormatterInstance = new SimpleDateFormat("dd.MM.yyyy");
 	
-	public DateFormater(Date x, boolean flag)
+	public DateFormater(Date displayDate, boolean dateNotSetFlag)
 	{
-		d = x;
-		this.flag = flag;
+		this.displayDate = displayDate;
+		this.dateNotSetFlag = dateNotSetFlag;
 	}
 
-	public DateFormater(Date x)
+	public DateFormater(Date displayDate)
 	{
-		d = x;
-		this.flag = true;
+		this.displayDate = displayDate;
+		this.dateNotSetFlag = true;
 	}
 
 	public Date getDate()
 	{
-		return d;
+		return displayDate;
 	}
 
+	@Override
 	public String toString()
 	{
-		if(!flag)
+		if(!dateNotSetFlag)
 		{
 			return "keins";
 		}
 
-		return sdf.format(d);
+		return dateFormatterInstance.format(displayDate);
 	}
 
-	public int compareTo(Object o)
+	/**
+	 * @see Javadoc http://java.sun.com/javase/6/docs/api/java/lang/Comparable.html
+	 * 
+	 * @param compareObject	Object to be compared
+	 * @return -1, 0, 1
+	 */
+	@Override
+	public int compareTo(Object compareObject)
 	{
-		DateFormater x = (DateFormater) o;
+		DateFormater dateCompareObject = (DateFormater) compareObject;
 
-		if(!flag)
+		if(!dateNotSetFlag)
 		{
-			if(!x.flag)
+			if(!dateCompareObject.dateNotSetFlag)
 			{
 				return 0;
 			}
@@ -61,11 +68,11 @@ public class DateFormater implements Comparable
 			}
 		}
 
-		if(!x.flag)
+		if(!dateCompareObject.dateNotSetFlag)
 		{
 			return -1;
 		}
 
-		return d.compareTo(x.d);
+		return displayDate.compareTo(dateCompareObject.displayDate);
 	}
 }

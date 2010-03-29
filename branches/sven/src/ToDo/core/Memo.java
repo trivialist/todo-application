@@ -6,7 +6,6 @@ package todo.core;
 
 import java.util.Date;
 import todo.dbcon.DbColumn;
-import todo.dbcon.DbEntity;
 import todo.dbcon.DbId;
 import todo.dbcon.DbTable;
 
@@ -14,7 +13,6 @@ import todo.dbcon.DbTable;
  *
  * @author Marcus Hertel
  */
-@DbEntity
 @DbTable(name="Memo")
 public class Memo
 {
@@ -28,14 +26,6 @@ public class Memo
 	private Date memoDate;
 	@DbColumn(name="Benutzer")
 	private String memoUser;
-	/*@DbColumn(name="booldb")
-	private boolean bool;
-	@DbColumn(name="floatdb")
-	private float fl;
-	@DbColumn(name="doubledb")
-	private double dbl;
-	@DbColumn(name="longdb")
-	private long lng;*/
 
 	public Memo()
 	{

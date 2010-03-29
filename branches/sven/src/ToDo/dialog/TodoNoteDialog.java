@@ -20,8 +20,7 @@ import todo.core.Employee;
 import todo.dbcon.DB_Mitarbeiter_Connect;
 
 /**
- *
- * @author sven
+ * @author Sven Skrabal
  */
 public class TodoNoteDialog extends javax.swing.JDialog
 {
@@ -32,11 +31,11 @@ public class TodoNoteDialog extends javax.swing.JDialog
 		super(parent, modal);
 		initComponents();
 
-		ArrayList<Employee> emp = new ArrayList<Employee>();
-		emp = getAllEmployees();
-		for (int i = 0; i < emp.size(); i++)
+		ArrayList<Employee> allEmployees = new ArrayList<Employee>();
+		allEmployees = getAllEmployees();
+		for (int i = 0; i < allEmployees.size(); i++)
 		{
-			jComboBox1.addItem(emp.get(i).getLastName() + ", " + emp.get(i).getName());
+			jComboBoxUser.addItem(allEmployees.get(i).getLastName() + ", " + allEmployees.get(i).getName());
 		}
 	}
 
@@ -50,12 +49,12 @@ public class TodoNoteDialog extends javax.swing.JDialog
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jCalendarComboBox1 = new de.wannawork.jcalendar.JCalendarComboBox();
+        jCalendarComboBoxDate = new de.wannawork.jcalendar.JCalendarComboBox();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jComboBoxUser = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextAreaNote = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -68,9 +67,9 @@ public class TodoNoteDialog extends javax.swing.JDialog
 
         jLabel3.setText("Bemerkung bzw. Notiz:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextAreaNote.setColumns(20);
+        jTextAreaNote.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaNote);
 
         jButton1.setText("Speichern und schliessen");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -94,8 +93,8 @@ public class TodoNoteDialog extends javax.swing.JDialog
                                     .addComponent(jLabel2))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jCalendarComboBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)))
+                                    .addComponent(jComboBoxUser, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jCalendarComboBoxDate, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)))
                             .addComponent(jLabel3)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(124, 124, 124)
@@ -110,12 +109,12 @@ public class TodoNoteDialog extends javax.swing.JDialog
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jCalendarComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCalendarComboBoxDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -130,7 +129,7 @@ public class TodoNoteDialog extends javax.swing.JDialog
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
 	{//GEN-HEADEREND:event_jButton1ActionPerformed
-		if(jTextArea1.getText().equals(""))
+		if(jTextAreaNote.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(rootPane, "Das Feld für Bemerkungen bzw. Notizen muss ausgefüllt werden.");
 			return;
@@ -141,23 +140,22 @@ public class TodoNoteDialog extends javax.swing.JDialog
 
 	public String getNote()
 	{
-		return jTextArea1.getText();
+		return jTextAreaNote.getText();
 	}
 
 	public Date getDate()
 	{
-		return jCalendarComboBox1.getCalendar().getTime();
+		return jCalendarComboBoxDate.getCalendar().getTime();
 	}
 
 	public String getUser()
 	{
-		return jComboBox1.getSelectedItem().toString();
+		return jComboBoxUser.getSelectedItem().toString();
 	}
 
 	private ArrayList getAllEmployees()
 	{
 		ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
-		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
 		DB_Mitarbeiter_Connect.openDB();
 		Connection con = DB_Mitarbeiter_Connect.getCon();
 
@@ -184,12 +182,12 @@ public class TodoNoteDialog extends javax.swing.JDialog
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBox1;
-    private javax.swing.JComboBox jComboBox1;
+    private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxDate;
+    private javax.swing.JComboBox jComboBoxUser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextAreaNote;
     // End of variables declaration//GEN-END:variables
 }

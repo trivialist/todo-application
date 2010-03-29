@@ -8,10 +8,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- *
- * @author sven
+ * @author Sven Skrabal
  */
-//@Target(value=ElementType.FIELD)
 @Retention(value=RetentionPolicy.RUNTIME)
 public @interface DbId
 {

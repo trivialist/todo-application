@@ -5,8 +5,7 @@
 package todo.dbcon;
 
 /**
- *
- * @author sven
+ * @author Sven Skrabal
  */
 public class DbStorageException extends Exception
 {
@@ -15,8 +14,8 @@ public class DbStorageException extends Exception
 		super();
 	}
 
-	public DbStorageException(String s)
+	public DbStorageException(String errorDescription)
 	{
-		super(s);
+		super(errorDescription);
 	}
 }
