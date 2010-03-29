@@ -6,14 +6,14 @@ package todo.dbcon;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.LinkedList;
 
 /**
  * @todo multiple generated fields
@@ -24,7 +24,9 @@ import java.util.logging.Logger;
  * @todo externalize datatype stuff
  * @todo better load behaviour
  * @todo load with sort criterias
- * @author sven
+ * @todo use finally to close db connection properly
+ * @todo use generics in all methods that are used in select's
+ * @author Sven Skrabal
  */
 public class DbStorage
 {
@@ -175,9 +177,12 @@ public class DbStorage
 		DB_ToDo_Connect.closeDB(con);
 	}
 
-	public void load(Object e, HashMap<String, Object> params) throws DbStorageException
+	public Object[] load(Object e, HashMap<String, Object> params) throws DbStorageException
 	{
 		findFields(e);
+
+		Object[] retObjects = null;
+		LinkedList<Object> retList = new LinkedList<Object>();
 
 		String sql = createSelectStatement(e, params);
 
@@ -187,13 +192,39 @@ public class DbStorage
 		{
 			Statement st = con.createStatement();
 			System.out.println(sql);
-			st.execute(sql);
+			ResultSet rst = st.executeQuery(sql);
+
+			while(rst.next())
+			{
+				try
+				{
+					Object x = e.getClass().newInstance();
+
+					for(String col : fields.keySet())
+					{
+						Field f = fields.get(col);
+						setObjectValue(f, rst.getObject(col), x);
+					}
+
+					retList.addLast(x);
+
+				} catch (InstantiationException ex)
+				{
+					throw new DbStorageException(ex.toString());
+				} catch (IllegalAccessException ex)
+				{
+					throw new DbStorageException(ex.toString());
+				}
+			}
+
 		} catch (SQLException ex)
 		{
 			throw new DbStorageException("The storage engine was unable to load the given object from the database.");
 		}
 
 		DB_ToDo_Connect.closeDB(con);
+
+		return retList.toArray(new Object[retList.size()]);
 	}
 
 	private String getEscapedValue(Field f, Object e) throws DbStorageException
@@ -214,21 +245,66 @@ public class DbStorage
 					return Boolean.toString((Boolean) e);
 
 				case DOUBLE:
+					if(e instanceof java.lang.String)return (String) e;
 					return Double.toString((Double) e);
 
 				case FLOAT:
+					if(e instanceof java.lang.String)return (String) e;
 					return Float.toString((Float) e);
 
 				case LONG:
+					if(e instanceof java.lang.String)return (String) e;
 					return Long.toString((Long) e);
 
 				case INTEGER:
+					if(e instanceof java.lang.String)return (String) e;
 					return Integer.toString((Integer) e);
 
 				default:
 					throw new DbStorageException("Unknown datatype in given input.");
 			}
 		} catch (IllegalArgumentException ex)
+		{
+			throw new DbStorageException(ex.getMessage());
+		}
+	}
+
+	private void setObjectValue(Field f, Object from, Object to) throws DbStorageException
+	{
+		try
+		{
+			DATA_TYPE type = getDataType(f);
+			switch (type)
+			{
+				case STRING:
+					f.set(to, (String)from);
+					break;
+
+				case DATE:
+					break;
+
+				case BOOLEAN:
+					break;
+
+				case DOUBLE:
+					break;
+
+				case FLOAT:
+					break;
+
+				case LONG:
+					break;
+
+				case INTEGER:
+					break;
+
+				default:
+					throw new DbStorageException("Unknown datatype in given input.");
+			}
+		} catch (IllegalArgumentException ex)
+		{
+			throw new DbStorageException(ex.getMessage());
+		} catch (IllegalAccessException ex)
 		{
 			throw new DbStorageException(ex.getMessage());
 		}
@@ -350,6 +426,11 @@ public class DbStorage
 			}
 		}
 
+		if(generatedField.getAnnotation(DbId.class).name().equals(columnName) || generatedField.getName().equals(columnName))
+		{
+			return generatedField;
+		}
+
 		return retField;
 	}
 
@@ -361,7 +442,14 @@ public class DbStorage
 		{
 			Field colName = findField(e, column);
 
-			sql.append(colName.getAnnotation(DbColumn.class).name() + "=" + getEscapedValue(colName, params.get(column)));
+			if (colName.isAnnotationPresent(DbColumn.class))
+			{
+				sql.append(colName.getAnnotation(DbColumn.class).name() + "=" + getEscapedValue(colName, params.get(column)));
+			}
+			else
+			{
+				sql.append(colName.getAnnotation(DbId.class).name() + "=" + getEscapedValue(colName, params.get(column)));
+			}
 		}
 
 		return sql.toString();

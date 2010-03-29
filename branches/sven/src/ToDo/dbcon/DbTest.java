@@ -18,7 +18,7 @@ public class DbTest
 	public static void main(String[] args) throws Exception
 	{
 		DbStorage dbs = new DbStorage();
-		Memo m = new Memo();
+		/*Memo m = new Memo();
 
 		m.setComment("xxx");
 		m.setDate(new Date());
@@ -28,10 +28,19 @@ public class DbTest
 
 		dbs.insert(m);
 		dbs.update(m);
-		dbs.delete(m);
+		dbs.delete(m);*/
 
 		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put("Inhalt", "-");
-		dbs.load(m, hm);
+		hm.put("MemoID", 8);
+		Object[] x = dbs.load(new Memo(), hm);
+
+		if(x != null)
+		{
+			for(Object c : x)
+			{
+				Memo tmp = (Memo) c;
+				System.out.println(tmp.getComment());
+			}
+		}
 	}
 }
