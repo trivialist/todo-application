@@ -5,10 +5,6 @@
 package todo.dbcon;
 
 import todo.dbcon.drivers.MsAccessDriver;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import todo.core.Memo;
 
 /**
  * @author sven
@@ -18,19 +14,21 @@ public class DbTest
 
 	public static void main(String[] args) throws Exception
 	{
+		DB_ToDo_Connect.openDB();
+
 		DbStorage dbs = new DbStorage();
 		dbs.setDbDriver(new MsAccessDriver());
 		dbs.setDebugEnabled(true);
-		Memo m = new Memo();
+		dbs.setDatabaseConnection(DB_ToDo_Connect.getCon());
 
-		m.setComment("xxx");
-		m.setDate(new Date());
-		m.setMemoID(2);
-		m.setTodoID(7);
-		m.setUser("sdfsdf");
-
-		dbs.insert(m);
-		dbs.update(m);
+		ForeignElement fe = new ForeignElement();
+		fe.name = "neu";
+		BaseElement be = new BaseElement();
+		be.name = "base";
+		be.element = fe;
+		
+		dbs.insert(be);
+		/*dbs.update(m);
 		dbs.delete(m);
 
 		HashMap<String, Object> hm = new HashMap<String, Object>();
@@ -44,5 +42,6 @@ public class DbTest
 			Memo tmp = (Memo) c;
 			System.out.println(tmp.getComment());
 		}
+		*/
 	}
 }
