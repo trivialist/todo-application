@@ -11,9 +11,10 @@ import todo.dbcon.DbTable;
 /**
  * @author Sven Skrabal
  */
-@DbTable(name="TPG")
+@DbTable(name = "TPG")
 public class GroupRelation
 {
+
 	@DbColumn(name = "ToDoID")
 	private int toDoID = 0;
 	@DbColumn(name = "GruppenID")

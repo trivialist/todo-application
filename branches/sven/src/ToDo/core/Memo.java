@@ -13,18 +13,19 @@ import todo.dbcon.DbTable;
  *
  * @author Marcus Hertel
  */
-@DbTable(name="Memo")
+@DbTable(name = "Memo")
 public class Memo
 {
-	@DbId(name="MemoID")
+
+	@DbId(name = "MemoID")
 	private int memoID;
-	@DbColumn(name="TodoID")
+	@DbColumn(name = "TodoID")
 	private int todoID;
-	@DbColumn(name="Inhalt")
+	@DbColumn(name = "Inhalt")
 	private String comment;
-	@DbColumn(name="erstellt")
+	@DbColumn(name = "erstellt")
 	private Date memoDate;
-	@DbColumn(name="Benutzer")
+	@DbColumn(name = "Benutzer")
 	private String memoUser;
 
 	public Memo()

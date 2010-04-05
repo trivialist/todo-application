@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import todo.subgui.MeetingSubGUI;
 import todo.subgui.TodoSubGUI;
 import todo.dialog.NoPersonalTodoDialog;
-import todo.core.PersonalTodo;
+//import todo.core.PersonalTodo;
 import todo.core.Todo;
 import todo.core.Meeting;
 import todo.dbcon.DB_ToDo_Connect;
@@ -50,7 +50,7 @@ public class MainGUI extends javax.swing.JFrame {
     private static Meeting actMeeting = new Meeting();
     private static MainGUI mainGUI = new MainGUI(); 
     private Todo actTodo = new Todo();
-    private PersonalTodo persTodo = new PersonalTodo(); 
+    //private PersonalTodo persTodo = new PersonalTodo();
     private Vector employees = new Vector();
     private Vector topics = new Vector();
     private Vector categories = new Vector();

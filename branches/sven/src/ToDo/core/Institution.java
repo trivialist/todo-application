@@ -7,40 +7,54 @@
  * the Source Creation and Management node. Right-click the template and choose
  * Open. You can then make changes to the template in the Source Editor.
  */
-
 package todo.core;
+
+import todo.dbcon.DbColumn;
+import todo.dbcon.DbId;
+import todo.dbcon.DbTable;
 
 /**
  *
  * @author Marcus Hertel
  */
-public class Institution {
-    
-    private String institution;
-    private int institutionID;
-    /** Creates a new instance of Institution */
-    public Institution(String institution) {
-        this.institution = institution;
-    }
-    
-    public Institution(int institutionID, String institution) {
-        this.institutionID = institutionID;
-        this.institution = institution;
-    }
-    
-    public int getInstitutionID() {
-        return institutionID;
-    }
-    
-    public String getInstitution() {
-        return institution;
-    }
-    
-    public void setInstitutionID(int institutionID) {
-        this.institutionID = institutionID;
-    }
-    
-    public void setInstitution(String institution) {
-        this.institution = institution;
-    }
+@DbTable(name = "Institution")
+public class Institution
+{
+
+	@DbColumn(name = "Name")
+	private String institution;
+	@DbId(name = "InstitutionID")
+	private int institutionID;
+
+	/** Creates a new instance of Institution */
+	public Institution(String institution)
+	{
+		this.institution = institution;
+	}
+
+	public Institution(int institutionID, String institution)
+	{
+		this.institutionID = institutionID;
+		this.institution = institution;
+	}
+
+	public int getInstitutionID()
+	{
+		return institutionID;
+	}
+
+	public String getInstitution()
+	{
+		return institution;
+	}
+
+	public void setInstitutionID(int institutionID)
+	{
+		this.institutionID = institutionID;
+	}
+
+	public void setInstitution(String institution)
+	{
+		this.institution = institution;
+	}
 }

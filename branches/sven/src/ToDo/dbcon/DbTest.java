@@ -4,6 +4,7 @@
  */
 package todo.dbcon;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import todo.core.Memo;
@@ -18,7 +19,7 @@ public class DbTest
 	{
 		DbStorage dbs = new DbStorage();
 		dbs.setDebugEnabled(true);
-		/*Memo m = new Memo();
+		Memo m = new Memo();
 
 		m.setComment("xxx");
 		m.setDate(new Date());
@@ -28,7 +29,7 @@ public class DbTest
 
 		dbs.insert(m);
 		dbs.update(m);
-		dbs.delete(m);*/
+		dbs.delete(m);
 
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put("MemoID", 8);
