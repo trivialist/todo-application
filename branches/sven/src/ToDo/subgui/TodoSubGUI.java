@@ -6,10 +6,17 @@
 
 package todo.subgui;
 
+import todo.core.Memo;
+import todo.core.Topic;
+import todo.core.FinStatus;
+import todo.core.MeetingType;
+import todo.core.Area;
+import todo.core.Todo;
+import todo.core.Institution;
+import todo.core.Category;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import todo.dialog.TodoNoteDialog;
-import todo.core.*;
 import todo.joc.*;
 import todo.dbcon.*;
 import todo.tablemodel.*;

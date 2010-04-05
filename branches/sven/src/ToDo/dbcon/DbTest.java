@@ -4,6 +4,7 @@
  */
 package todo.dbcon;
 
+import todo.dbcon.drivers.MsAccessDriver;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ public class DbTest
 	public static void main(String[] args) throws Exception
 	{
 		DbStorage dbs = new DbStorage();
+		dbs.setDbDriver(new MsAccessDriver());
 		dbs.setDebugEnabled(true);
 		Memo m = new Memo();
 

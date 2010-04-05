@@ -4,13 +4,15 @@
  */
 package todo.dbcon;
 
+import todo.dbcon.annotations.DbId;
+import todo.dbcon.annotations.DbColumn;
+import todo.dbcon.annotations.DbTable;
+import todo.dbcon.drivers.DbDriver;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,13 +21,11 @@ import java.util.LinkedList;
  * @todo multiple generated fields
  * @todo multiple primary keys
  * @todo relations
- * @todo loadByParam
- * @todo save status in hidden field
- * @todo externalize datatype stuff
+ * @todo save status in hidden field: changed/unchanged fields
  * @todo better load behaviour
  * @todo load with sort criterias
  * @todo use finally to close db connection properly
- * @todo use generics in all methods that are used in select's
+ * @todo make engine thread-safe
  * 
  * @author Sven Skrabal
  */
@@ -38,17 +38,17 @@ public class DbStorage
 	private Field generatedField = null;
 	private int generatedId = -1;
 	private boolean debugEnabled = false;
+	private DbDriver currentDriver = null;
 
 	public DbStorage()
 	{
 		DB_ToDo_Connect.openDB();
 	}
 
-	private enum DATA_TYPE
+	public void setDbDriver(DbDriver dbDriver)
 	{
-
-		STRING, DATE, BOOLEAN, INTEGER, FLOAT, DOUBLE, LONG, ERROR
-	};
+		currentDriver = dbDriver;
+	}
 
 	private void findFields(Object objectToScan) throws DbStorageException
 	{
@@ -77,46 +77,6 @@ public class DbStorage
 				generatedField = currentField;
 			}
 		}
-	}
-
-	private DATA_TYPE getDataType(Field fieldToScan)
-	{
-		DATA_TYPE returnType = DATA_TYPE.ERROR;
-		Class<?> variableType = fieldToScan.getType();
-
-		if (variableType.isPrimitive())
-		{
-			if (variableType.getName().equals("int"))
-			{
-				returnType = DATA_TYPE.INTEGER;
-			}
-			else if (variableType.getName().equals("long"))
-			{
-				returnType = DATA_TYPE.LONG;
-			}
-			else if (variableType.getName().equals("float"))
-			{
-				returnType = DATA_TYPE.FLOAT;
-			}
-			else if (variableType.getName().equals("double"))
-			{
-				returnType = DATA_TYPE.DOUBLE;
-			}
-			else if (variableType.getName().equals("boolean"))
-			{
-				returnType = DATA_TYPE.BOOLEAN;
-			}
-		}
-		else if (variableType.getName().equals(String.class.getName()))
-		{
-			returnType = DATA_TYPE.STRING;
-		}
-		else if (variableType.getName().equals(Date.class.getName()))
-		{
-			returnType = DATA_TYPE.DATE;
-		}
-
-		return returnType;
 	}
 
 	public void setDebugEnabled(boolean debugEnabled)
@@ -228,7 +188,7 @@ public class DbStorage
 					for (String columnName : columnFields.keySet())
 					{
 						Field columnField = columnFields.get(columnName);
-						setObjectValue(columnField, resultSet.getObject(columnName), newObjectInstance);
+						currentDriver.setObjectValue(columnField, resultSet.getObject(columnName), newObjectInstance);
 					}
 
 					returnList.addLast(newObjectInstance);
@@ -251,107 +211,6 @@ public class DbStorage
 		return returnList;
 	}
 
-	private String getEscapedValue(Field columnField, Object dataObject) throws DbStorageException
-	{
-		try
-		{
-			DATA_TYPE columnType = getDataType(columnField);
-			switch (columnType)
-			{
-				case STRING:
-					return "'" + (String) dataObject + "'";
-
-				case DATE:
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					return "'" + sdf.format((Date) dataObject) + "'";
-
-				case BOOLEAN:
-					return Boolean.toString((Boolean) dataObject);
-
-				case DOUBLE:
-					if (dataObject instanceof java.lang.String)
-					{
-						return (String) dataObject;
-					}
-					return Double.toString((Double) dataObject);
-
-				case FLOAT:
-					if (dataObject instanceof java.lang.String)
-					{
-						return (String) dataObject;
-					}
-					return Float.toString((Float) dataObject);
-
-				case LONG:
-					if (dataObject instanceof java.lang.String)
-					{
-						return (String) dataObject;
-					}
-					return Long.toString((Long) dataObject);
-
-				case INTEGER:
-					if (dataObject instanceof java.lang.String)
-					{
-						return (String) dataObject;
-					}
-					return Integer.toString((Integer) dataObject);
-
-				default:
-					throw new DbStorageException("Unknown datatype in given input.");
-			}
-		} catch (IllegalArgumentException ex)
-		{
-			throw new DbStorageException(ex.getMessage());
-		}
-	}
-
-	private void setObjectValue(Field columnField, Object dataSource, Object dataDestination) throws DbStorageException
-	{
-		try
-		{
-			DATA_TYPE type = getDataType(columnField);
-			switch (type)
-			{
-				case STRING:
-					columnField.set(dataDestination, (String) dataSource);
-					break;
-
-				case DATE:
-					columnField.set(dataDestination, (Date) dataSource);
-					break;
-
-				case BOOLEAN:
-					columnField.set(dataDestination, (Boolean) dataSource);
-					break;
-
-				case DOUBLE:
-					columnField.set(dataDestination, (Double) dataSource);
-					break;
-
-				case FLOAT:
-					columnField.set(dataDestination, (Float) dataSource);
-					break;
-
-				case LONG:
-					columnField.set(dataDestination, (Long) dataSource);
-					break;
-
-				case INTEGER:
-					columnField.set(dataDestination, (Integer) dataSource);
-					break;
-
-				default:
-					throw new DbStorageException("Unknown datatype in given input.");
-			}
-		} catch (IllegalArgumentException ex)
-		{
-			throw new DbStorageException(ex.getMessage());
-		} catch (IllegalAccessException ex)
-		{
-			throw new DbStorageException(ex.getMessage());
-		}
-	}
-
 	private String createInsertStatement(Object objectToInsert) throws DbStorageException
 	{
 		StringBuilder sqlClause = new StringBuilder("INSERT INTO " + tableName + " (");
@@ -367,12 +226,12 @@ public class DbStorage
 				if (columnIterator.hasNext())
 				{
 					sqlClause.append(columnName + ", ");
-					dataValues.append(getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToInsert)) + ", ");
+					dataValues.append(currentDriver.getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToInsert)) + ", ");
 				}
 				else
 				{
 					sqlClause.append(columnName);
-					dataValues.append(getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToInsert)));
+					dataValues.append(currentDriver.getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToInsert)));
 				}
 			}
 
@@ -406,15 +265,15 @@ public class DbStorage
 				String columnName = columnIterator.next();
 				if (columnIterator.hasNext())
 				{
-					sqlClause.append(columnName + " = " + getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToUpdate)) + ", ");
+					sqlClause.append(columnName + " = " + currentDriver.getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToUpdate)) + ", ");
 				}
 				else
 				{
-					sqlClause.append(columnName + " = " + getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToUpdate)));
+					sqlClause.append(columnName + " = " + currentDriver.getEscapedValue(columnFields.get(columnName), columnFields.get(columnName).get(objectToUpdate)));
 				}
 			}
 			//where condition
-			whereClause.append(generatedColumn + " = " + getEscapedValue(generatedField, generatedField.get(objectToUpdate)));
+			whereClause.append(generatedColumn + " = " + currentDriver.getEscapedValue(generatedField, generatedField.get(objectToUpdate)));
 			sqlClause.append(" WHERE " + whereClause);
 
 		} catch (IllegalArgumentException ex)
@@ -434,7 +293,7 @@ public class DbStorage
 		try
 		{
 			//where condition
-			sqlClause.append(generatedColumn + " = " + getEscapedValue(generatedField, generatedField.get(objectToDelete)));
+			sqlClause.append(generatedColumn + " = " + currentDriver.getEscapedValue(generatedField, generatedField.get(objectToDelete)));
 		} catch (IllegalArgumentException ex)
 		{
 			throw new DbStorageException(ex.toString());
@@ -488,11 +347,11 @@ public class DbStorage
 
 			if (columnField.isAnnotationPresent(DbColumn.class))
 			{
-				sqlClause.append(columnField.getAnnotation(DbColumn.class).name() + "=" + getEscapedValue(columnField, loadParameters.get(columnName)));
+				sqlClause.append(columnField.getAnnotation(DbColumn.class).name() + "=" + currentDriver.getEscapedValue(columnField, loadParameters.get(columnName)));
 			}
 			else
 			{
-				sqlClause.append(columnField.getAnnotation(DbId.class).name() + "=" + getEscapedValue(columnField, loadParameters.get(columnName)));
+				sqlClause.append(columnField.getAnnotation(DbId.class).name() + "=" + currentDriver.getEscapedValue(columnField, loadParameters.get(columnName)));
 			}
 
 			if (columnIterator.hasNext())

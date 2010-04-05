@@ -9,9 +9,9 @@
  */
 package todo.core;
 
-import todo.dbcon.DbColumn;
-import todo.dbcon.DbId;
-import todo.dbcon.DbTable;
+import todo.dbcon.annotations.DbColumn;
+import todo.dbcon.annotations.DbId;
+import todo.dbcon.annotations.DbTable;
 
 /**
  *

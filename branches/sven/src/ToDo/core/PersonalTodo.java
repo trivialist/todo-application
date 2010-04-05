@@ -1,9 +1,3 @@
-package todo.core;
-
-import todo.dbcon.DbColumn;
-import todo.dbcon.DbId;
-import todo.dbcon.DbTable;
-
 /*
  * PersonalTodo.java
  *
@@ -12,6 +6,13 @@ import todo.dbcon.DbTable;
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
+
+package todo.core;
+
+import todo.dbcon.annotations.DbColumn;
+import todo.dbcon.annotations.DbId;
+import todo.dbcon.annotations.DbTable;
+
 /**
  *
  * @author Marcus Hertel
