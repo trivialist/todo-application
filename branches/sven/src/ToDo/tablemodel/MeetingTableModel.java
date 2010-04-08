@@ -33,7 +33,7 @@ public class MeetingTableModel extends AbstractTableModel
 	public MeetingTableModel()
 	{
 		setColumnNames();
-		this.loadData(null, null);
+		this.loadData("", "");
 	}
 
 	public MeetingTableModel(String keyword, String field)
@@ -102,7 +102,15 @@ public class MeetingTableModel extends AbstractTableModel
 			{
 				field = "Name";
 			}
-			whereCondition = "WHERE " + field + " LIKE '%" + keyword + "' OR " + field + " LIKE '" + keyword + "%' OR " + field + " LIKE '%" + keyword + "%'";
+
+			if(field.equals("Jahr"))
+			{
+				whereCondition = "WHERE Datum BETWEEN #01/01/" + keyword + "# AND #31/12/" + keyword + "#";
+			}
+			else
+			{
+				whereCondition = "WHERE " + field + " LIKE '%" + keyword + "' OR " + field + " LIKE '" + keyword + "%' OR " + field + " LIKE '%" + keyword + "%'";
+			}
 		}
 
 		try
