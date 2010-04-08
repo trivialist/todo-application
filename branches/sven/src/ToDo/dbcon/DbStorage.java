@@ -24,13 +24,14 @@ import todo.dbcon.annotations.DbRelation;
  * @todo save status in hidden field: changed/unchanged fields
  * @todo better load behaviour
  * @todo load with sort criterias
+ * @todo null-pointer checks
+ * @todo DbStorage/DB must be a singleton
  * 
  * @author Sven Skrabal
  */
 public class DbStorage
 {
-
-	protected class StorageSession
+	public class StorageSession
 	{
 
 		public String tableName = "";

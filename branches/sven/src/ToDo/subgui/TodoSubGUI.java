@@ -30,6 +30,8 @@ import java.awt.Color;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
+import todo.dbcon.DbStorage.StorageSession;
+import todo.dbcon.drivers.MsAccessDriver;
 
 /**
  *
@@ -1017,8 +1019,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		if (subgui != null)
 		{
-			JOptionPane.showMessageDialog(jTextAreaContent, subgui.getNote());
-
 			Memo newMemo = new Memo();
 			newMemo.setComment(subgui.getNote());
 			newMemo.setDate(subgui.getDate());
@@ -1026,7 +1026,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			newMemo.setUser(subgui.getUser());
 
 			DbStorage dbs = new DbStorage();
-			dbs.setDebugEnabled(true);
+			dbs.setDbDriver(new MsAccessDriver());
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
+			dbs.setDatabaseConnection(con);
 			try
 			{
 				dbs.insert(newMemo);
@@ -1034,6 +1037,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			{
 				Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
+			DB_ToDo_Connect.closeDB(con);
 		}
 
 		td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());

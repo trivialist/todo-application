@@ -58,6 +58,7 @@ public class TodoNoteDialog extends javax.swing.JDialog
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("Notiz bzw. Bemerkung hinzufügen");
         setModal(true);
         setResizable(false);
 
