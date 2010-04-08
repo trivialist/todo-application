@@ -438,6 +438,14 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     }//GEN-LAST:event_jButtonNewCategoryActionPerformed
 
     private void jButtonSaveAndExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveAndExitActionPerformed
+
+		if(jTextAreaContent.getText().equals("") || jTextHeading.getText().equals(""))
+		{
+			JOptionPane.showMessageDialog(jTextAreaContent, "Die beiden Eingaben für die Überschrift sowie für "+
+					"den Inhalt müssen ausgefüllt werden.");
+			return;
+		}
+
 		switch (status)
 		{
 			case 0:         // status=0, neues Protokollelement anlegen

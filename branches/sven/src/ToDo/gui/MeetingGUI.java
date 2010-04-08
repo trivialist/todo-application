@@ -143,7 +143,7 @@ public class MeetingGUI extends javax.swing.JFrame {
         if(jTable1.getSelectedRow() != -1) {
             Object meetType = jTable1.getValueAt(jTable1.getSelectedRow(), 2);
             Object date = jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            Object meetingID = jTable1.getValueAt(jTable1.getSelectedRow(), 3);
+            Object meetingID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
             Object place = jTable1.getValueAt(jTable1.getSelectedRow(), 1);
             Integer temp = new Integer(String.valueOf(meetingID));
             int meetID = temp.intValue();
