@@ -142,7 +142,7 @@ public class PersonalTodoListGUI extends javax.swing.JFrame {
                 int tID = temp.intValue();
                 if(cat != null) {
                     TodoSubGUI newTodo = new TodoSubGUI(1, getMeetingIdByTodoID(tID),
-                                String.valueOf(cat), String.valueOf(top), tID);
+                                String.valueOf(cat), String.valueOf(top), tID, true);
                     newTodo.setVisible(true);
                 }
             }
@@ -158,7 +158,7 @@ public class PersonalTodoListGUI extends javax.swing.JFrame {
                 int tID = temp.intValue();
                 if(cat != null) {
                     TodoSubGUI newTodo = new TodoSubGUI(1, getMeetingIdByTodoID(tID),
-                                String.valueOf(cat), String.valueOf(top), tID);
+                                String.valueOf(cat), String.valueOf(top), tID, true);
                     newTodo.setVisible(true);
                 }
             }

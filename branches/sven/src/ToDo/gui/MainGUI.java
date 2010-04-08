@@ -1066,7 +1066,7 @@ public class MainGUI extends javax.swing.JFrame {
         else {
             jLabelError.setText("Bitte Sitzung wählen");
         }
-        TodoSubGUI newTodo = new TodoSubGUI(0, actMeeting.getMeetingID(),  "", "", 0);
+        TodoSubGUI newTodo = new TodoSubGUI(0, actMeeting.getMeetingID(),  "", "", 0, true);
         newTodo.setVisible(true);
     }//GEN-LAST:event_jMenuItemNewElementActionPerformed
 
