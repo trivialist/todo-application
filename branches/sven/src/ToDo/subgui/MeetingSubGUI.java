@@ -26,11 +26,11 @@ import javax.swing.JOptionPane;
 public class MeetingSubGUI extends javax.swing.JFrame
 {
 
-	private static int status = 0;
-	private static int meetingID;
-	private static String meetingType;
-	private static String date;
-	private static String otherPart;
+	private int status = 0;
+	private int meetingID;
+	private String meetingType;
+	private String date;
+	private String otherPart;
 	private Meeting meet = new Meeting();
 	private static Connection con;
 	private static Connection con2;

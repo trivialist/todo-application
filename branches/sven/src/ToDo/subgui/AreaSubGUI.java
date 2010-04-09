@@ -19,12 +19,12 @@ import javax.swing.*;
 public class AreaSubGUI extends javax.swing.JFrame
 {
 
-	private static int status;              //0=Neu; 1=Bearbeiten
-	private static int areaID;
-	private static String areaName;
-	private static String areaDescription;
+	private int status;              //0=Neu; 1=Bearbeiten
+	private int areaID;
+	private String areaName;
+	private String areaDescription;
 	private Area area;
-	private Connection con;
+	private static Connection con;
 
 	/** Creates new form AreaSubGUI */
 	public AreaSubGUI(int status, int areaID, String areaName, String areaDescription)
@@ -137,11 +137,11 @@ public class AreaSubGUI extends javax.swing.JFrame
 						"('" + areaName + "', '" + areaDescription + "')";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
+				Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				JOptionPane.showMessageDialog(null, "Abfragefehler in Prozedur: newArea(), class AreaSubGUI" +
-						e.toString(), "Fehler", JOptionPane.ERROR_MESSAGE);
-
+						ex.toString(), "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 			dbCon.closeDB(con);
 		}

@@ -316,7 +316,7 @@ public class JMonthPanel extends JPanel {
 	 * @return all ChangeListeners
 	 */
 	public ChangeListener[] getChangeListener() {
-		return (ChangeListener[]) _changeListener.toArray();
+		return (ChangeListener[]) _changeListener.toArray(new ChangeListener[_changeListener.size()]);
 	}
 
 	/**

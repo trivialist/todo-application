@@ -18,11 +18,11 @@ import java.util.logging.Logger;
 public class InstitutionSubGUI extends javax.swing.JFrame
 {
 
-	private static int status;              //0=Neu; 1=Bearbeiten
-	private static String institution;
-	private static int institutionID;
+	private int status;              //0=Neu; 1=Bearbeiten
+	private String institution;
+	private int institutionID;
 	private Institution inst;
-	private Connection con;
+	private static Connection con;
 
 	/** Creates new form InstitutionSubGUI */
 	public InstitutionSubGUI(int status, int institutionID, String institution)

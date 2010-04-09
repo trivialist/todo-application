@@ -16,11 +16,11 @@ import java.util.logging.Logger;
  */
 public class DeleteMeetingDialog extends javax.swing.JDialog {
     
-    private static int meetingID;
-    private static String meetingType;
-    private static String date;
-    private static String place;
-    private Connection con;    
+    private int meetingID;
+    private String meetingType;
+    private String date;
+    private String place;
+    private static Connection con;
     /** Creates new form DeleteMeetingDialog */
     public DeleteMeetingDialog(java.awt.Frame parent, boolean modal,
                                 int meetingID, String meetingType, String date,

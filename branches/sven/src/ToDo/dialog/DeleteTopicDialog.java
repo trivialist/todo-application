@@ -21,10 +21,10 @@ import java.util.logging.Logger;
  */
 public class DeleteTopicDialog extends javax.swing.JDialog {
 
-    private static int topicID = 0;
-    private static String name = "";
-    private static String description = "";
-    private Connection con;
+    private int topicID = 0;
+    private String name = "";
+    private String description = "";
+    private static Connection con;
 
     /** Creates new form DeleteTopicDialog */
     public DeleteTopicDialog(java.awt.Frame parent, boolean modal,

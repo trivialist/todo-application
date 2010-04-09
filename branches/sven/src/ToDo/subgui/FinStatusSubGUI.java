@@ -18,11 +18,11 @@ import java.util.logging.Logger;
 public class FinStatusSubGUI extends javax.swing.JFrame
 {
 
-	private static int status;              //0=Neu; 1=Bearbeiten
-	private static String statusName;
-	private static int statusID;
+	private int status;              //0=Neu; 1=Bearbeiten
+	private String statusName;
+	private int statusID;
 	private FinStatus fs;
-	private Connection con;
+	private static Connection con;
 
 	/** Creates new form FinStatusSubGUI */
 	public FinStatusSubGUI(int status, int statusID, String statusName)

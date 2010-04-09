@@ -16,10 +16,10 @@ import java.util.logging.Logger;
  */
 public class DeleteAreaDialog extends javax.swing.JDialog {
     
-    private static int areaID = 0;
-    private static String areaName = "";
-    private static String areaDescription = "";  
-    private Connection con;
+    private int areaID = 0;
+    private String areaName = "";
+    private String areaDescription = "";  
+    private static Connection con;
     
     /** Creates new form DeleteAreaDialog */
     public DeleteAreaDialog(java.awt.Frame parent, boolean modal,

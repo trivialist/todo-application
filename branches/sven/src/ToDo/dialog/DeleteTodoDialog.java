@@ -16,11 +16,11 @@ import java.util.logging.Logger;
  */
 public class DeleteTodoDialog extends javax.swing.JDialog {
     
-    private static int todoID = 0;
-    private static String cat = "";
-    private static String topic = "";
-    private static String area = "";
-    private Connection con;
+    private int todoID = 0;
+    private String cat = "";
+    private String topic = "";
+    private String area = "";
+    private static Connection con;
     /** Creates new form DeleteTodoDialog */
     public DeleteTodoDialog(java.awt.Frame parent, boolean modal, int todoID, 
                                 String cat, String topic, String area) {

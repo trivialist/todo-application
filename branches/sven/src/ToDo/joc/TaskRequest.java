@@ -82,9 +82,9 @@ public class TaskRequest
 
 				} catch (Exception ex)
 				{
+					Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
 							"Beim Erstellen der Empfänger ist ein Fehler aufgetreten.\n" + "Bitte überprüfen Sie die E-Mail Adressen der Empfänger", "Fehler", JOptionPane.ERROR_MESSAGE);
-					ex.printStackTrace();
 				}
 			}
 
@@ -95,15 +95,14 @@ public class TaskRequest
 
 		} catch (ComponentObjectModelException ex)
 		{
-			JOptionPane.showMessageDialog(null, "COM-Fehler: " + ex.getMessage());
 			Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
+			JOptionPane.showMessageDialog(null, "COM-Fehler: " + ex.getMessage());
 			System.exit(1);
 		} catch (LibraryNotFoundException ex)
 		{
 			// Wenn dieser Fehler auftritt, fehlt die Datei 'moyocore.dll' im Java-Lib-Pfad
-			JOptionPane.showMessageDialog(null, "Die Java Outlook Bibliothek moyocore.dll konnte nicht gefunden werden.");
-			ex.printStackTrace();
 			Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
+			JOptionPane.showMessageDialog(null, "Die Java Outlook Bibliothek moyocore.dll konnte nicht gefunden werden.");
 			System.exit(1);
 		}
 	}

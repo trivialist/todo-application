@@ -23,12 +23,12 @@ import java.util.logging.Logger;
 public class TopicSubGUI extends javax.swing.JFrame
 {
 
-	private static int status;              //0=Neu; 1=Bearbeiten
-	private static int topicID;
-	private static String name;
-	private static String description;
+	private int status;              //0=Neu; 1=Bearbeiten
+	private int topicID;
+	private String name;
+	private String description;
 	private Topic topic;
-	private Connection con;
+	private static Connection con;
 
 	/** Creates new form TopicSubGUI */
 	public TopicSubGUI(int status, int topicID, String areaName, String areaDescription)

@@ -29,7 +29,7 @@ public class TodoTableModel extends AbstractTableModel
 	protected ArrayList<Todo> todoObjects = new ArrayList<Todo>();
 	private Vector<String> columnNames = new Vector<String>();
 	private static Connection con;
-	private static int meetingID;
+	private int meetingID;
 
 	/** Creates a new instance of TodoTableModel */
 	public TodoTableModel(int meetingID)

@@ -23,8 +23,8 @@ import java.util.logging.Logger;
  */
 public class PersonalTodoListGUI extends javax.swing.JFrame {
 
-    private static int empID;
-    private static int statID;
+    private int empID;
+    private int statID;
     private static Connection con;
     protected int __WV_MIN_WIDTH = 30; //Mindestgrösse der Wiedervorlage-Spalte
     protected int __WV_MAX_WIDTH = 45; //Maximalgrösse der Wiedervorlage-Spalte

@@ -10,6 +10,8 @@
  */
 package todo.subgui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import todo.gui.MeetingGUI;
 
@@ -111,6 +113,7 @@ public class MeetingSearchSubGUI extends javax.swing.JFrame
 			}
 			catch(NumberFormatException ex)
 			{
+				Logger.getLogger(MeetingSearchSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				JOptionPane.showMessageDialog(parentGui, "Ihre Eingabe kann in keine Zahl, in diesem "+
 						"Fall eine Jahreszahl, umgewandelt werden.");
 				return;

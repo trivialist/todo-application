@@ -4,6 +4,8 @@
  */
 package todo.dbcon;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import todo.dbcon.annotations.DbId;
 import todo.dbcon.annotations.DbColumn;
 import todo.dbcon.annotations.DbTable;
@@ -31,7 +33,8 @@ import todo.dbcon.annotations.DbRelation;
  */
 public class DbStorage
 {
-	public class StorageSession
+
+	public static class StorageSession
 	{
 
 		public String tableName = "";
@@ -97,14 +100,27 @@ public class DbStorage
 			System.out.println(sqlClause);
 		}
 
+		Statement databaseStatement = null;
 		try
 		{
-			Statement databaseStatement = databaseConnection.createStatement();
+			databaseStatement = databaseConnection.createStatement();
 			returnResult = databaseStatement.executeQuery(sqlClause);
 
 		} catch (SQLException ex)
 		{
 			throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
+		} finally
+		{
+			try
+			{
+				if (databaseStatement != null)
+				{
+					databaseStatement.close();
+				}
+			} catch (SQLException ex)
+			{
+				throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
+			}
 		}
 
 		return returnResult;
@@ -119,9 +135,10 @@ public class DbStorage
 			System.out.println(sqlClause);
 		}
 
+		Statement databaseStatement = null;
 		try
 		{
-			Statement databaseStatement = databaseConnection.createStatement();
+			databaseStatement = databaseConnection.createStatement();
 			databaseConnection.setAutoCommit(false);
 			databaseStatement.execute(sqlClause);
 
@@ -139,6 +156,18 @@ public class DbStorage
 		} catch (SQLException ex)
 		{
 			throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
+		} finally
+		{
+			try
+			{
+				if (databaseStatement != null)
+				{
+					databaseStatement.close();
+				}
+			} catch (SQLException ex)
+			{
+				throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
+			}
 		}
 
 		return returnResult;

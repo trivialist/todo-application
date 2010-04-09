@@ -12,7 +12,7 @@ package todo.dialog;
  */
 public class NoPersonalTodoDialog extends javax.swing.JDialog {
     
-    private static String employee;
+    private String employee;
     /** Creates new form NoPersonalTodoDialog */
     public NoPersonalTodoDialog(java.awt.Frame parent, boolean modal, String emp) {
         super(parent, modal);

@@ -24,6 +24,8 @@ package de.wannawork.jcalendar;
  */
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class handles the Language-Property Files.
@@ -50,7 +52,8 @@ public class LocaleStrings {
 	public static String getString(String key) {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
+		} catch (MissingResourceException ex) {
+			Logger.getLogger(LocaleStrings.class.getName()).log(Level.SEVERE, null, ex);
 			return '!' + key + '!';
 		}
 	}

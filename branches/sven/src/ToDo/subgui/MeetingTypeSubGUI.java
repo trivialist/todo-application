@@ -18,11 +18,11 @@ import java.util.logging.Logger;
 public class MeetingTypeSubGUI extends javax.swing.JFrame
 {
 
-	private static int status;              //0=Neu; 1=Bearbeiten
-	private static String meetingType;
-	private static int meetingTypeID;
+	private int status;              //0=Neu; 1=Bearbeiten
+	private String meetingType;
+	private int meetingTypeID;
 	private MeetingType mt;
-	private Connection con;
+	private static Connection con;
 
 	/** Creates new form MeetingTypeSubGUI */
 	public MeetingTypeSubGUI(int status, int meetingTypeID, String meetingType)

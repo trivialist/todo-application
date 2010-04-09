@@ -30,7 +30,6 @@ import java.awt.Color;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
-import todo.dbcon.DbStorage.StorageSession;
 import todo.dbcon.drivers.MsAccessDriver;
 
 /**
@@ -40,17 +39,17 @@ import todo.dbcon.drivers.MsAccessDriver;
 public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 {
 
-	private static int status = 0;
-	private static int todoID;
-	private static String cat;
-	private static String topic;
+	private int status = 0;
+	private int todoID;
+	private String cat;
+	private String topic;
 	private Todo td = new Todo();
 	private static Connection con;
 	private Vector responsible = new Vector();
 	private Vector involved = new Vector();
-	private static int meetingID;
+	private int meetingID;
 	private Calendar cal;
-	private static boolean tbz_status = false;
+	private boolean tbz_status = false;
 	private boolean reDateChange = false;
 	private boolean hideElement = false;
 
@@ -62,7 +61,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		this.cat = category;
 		this.topic = topic;
 		this.todoID = todoID;
-		this.hideElement = hideElement;
+		this.hideElement = hideElements;
 		cal = Calendar.getInstance();
 		initComponents();
 		jTextFieldDay.setVisible(false);
@@ -615,9 +614,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					respMailVec.addElement(getMailAddressByEmpID(empID));
 				} catch (Exception ex)
 				{
+					Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen.",
 							"Fehler", JOptionPane.ERROR_MESSAGE);
-					ex.printStackTrace();
 				}
 			}
 			else
@@ -917,7 +916,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			td.setReMeetType(-1);
 		}
 
-		if (td.getAreaID() != -1 & td.getTopicID() != -1)
+		if (td.getAreaID() != -1 && td.getTopicID() != -1)
 		{
 			tbz_id = getTBZ_ID_ByAreaAndTopicID(td.getAreaID(), td.getTopicID());
 		}
@@ -1679,6 +1678,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					name = rst2.getString("Name");
 				}
 				rst2.close();
+				stmt2.close();
 			}
 			rst.close();
 			stmt.close();
@@ -1720,6 +1720,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					name = rst2.getString("Name");
 				}
 				rst2.close();
+				stmt2.close();
 			}
 			rst.close();
 			stmt.close();
@@ -1912,7 +1913,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			while (rst.next())
 			{
 				mail = rst.getString("E_Mail");
-				if (mail.equals("") || mail == null)
+				if (mail == null || mail.equals(""))
 				{
 					mail = rst.getString("E_Mail2");
 				}

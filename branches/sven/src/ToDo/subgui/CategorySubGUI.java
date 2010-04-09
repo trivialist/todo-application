@@ -18,12 +18,12 @@ import java.util.logging.Logger;
 public class CategorySubGUI extends javax.swing.JFrame
 {
 
-	private static int status;              //0=Neu; 1=Bearbeiten
-	private static int catID;
-	private static String catName;
-	private static String catDescription;
+	private int status;              //0=Neu; 1=Bearbeiten
+	private int catID;
+	private String catName;
+	private String catDescription;
 	private Category cat;
-	private Connection con;
+	private static Connection con;
 
 	/** Creates new form CategorySubGUI */
 	public CategorySubGUI(int status, int catID, String catName, String catDescription)

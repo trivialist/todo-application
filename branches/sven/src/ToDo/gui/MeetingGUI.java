@@ -16,6 +16,8 @@ import todo.tablemodel.MeetingTableModel;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import todo.dbcon.DB_ToDo_Connect;
 
 /**
@@ -214,6 +216,7 @@ public class MeetingGUI extends javax.swing.JFrame {
 				ResultSet rst = id.executeQuery("SELECT MAX(SitzungsdatenID) FROM Sitzungsdaten");
 				rst.next();
 				insertId = rst.getInt(1)+1;
+				id.close();
 
 				Statement stmt = con.createStatement();
 				String sql = "INSERT INTO Sitzungsdaten (SitzungsdatenID, Datum, Ort, Tagesordnung, " +
@@ -234,7 +237,7 @@ public class MeetingGUI extends javax.swing.JFrame {
 				MainGUI.setActMeeting(insertId, results.getString("Ort"), results.getDate("Datum"), results.getString("Name"));
 			}
 			catch(Exception ex) {
-				ex.printStackTrace();
+				Logger.getLogger(MeetingGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
 			
 			DB_ToDo_Connect.closeDB(con);

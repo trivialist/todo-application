@@ -16,9 +16,9 @@ import java.util.logging.Logger;
  */
 public class DeleteInstitutionDialog extends javax.swing.JDialog {
     
-    private static String institution = "";
-    private static int institutionID = 0;
-    private Connection con;
+    private String institution = "";
+    private int institutionID = 0;
+    private static Connection con;
     /** Creates new form DeleteInstitutionDialog */
     public DeleteInstitutionDialog(java.awt.Frame parent, boolean modal,
                                     int institutionID, String institution) {

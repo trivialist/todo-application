@@ -16,10 +16,10 @@ import java.util.logging.Logger;
  */
 public class DeleteCategoryDialog extends javax.swing.JDialog {
     
-    private static int catID = 0;
-    private static String catName = "";
-    private static String catDescription = "";  
-    private Connection con;
+    private int catID = 0;
+    private String catName = "";
+    private String catDescription = "";  
+    private static Connection con;
     /** Creates new form DeleteCategoryDialog */
     public DeleteCategoryDialog(java.awt.Frame parent, boolean modal,
                         int catID, String catName, String catDescription) {

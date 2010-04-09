@@ -19,10 +19,10 @@ import java.util.logging.Logger;
  */
 public class ParticipantsGUI extends javax.swing.JFrame {
     
-    private static Vector participants = new Vector();
-    private static String others;
-    private static int meetingID;
-    private Connection con; 
+    private Vector participants = new Vector();
+    private String others;
+    private int meetingID;
+    private static Connection con;
     
     /** Creates new form ParticipantsGUI */
     public ParticipantsGUI(Vector participants, String others, int meetingID) {

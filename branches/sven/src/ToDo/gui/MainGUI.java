@@ -59,7 +59,7 @@ public class MainGUI extends javax.swing.JFrame
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	private Calendar glCal = Calendar.getInstance();
 	private boolean __BUTTON_CREATE_OP_LIST_VISIBLE = false;
-	public static Properties applicationProperties = new Properties();
+	public static final Properties applicationProperties = new Properties();
 
 	/** Creates new form MainGUI */
 	public MainGUI()
@@ -519,7 +519,7 @@ public class MainGUI extends javax.swing.JFrame
 					JasperViewer.viewReport(jasperPrint, false);
 				} catch (JRException ex)
 				{
-					ex.printStackTrace();
+					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
 			else
@@ -565,9 +565,9 @@ public class MainGUI extends javax.swing.JFrame
 
 			stmt.close();
 
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			e.printStackTrace();
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		DB_ToDo_Connect.closeDB(con);
 
@@ -611,7 +611,7 @@ public class MainGUI extends javax.swing.JFrame
 			JasperViewer.viewReport(jasperPrint, false);
 		} catch (JRException ex)
 		{
-			ex.printStackTrace();
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
     }//GEN-LAST:event_jButtonCreateProtocolActionPerformed
 
@@ -764,7 +764,7 @@ public class MainGUI extends javax.swing.JFrame
 						JasperViewer.viewReport(jasperPrint, false);
 					} catch (JRException ex)
 					{
-						ex.printStackTrace();
+						Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 					}
 				}
 				else
@@ -816,7 +816,7 @@ public class MainGUI extends javax.swing.JFrame
 					JasperViewer.viewReport(jasperPrint, false);
 				} catch (JRException ex)
 				{
-					ex.printStackTrace();
+					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
 			else
@@ -865,7 +865,7 @@ public class MainGUI extends javax.swing.JFrame
 					JasperViewer.viewReport(jasperPrint, false);
 				} catch (JRException ex)
 				{
-					ex.printStackTrace();
+					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
 			else
@@ -910,7 +910,7 @@ public class MainGUI extends javax.swing.JFrame
 				JasperViewer.viewReport(jasperPrint, false);
 			} catch (JRException ex)
 			{
-				ex.printStackTrace();
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 		else
@@ -946,9 +946,9 @@ public class MainGUI extends javax.swing.JFrame
 			try
 			{
 				temp = sdf.parse(jComboBoxMeetingDate.getSelectedItem().toString());
-			} catch (ParseException pEx)
+			} catch (ParseException ex)
 			{
-				pEx.printStackTrace();
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
 			java.sql.Date d = new java.sql.Date(temp.getTime());
 			mdl = loadMeetingDateData(d);
@@ -967,7 +967,7 @@ public class MainGUI extends javax.swing.JFrame
 					JasperViewer.viewReport(jasperPrint, false);
 				} catch (JRException ex)
 				{
-					ex.printStackTrace();
+					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
 			else
@@ -1017,7 +1017,7 @@ public class MainGUI extends javax.swing.JFrame
 					JasperViewer.viewReport(jasperPrint, false);
 				} catch (JRException ex)
 				{
-					ex.printStackTrace();
+					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
 			else
@@ -1092,7 +1092,7 @@ public class MainGUI extends javax.swing.JFrame
 							JasperViewer.viewReport(jasperPrint, false);
 						} catch (JRException ex)
 						{
-							ex.printStackTrace();
+							Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 						}
 					}
 				}
@@ -1208,7 +1208,7 @@ public class MainGUI extends javax.swing.JFrame
 			JasperViewer.viewReport(jasperPrint, false);
 		} catch (JRException ex)
 		{
-			ex.printStackTrace();
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
     }//GEN-LAST:event_jButtonCreateListProtocolActionPerformed
 
@@ -1230,11 +1230,12 @@ public class MainGUI extends javax.swing.JFrame
 
 		} catch (Exception ex)
 		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(mainGUI, "Die Datei 'ToDoAppSettings.xml' konnte " +
 					"nicht gefunden werden oder es trat ein Fehler beim Laden auf!\n" +
 					"Bitte überprüfen Sie, ob die Datei vorhanden ist und starten Sie " +
 					"die Anwendung dann erneut.", "Fehler", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
+			System.exit(1);
 		}
 
 		try
@@ -1249,13 +1250,13 @@ public class MainGUI extends javax.swing.JFrame
 
 			logger.log(Level.INFO, "ToDoApp erfolgreich gestartet und initialisiert.");
 
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			e.printStackTrace();
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(mainGUI, "Die Anwendung konnte die Datei zur " +
 					"Ausgabe von Fehlermeldungen nicht öffnen.\n\nBitte informieren Sie Ihren " +
 					"Administrator über diese Fehlermeldung oder starten Sie die Anwendung erneut.");
-			System.exit(0);
+			System.exit(1);
 		}
 
 		java.awt.EventQueue.invokeLater(new Runnable()
@@ -1755,9 +1756,9 @@ public class MainGUI extends javax.swing.JFrame
 
 			}
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			e.printStackTrace();
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 
@@ -1945,9 +1946,9 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			pStmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			e.printStackTrace();
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 

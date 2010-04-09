@@ -16,9 +16,9 @@ import java.util.logging.Logger;
  */
 public class DeleteMeetingTypeDialog extends javax.swing.JDialog {
     
-    private static String meetingType = "";
-    private static int meetingTypeID = 0;
-    private Connection con;
+    private String meetingType = "";
+    private int meetingTypeID = 0;
+    private static Connection con;
     
     /** Creates new form DeleteMeetingTypeDialog */
     public DeleteMeetingTypeDialog(java.awt.Frame parent, boolean modal, 

@@ -8,6 +8,8 @@ package todo.gui;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import todo.subgui.TodoSubGUI;
 import todo.dialog.DeleteTodoDialog;
 import todo.tablemodel.TodoTableModel;
@@ -21,8 +23,7 @@ import todo.dbcon.DB_ToDo_Connect;
 public class TodoGUI extends javax.swing.JFrame
 {
 
-	private static int meetingID;
-	private static TodoGUI tdGUI = new TodoGUI(meetingID);
+	private int meetingID;
 
 	/** Creates new form TodoGUI */
 	public TodoGUI(int meetingID)
@@ -135,7 +136,7 @@ public class TodoGUI extends javax.swing.JFrame
 			int tID = temp.intValue();
 			if (cat != null)
 			{
-				DeleteTodoDialog delTd = new DeleteTodoDialog(tdGUI, true,
+				DeleteTodoDialog delTd = new DeleteTodoDialog(this, true,
 						tID, String.valueOf(cat), String.valueOf(top), String.valueOf(area));
 				delTd.setVisible(true);
 			}
@@ -185,6 +186,7 @@ public class TodoGUI extends javax.swing.JFrame
 				ResultSet rst = id.executeQuery("SELECT MAX(ToDoID) FROM Protokollelement");
 				rst.next();
 				insertId = rst.getInt(1) + 1;
+				id.close();
 
 				Statement stmt = con.createStatement();
 				String sql = "INSERT INTO Protokollelement (ToDoID, KategorieID, SitzungsID, StatusID, " +
@@ -202,7 +204,7 @@ public class TodoGUI extends javax.swing.JFrame
 				con.setAutoCommit(true);
 			} catch (Exception ex)
 			{
-				ex.printStackTrace();
+				Logger.getLogger(TodoGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
 
 			DB_ToDo_Connect.closeDB(con);

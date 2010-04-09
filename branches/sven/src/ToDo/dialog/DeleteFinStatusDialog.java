@@ -16,9 +16,9 @@ import java.util.logging.Logger;
  */
 public class DeleteFinStatusDialog extends javax.swing.JDialog {
     
-    private static String statusName = "";
-    private static int statusID = 0;
-    private Connection con;
+    private String statusName = "";
+    private int statusID = 0;
+    private static Connection con;
     /** Creates new form DeleteFinStatusDialog */
     public DeleteFinStatusDialog(java.awt.Frame parent, boolean modal, 
                                     int statusID, String statusName) {
