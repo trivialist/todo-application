@@ -39,7 +39,7 @@ public class DateFormater implements Comparable
 	{
 		if(!dateNotSetFlag)
 		{
-			return "keins";
+			return "kein";
 		}
 
 		return dateFormatterInstance.format(displayDate);

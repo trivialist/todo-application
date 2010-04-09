@@ -1399,10 +1399,9 @@ public class MainGUI extends javax.swing.JFrame
 						fields.put("Status", getStatByID(rst.getInt("StatusID")));
 						fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 						fields.put("Inhalt", rst.getString("Inhalt"));
-						rd = rst.getDate("Wiedervorlagedatum");
-						if (rd != null)
+						if (rst.getBoolean("WiedervorlageGesetzt"))
 						{
-							fields.put("Wiedervorlagedatum", sdf.format(rd));
+							fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
 						}
 						else
 						{
@@ -1594,10 +1593,9 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Status", getStatByID(rst.getInt("StatusID")));
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
-				rd = rst.getDate("Wiedervorlagedatum");
-				if (rd != null)
+				if (rst.getBoolean("WiedervorlageGesetzt"))
 				{
-					fields.put("Wiedervorlagedatum", sdf.format(rd));
+					fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
 				}
 				else
 				{
@@ -1669,10 +1667,9 @@ public class MainGUI extends javax.swing.JFrame
 						fields.put("Status", getStatByID(rst.getInt("StatusID")));
 						fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(temp)));
 						fields.put("Inhalt", rst.getString("Inhalt"));
-						rd = rst.getDate("Wiedervorlagedatum");
-						if (rd != null)
+						if (rst.getBoolean("WiedervorlageGesetzt"))
 						{
-							fields.put("Wiedervorlagedatum", sdf.format(rd));
+							fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
 						}
 						else
 						{
@@ -1693,7 +1690,7 @@ public class MainGUI extends javax.swing.JFrame
 			stmt.close();
 		} catch (Exception e)
 		{
-			System.out.println(e.toString());
+			e.printStackTrace();
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1728,10 +1725,9 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Status", getStatByID(rst.getInt("StatusID")));
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
-				rd = rst.getDate("Wiedervorlagedatum");
-				if (rd != null)
+				if (rst.getBoolean("WiedervorlageGesetzt"))
 				{
-					fields.put("Wiedervorlagedatum", sdf.format(rd));
+					fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
 				}
 				else
 				{
@@ -1787,10 +1783,9 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Status", getStatByID(rst.getInt("StatusID")));
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
-				rd = rst.getDate("Wiedervorlagedatum");
-				if (rd != null)
+				if (rst.getBoolean("WiedervorlageGesetzt"))
 				{
-					fields.put("Wiedervorlagedatum", sdf.format(rd));
+					fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
 				}
 				else
 				{
@@ -1828,7 +1823,7 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement WHERE " +
-					"Wiedervorlagedatum < ? ORDER BY Wiedervorlagedatum DESC");
+					"Wiedervorlagedatum < ? AND WiedervorlageGesetzt = true ORDER BY Wiedervorlagedatum DESC");
 			pStmt.setDate(1, date);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1844,10 +1839,9 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Status", getStatByID(rst.getInt("StatusID")));
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
-				rd = rst.getDate("Wiedervorlagedatum");
-				if (rd != null)
+				if (rst.getBoolean("WiedervorlageGesetzt"))
 				{
-					fields.put("Wiedervorlagedatum", sdf.format(rd));
+					fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
 				}
 				else
 				{
@@ -1862,11 +1856,11 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("SitzName", m.getMeetingType());
 				reDateData.add(fields);
 			}
-			pStmt.close();
 			rst.close();
+			pStmt.close();
 		} catch (Exception e)
 		{
-			System.out.println(e.toString());
+			e.printStackTrace();
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1921,10 +1915,9 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Status", getStatByID(rst.getInt("StatusID")));
 					fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 					fields.put("Inhalt", rst.getString("Inhalt"));
-					rd = rst.getDate("Wiedervorlagedatum");
-					if (rd != null)
+					if (rst.getBoolean("WiedervorlageGesetzt"))
 					{
-						fields.put("Wiedervorlagedatum", sdf.format(rd));
+						fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
 					}
 					else
 					{
