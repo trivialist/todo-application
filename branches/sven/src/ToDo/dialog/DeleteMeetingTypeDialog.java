@@ -8,6 +8,8 @@ package todo.dialog;
 
 import todo.dbcon.DB_ToDo_Connect;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author  Gudrun
@@ -104,8 +106,8 @@ public class DeleteMeetingTypeDialog extends javax.swing.JDialog {
             stmt.executeUpdate(sql);
             stmt.close();
         }
-        catch(Exception e) {
-            System.out.println(e.toString()); 
+        catch(Exception ex) {
+            Logger.getLogger(DeleteMeetingTypeDialog.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1); 
         }
         dbCon.closeDB(con);

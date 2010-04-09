@@ -15,6 +15,8 @@ import todo.subgui.TodoSubGUI;
 import todo.dbcon.DB_ToDo_Connect;
 import todo.tablemodel.PersonalTodoTableModel;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Marcus Hertel
@@ -181,8 +183,8 @@ public class PersonalTodoListGUI extends javax.swing.JFrame {
             rst.close();
             stmt.close();
 
-        } catch(Exception e) {
-            System.out.println(e.toString());
+        } catch(Exception ex) {
+            Logger.getLogger(PersonalTodoListGUI.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
         }
         dbCon.closeDB(con);

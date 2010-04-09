@@ -10,19 +10,15 @@ import java.io.FileInputStream;
 import todo.subgui.MeetingSubGUI;
 import todo.subgui.TodoSubGUI;
 import todo.dialog.NoPersonalTodoDialog;
-//import todo.core.PersonalTodo;
 import todo.core.Todo;
 import todo.core.Meeting;
 import todo.dbcon.DB_ToDo_Connect;
-import todo.dbcon.DB_Mitarbeiter_Connect;
 import java.util.Calendar;
 import javax.swing.*;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.Enumeration;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.text.SimpleDateFormat;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -32,7 +28,14 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 import java.text.ParseException;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import todo.dbcon.DB_Mitarbeiter_Connect;
 
 /**
  *
@@ -42,12 +45,9 @@ public class MainGUI extends javax.swing.JFrame
 {
 
 	private static Connection con;
-	private static String winClassName =
-			"com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-	private static Meeting actMeeting = new Meeting();
-	private static MainGUI mainGUI = new MainGUI();
-	private Todo actTodo = new Todo();
-	//private PersonalTodo persTodo = new PersonalTodo();
+	private static String winClassName = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+	private static Meeting actMeeting;
+	private static MainGUI mainGUI;
 	private Vector employees = new Vector();
 	private Vector topics = new Vector();
 	private Vector categories = new Vector();
@@ -58,15 +58,14 @@ public class MainGUI extends javax.swing.JFrame
 	private boolean noInvolvData = false;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	private Calendar glCal = Calendar.getInstance();
-	private boolean reDateChange = false;
 	private boolean __BUTTON_CREATE_OP_LIST_VISIBLE = false;
-	private static Properties applicationProperties = new Properties();
-	//protected ArrayList<HashMap> data = new ArrayList<HashMap>();
+	public static Properties applicationProperties = new Properties();
 
 	/** Creates new form MainGUI */
 	public MainGUI()
 	{
 		initComponents();
+		actMeeting = new Meeting();
 		jButtonCreateOP_List.setVisible(__BUTTON_CREATE_OP_LIST_VISIBLE);
 		jLabelError.setText("");
 		if (actMeeting.getMeetingID() == 0)
@@ -1131,7 +1130,6 @@ public class MainGUI extends javax.swing.JFrame
 			glCal.set(jCalendarComboBoxReDate.getCalendar().get(glCal.YEAR),
 					jCalendarComboBoxReDate.getCalendar().get(glCal.MONTH) + 1,
 					jCalendarComboBoxReDate.getCalendar().get(glCal.DAY_OF_MONTH));
-			reDateChange = true;
 		}
 }//GEN-LAST:event_jCalendarComboBoxReDateStateChanged
 
@@ -1239,15 +1237,38 @@ public class MainGUI extends javax.swing.JFrame
 			System.exit(0);
 		}
 
+		try
+		{
+			Logger logger = Logger.getLogger(MainGUI.class.getName());
+
+			FileHandler fh = new FileHandler(applicationProperties.getProperty("LoggerLogfilePath"), true);
+			logger.addHandler(fh);
+			logger.setLevel(Level.ALL);
+			SimpleFormatter formatter = new SimpleFormatter();
+			fh.setFormatter(formatter);
+
+			logger.log(Level.INFO, "ToDoApp erfolgreich gestartet und initialisiert.");
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(mainGUI, "Die Anwendung konnte die Datei zur " +
+					"Ausgabe von Fehlermeldungen nicht öffnen.\n\nBitte informieren Sie Ihren " +
+					"Administrator über diese Fehlermeldung oder starten Sie die Anwendung erneut.");
+			System.exit(0);
+		}
+
 		java.awt.EventQueue.invokeLater(new Runnable()
 		{
 
 			public void run()
 			{
 				setLookAndFeel();
-				new MainGUI().setVisible(true);
+				mainGUI = new MainGUI();
+				mainGUI.setVisible(true);
 			}
 		});
+
 	}
 
 	public static void setLookAndFeel()
@@ -1255,11 +1276,12 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			UIManager.setLookAndFeel(winClassName);
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 	}
 
 	public ArrayList loadTodoData()
@@ -1268,7 +1290,8 @@ public class MainGUI extends javax.swing.JFrame
 		int tbz_id = -1;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -1282,7 +1305,8 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				HashMap<String, String> fields = new HashMap<String, String>();
 				java.util.Date rd = new java.util.Date();
-				tbz_id = rst.getInt("TBZuordnung_ID");
+				tbz_id =
+						rst.getInt("TBZuordnung_ID");
 				fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 				fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1298,20 +1322,25 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				todoData.add(fields);
 				counter++;
+
 			}
+
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return todoData;
 	}
@@ -1322,7 +1351,8 @@ public class MainGUI extends javax.swing.JFrame
 		int tbz_id = -1;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -1335,7 +1365,8 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				HashMap<String, String> fields = new HashMap<String, String>();
 				java.util.Date rd = new java.util.Date();
-				tbz_id = rst.getInt("TBZuordnung_ID");
+				tbz_id =
+						rst.getInt("TBZuordnung_ID");
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
 				if (rst.getBoolean("WiedervorlageGesetzt"))
@@ -1346,33 +1377,39 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				shortTodoData.add(fields);
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return shortTodoData;
 	}
 
-	public ArrayList loadTopicData(String topic)
+	public ArrayList loadTopicData(
+			String topic)
 	{
 		ArrayList<HashMap> topicData = new ArrayList<HashMap>();
 		Vector topicTBZ = new Vector();
 		Meeting m = new Meeting();
 		int topID = getTopicIDByName(topic);
 		int tbz_id = -1;
-		topicTBZ = getTBZ_ListByAreaOrTopicID(topID, 1);
+		topicTBZ =
+				getTBZ_ListByAreaOrTopicID(topID, 1);
 
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -1392,7 +1429,8 @@ public class MainGUI extends javax.swing.JFrame
 						HashMap<String, String> fields = new HashMap<String, String>();
 						java.util.Date rd = new java.util.Date();
 						int meetingID = rst.getInt("SitzungsID");
-						m = getMeetingDataByID(meetingID);
+						m =
+								getMeetingDataByID(meetingID);
 						fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 						fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 						fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1407,6 +1445,7 @@ public class MainGUI extends javax.swing.JFrame
 						{
 							fields.put("Wiedervorlagedatum", "kein");
 						}
+
 						fields.put("Verantwortliche",
 								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 						fields.put("Beteiligte",
@@ -1416,20 +1455,24 @@ public class MainGUI extends javax.swing.JFrame
 						fields.put("SitzName", m.getMeetingType());
 						topicData.add(fields);
 					}
+
 					rst.close();
 				}
+
 			}
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return topicData;
 	}
 
-	public ArrayList loadPersonalTodoData(String status)
+	public ArrayList loadPersonalTodoData(
+			String status)
 	{
 		ArrayList<HashMap> personalTodoData = new ArrayList<HashMap>();
 		Meeting m = new Meeting();
@@ -1441,7 +1484,8 @@ public class MainGUI extends javax.swing.JFrame
 		String sql2 = "";   //Query-String für Beteiligte
 
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		/*  zuerst alle Protokollpunkte ermitteln bei denen der ausgewählte
 		 *  Mitarbeiter als Verantwortlicher eingetragen ist
@@ -1461,6 +1505,7 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				sql = "SELECT * FROM Protokollelement WHERE Verantwortliche LIKE '%" + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
 			}
+
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -1469,8 +1514,10 @@ public class MainGUI extends javax.swing.JFrame
 				java.util.Date rd = new java.util.Date();
 				HashMap<String, String> fields = new HashMap<String, String>();
 				int meetingID = rst.getInt("SitzungsID");
-				m = getMeetingDataByID(meetingID);
-				tbz_id = rst.getInt("TBZuordnung_ID");
+				m =
+						getMeetingDataByID(meetingID);
+				tbz_id =
+						rst.getInt("TBZuordnung_ID");
 				fields.put("Typ", "Verantwortlich");
 				fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
@@ -1486,6 +1533,7 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
@@ -1496,21 +1544,23 @@ public class MainGUI extends javax.swing.JFrame
 				personalTodoData.add(fields);
 
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
-			e.printStackTrace();
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 
 		/*  jetzt alle Protokollelemente ermitteln bei denen der ausgewählte Mitarbeiter
 		 *  als Beteiligter eingetragen ist
 		 */
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -1525,13 +1575,15 @@ public class MainGUI extends javax.swing.JFrame
 				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%" +
 						empID + "%' AND StatusID=" + getFinStatusIDByName(status);
 			}
+
 			ResultSet rst2 = stmt2.executeQuery(sql2);
 
 			while (rst2.next())
 			{
 				noInvolvData = false;
 				int meetingID = rst2.getInt("SitzungsID");
-				m = getMeetingDataByID(meetingID);
+				m =
+						getMeetingDataByID(meetingID);
 				HashMap<String, String> fields = new HashMap<String, String>();
 				fields.put("Typ", "Beteiligt");
 				fields.put("Kategorie", getCatByID(rst2.getInt("KategorieID")));
@@ -1550,19 +1602,21 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("SitzName", m.getMeetingType());
 				personalTodoData.add(fields);
 			}
+
 			rst2.close();
 			stmt2.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			e.printStackTrace();
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return personalTodoData;
 	}
 
-	public ArrayList loadCategoryData(String cat)
+	public ArrayList loadCategoryData(
+			String cat)
 	{
 		ArrayList<HashMap> topicData = new ArrayList<HashMap>();
 		Meeting m = new Meeting();
@@ -1571,7 +1625,8 @@ public class MainGUI extends javax.swing.JFrame
 
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -1586,7 +1641,8 @@ public class MainGUI extends javax.swing.JFrame
 				HashMap<String, String> fields = new HashMap<String, String>();
 				java.util.Date rd = new java.util.Date();
 				java.util.Date md = new java.util.Date();
-				tbz_id = rst.getInt("TBZuordnung_ID");
+				tbz_id =
+						rst.getInt("TBZuordnung_ID");
 				fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 				fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1601,12 +1657,14 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				fields.put("SitzOrt", rst.getString("Ort"));
-				md = rst.getDate("Datum");
+				md =
+						rst.getDate("Datum");
 				if (md != null)
 				{
 					fields.put("SitzDatum", sdf.format(md));
@@ -1615,32 +1673,37 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("SitzDatum", "kein");
 				}
+
 				fields.put("SitzName", rst.getString("Name"));
 				topicData.add(fields);
 			}
+
 			rst.close();
 			pStmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
 		return topicData;
 	}
 
-	public ArrayList loadAreaData(String area)
+	public ArrayList loadAreaData(
+			String area)
 	{
 		ArrayList<HashMap> areaData = new ArrayList<HashMap>();
 		Vector topicTBZ = new Vector();
 		Meeting m = new Meeting();
 		int arID = getAreaIDByName(area);
 		int temp = -1;
-		topicTBZ = getTBZ_ListByAreaOrTopicID(arID, 2);
+		topicTBZ =
+				getTBZ_ListByAreaOrTopicID(arID, 2);
 
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -1660,7 +1723,8 @@ public class MainGUI extends javax.swing.JFrame
 						HashMap<String, String> fields = new HashMap<String, String>();
 						java.util.Date rd = new java.util.Date();
 						int meetingID = rst.getInt("SitzungsID");
-						m = getMeetingDataByID(meetingID);
+						m =
+								getMeetingDataByID(meetingID);
 						fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 						fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(temp)));
 						fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1675,6 +1739,7 @@ public class MainGUI extends javax.swing.JFrame
 						{
 							fields.put("Wiedervorlagedatum", "kein");
 						}
+
 						fields.put("Verantwortliche",
 								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 						fields.put("Beteiligte",
@@ -1684,8 +1749,10 @@ public class MainGUI extends javax.swing.JFrame
 						fields.put("SitzName", m.getMeetingType());
 						areaData.add(fields);
 					}
+
 					rst.close();
 				}
+
 			}
 			stmt.close();
 		} catch (Exception e)
@@ -1693,18 +1760,21 @@ public class MainGUI extends javax.swing.JFrame
 			e.printStackTrace();
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return areaData;
 	}
 
-	public ArrayList loadMeetingDateData(Date dat)
+	public ArrayList loadMeetingDateData(
+			Date dat)
 	{
 		ArrayList<HashMap> meetingDateData = new ArrayList<HashMap>();
 		Meeting m = new Meeting();
 		int tbz_id = -1;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN " +
@@ -1718,7 +1788,8 @@ public class MainGUI extends javax.swing.JFrame
 				tbz_id = rst.getInt("TBZuordnung_ID");
 				HashMap<String, String> fields = new HashMap<String, String>();
 				java.util.Date rd = new java.util.Date();
-				m = getMeetingDataByID(rst.getInt("SitzungsID"));
+				m =
+						getMeetingDataByID(rst.getInt("SitzungsID"));
 				fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 				fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1733,6 +1804,7 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
@@ -1742,25 +1814,29 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("SitzName", m.getMeetingType());
 				meetingDateData.add(fields);
 			}
+
 			rst.close();
 			pStmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return meetingDateData;
 	}
 
-	public ArrayList loadMeetingTypeData(String type)
+	public ArrayList loadMeetingTypeData(
+			String type)
 	{
 		ArrayList<HashMap> meetingTypeData = new ArrayList<HashMap>();
 		Meeting m = new Meeting();
 		int tbz_id = -1;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Sitzungsart INNER JOIN (Protokollelement INNER JOIN " +
@@ -1774,9 +1850,11 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				HashMap<String, String> fields = new HashMap<String, String>();
 				java.util.Date rd = new java.util.Date();
-				tbz_id = rst.getInt("TBZuordnung_ID");
+				tbz_id =
+						rst.getInt("TBZuordnung_ID");
 				int sid = rst.getInt("SitzungsID");
-				m = getMeetingDataByID(sid);
+				m =
+						getMeetingDataByID(sid);
 				fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 				fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1791,6 +1869,7 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
@@ -1800,25 +1879,29 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("SitzName", m.getMeetingType());
 				meetingTypeData.add(fields);
 			}
+
 			rst.close();
 			pStmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return meetingTypeData;
 	}
 
-	public ArrayList loadReDateData(Date date)
+	public ArrayList loadReDateData(
+			Date date)
 	{
 		ArrayList<HashMap> reDateData = new ArrayList<HashMap>();
 		Meeting m = new Meeting();
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		int tbz_id = -1;
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -1831,8 +1914,10 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				HashMap<String, String> fields = new HashMap<String, String>();
 				java.util.Date rd = new java.util.Date();
-				m = getMeetingDataByID(rst.getInt("SitzungsID"));
-				tbz_id = rst.getInt("TBZuordnung_ID");
+				m =
+						getMeetingDataByID(rst.getInt("SitzungsID"));
+				tbz_id =
+						rst.getInt("TBZuordnung_ID");
 				fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 				fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1847,6 +1932,7 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
@@ -1856,6 +1942,7 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("SitzName", m.getMeetingType());
 				reDateData.add(fields);
 			}
+
 			rst.close();
 			pStmt.close();
 		} catch (Exception e)
@@ -1863,6 +1950,7 @@ public class MainGUI extends javax.swing.JFrame
 			e.printStackTrace();
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return reDateData;
 	}
@@ -1873,7 +1961,8 @@ public class MainGUI extends javax.swing.JFrame
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		int tbz_id = -1;
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		if (!jComboBoxEmployee.getSelectedItem().toString().equals("") &&
 				!jComboBoxEmployee.getSelectedItem().toString().equals("Alle Mitarbeiter"))
@@ -1908,7 +1997,8 @@ public class MainGUI extends javax.swing.JFrame
 					HashMap<String, String> fields = new HashMap<String, String>();
 					java.util.Date rd = new java.util.Date();
 					java.util.Date md = new java.util.Date();
-					tbz_id = rst.getInt("TBZuordnung_ID");
+					tbz_id =
+							rst.getInt("TBZuordnung_ID");
 					fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 					fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 					fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
@@ -1923,6 +2013,7 @@ public class MainGUI extends javax.swing.JFrame
 					{
 						fields.put("Wiedervorlagedatum", "kein");
 					}
+
 					fields.put("Verantwortliche",
 							getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 					fields.put("Beteiligte",
@@ -1938,12 +2029,12 @@ public class MainGUI extends javax.swing.JFrame
 					 */
 					opData.add(fields);
 				}
+
 				rst.close();
 				pStmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
-				System.out.println(e.toString());
-				System.out.println(e.getCause().toString());
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				System.exit(1);
 			}
 
@@ -1977,14 +2068,16 @@ public class MainGUI extends javax.swing.JFrame
 						HashMap<String, String> fields = new HashMap<String, String>();
 						java.util.Date rd = new java.util.Date();
 						java.util.Date md = new java.util.Date();
-						tbz_id = rst.getInt("TBZuordnung_ID");
+						tbz_id =
+								rst.getInt("TBZuordnung_ID");
 						fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 						fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 						fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
 						fields.put("Status", getStatByID(rst.getInt("StatusID")));
 						fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 						fields.put("Inhalt", rst.getString("Inhalt"));
-						rd = rst.getDate("Wiedervorlagedatum");
+						rd =
+								rst.getDate("Wiedervorlagedatum");
 						if (rd != null)
 						{
 							fields.put("Wiedervorlagedatum", sdf.format(rd));
@@ -1993,12 +2086,14 @@ public class MainGUI extends javax.swing.JFrame
 						{
 							fields.put("Wiedervorlagedatum", "kein");
 						}
+
 						fields.put("Verantwortliche",
 								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 						fields.put("Beteiligte",
 								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 						fields.put("SitzOrt", rst.getString("Ort"));
-						md = rst.getDate("Datum");
+						md =
+								rst.getDate("Datum");
 						if (md != null)
 						{
 							fields.put("SitzDatum", sdf.format(md));
@@ -2007,14 +2102,16 @@ public class MainGUI extends javax.swing.JFrame
 						{
 							fields.put("SitzDatum", "kein");
 						}
+
 						fields.put("SitzName", getMeetingTypeByID(rst.getInt("SitzungsartID")));
 						opData.add(fields);
 					}
+
 					rst.close();
 					pStmt.close();
-				} catch (Exception e)
+				} catch (Exception ex)
 				{
-					System.out.println(e.toString());
+					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 					System.exit(1);
 				}
 
@@ -2026,6 +2123,7 @@ public class MainGUI extends javax.swing.JFrame
 						"Thema, Bereich, Kategorie und Wiedervorlagedatum angeben. " +
 						"Außerdem müssen Sie einen oder \"Alle Mitarbeiter \" auswählen", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
+
 		}
 		dbCon.closeDB(con);
 		return opData;
@@ -2037,7 +2135,8 @@ public class MainGUI extends javax.swing.JFrame
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		int tbz_id = -1;
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2053,14 +2152,16 @@ public class MainGUI extends javax.swing.JFrame
 				HashMap<String, String> fields = new HashMap<String, String>();
 				java.util.Date rd = new java.util.Date();
 				java.util.Date md = new java.util.Date();
-				tbz_id = rst.getInt("TBZuordnung_ID");
+				tbz_id =
+						rst.getInt("TBZuordnung_ID");
 				fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
 				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
 				fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
 				fields.put("Status", getStatByID(rst.getInt("StatusID")));
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
-				rd = rst.getDate("Wiedervorlagedatum");
+				rd =
+						rst.getDate("Wiedervorlagedatum");
 				if (rd != null)
 				{
 					fields.put("Wiedervorlagedatum", sdf.format(rd));
@@ -2069,6 +2170,7 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					fields.put("Wiedervorlagedatum", "kein");
 				}
+
 				fields.put("Verantwortliche",
 						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
@@ -2084,14 +2186,15 @@ public class MainGUI extends javax.swing.JFrame
 				 */
 				opData.add(fields);
 			}
+
 			rst.close();
 			pStmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
-			System.out.println(e.getCause().toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return opData;
 	}
@@ -2106,9 +2209,8 @@ public class MainGUI extends javax.swing.JFrame
 		jLabelMeetingType.setText(" - ");
 		jLabelMeetingPlace.setForeground(new java.awt.Color(255, 0, 0));
 		jLabelMeetingPlace.setText(" - ");
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 		int lastID = 0;
 
 		try
@@ -2129,29 +2231,34 @@ public class MainGUI extends javax.swing.JFrame
 					actMeeting.setProt(rst.getInt("Protokollant"));
 					actMeeting.setPartic(rst.getString("Teilnehmer"));
 				}
+
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
-		dbCon.closeDB(con);
+
+		DB_ToDo_Connect.closeDB(con);
 		if (actMeeting.getDate() != null)
 		{
 			jLabelMeetingDate.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingDate.setText(sdf.format(actMeeting.getDate()));
 		}
+
 		if (actMeeting.getMeetingTypeID() != 0)
 		{
 			setMeetingType();
 		}
+
 		if (!actMeeting.getPlace().equals(""))
 		{
 			jLabelMeetingPlace.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingPlace.setText(actMeeting.getPlace());
 		}
+
 	}
 
 	public void getChosenMeeting(int mID)
@@ -2165,7 +2272,8 @@ public class MainGUI extends javax.swing.JFrame
 		jLabelMeetingPlace.setText(" - ");
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2182,28 +2290,33 @@ public class MainGUI extends javax.swing.JFrame
 				actMeeting.setPartic(rst.getString("Teilnehmer"));
 				actMeeting.setOtherParticipants(rst.getString("Sonstige"));
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		if (actMeeting.getDate() != null)
 		{
 			jLabelMeetingDate.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingDate.setText(sdf.format(actMeeting.getDate()));
 		}
+
 		if (actMeeting.getMeetingTypeID() != 0)
 		{
 			setMeetingType();
 		}
+
 		if (!actMeeting.getPlace().equals(""))
 		{
 			jLabelMeetingPlace.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingPlace.setText(actMeeting.getPlace());
 		}
+
 	}
 
 	public void setMeetingType()
@@ -2211,7 +2324,8 @@ public class MainGUI extends javax.swing.JFrame
 		//Lade Sitzungsart der zuletzt bearbeiteten Sitzung aus Datenbank
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2226,13 +2340,15 @@ public class MainGUI extends javax.swing.JFrame
 				actMeeting.setMeetingType(rst.getString("Name"));
 				jLabelMeetingType.setText(actMeeting.getMeetingType());
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
@@ -2244,15 +2360,18 @@ public class MainGUI extends javax.swing.JFrame
 		actMeeting.setMeetingType(meetingType);
 	}
 
-	public String getNameAndLastNameByID(Vector ids)
+	public String getNameAndLastNameByID(
+			Vector ids)
 	{
 		StringBuffer participantsBuffer = new StringBuffer();
 		int id = 0;
 		Vector iDs = new Vector();
-		iDs = ids;
+		iDs =
+				ids;
 		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		// Vector mit einzelnen Mitarbeiter ID's einzeln auslesen und
 		// Vorname_Nachname in Strinbuffer schreiben
@@ -2260,7 +2379,8 @@ public class MainGUI extends javax.swing.JFrame
 		while (en.hasMoreElements())
 		{
 			Integer temp = new Integer(String.valueOf(en.nextElement()));
-			id = temp.intValue();
+			id =
+					temp.intValue();
 
 			try
 			{
@@ -2274,13 +2394,15 @@ public class MainGUI extends javax.swing.JFrame
 					// String mit (Vorname Nachname) für jasperReports
 					participantsBuffer.append(rst.getString("Vorname") + " " + rst.getString("Nachname") + ", ");
 				}
+
 				rst.close();
 				stmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
-				System.out.println(e.toString());
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				System.exit(1);
 			}
+
 		}
 		dbCon.closeDB(con);
 		String participantsString = participantsBuffer.toString();
@@ -2291,7 +2413,8 @@ public class MainGUI extends javax.swing.JFrame
 	 *  StringTokenizer zerlegt Mitarbeiter-String aus Id's
 	 *  @param String
 	 */
-	public Vector getIdsFromIdString(String id)
+	public Vector getIdsFromIdString(
+			String id)
 	{
 		Vector ids = new Vector();
 		if (id != null)
@@ -2309,6 +2432,7 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					continue;
 				}
+
 			}
 		}
 		return ids;
@@ -2317,12 +2441,14 @@ public class MainGUI extends javax.swing.JFrame
 	/*
 	 * HashMap fields füllen, einzelne HashMaps in ArrayList data aufnehemen
 	 */
-	public String getCatByID(int catID)
+	public String getCatByID(
+			int catID)
 	{
 		String name = "";
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2334,18 +2460,21 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				name = rst.getString("Name");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return name;
 	}
 
-	public String getAreaByID(int areaID)
+	public String getAreaByID(
+			int areaID)
 	{
 		//wenn areaID = -1, wurde kein bereich angegeben, return "kein"
 		if (areaID != -1)
@@ -2353,7 +2482,8 @@ public class MainGUI extends javax.swing.JFrame
 			String name = "";
 			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 			dbCon.openDB();
-			con = dbCon.getCon();
+			con =
+					dbCon.getCon();
 
 			try
 			{
@@ -2365,13 +2495,15 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					name = rst.getString("Name");
 				}
+
 				rst.close();
 				stmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
-				System.out.println(e.toString());
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				System.exit(1);
 			}
+
 			dbCon.closeDB(con);
 			return name;
 		}
@@ -2379,6 +2511,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			return "kein";
 		}
+
 	}
 
 	public int getAreaIDByTBZ_ID(int tbzID)
@@ -2389,7 +2522,8 @@ public class MainGUI extends javax.swing.JFrame
 			int id = 0;
 			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 			dbCon.openDB();
-			con = dbCon.getCon();
+			con =
+					dbCon.getCon();
 
 			try
 			{
@@ -2401,13 +2535,15 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					id = rst.getInt("BereichID");
 				}
+
 				rst.close();
 				stmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
-				System.out.println(e.toString());
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				System.exit(1);
 			}
+
 			dbCon.closeDB(con);
 			return id;
 		}
@@ -2415,9 +2551,11 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			return -1;
 		}
+
 	}
 
-	public String getTopicByID(int topicID)
+	public String getTopicByID(
+			int topicID)
 	{
 		//wenn topicID = -1, wurde kein Thema angegeben, return "kein"
 		if (topicID != -1)
@@ -2425,7 +2563,8 @@ public class MainGUI extends javax.swing.JFrame
 			String name = "";
 			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 			dbCon.openDB();
-			con = dbCon.getCon();
+			con =
+					dbCon.getCon();
 
 			try
 			{
@@ -2437,13 +2576,15 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					name = rst.getString("Name");
 				}
+
 				rst.close();
 				stmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
-				System.out.println(e.toString());
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				System.exit(1);
 			}
+
 			dbCon.closeDB(con);
 			return name;
 		}
@@ -2451,6 +2592,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			return "kein";
 		}
+
 	}
 
 	public int getTopicIDByTBZ_ID(int tbzID)
@@ -2461,7 +2603,8 @@ public class MainGUI extends javax.swing.JFrame
 			int id = 0;
 			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 			dbCon.openDB();
-			con = dbCon.getCon();
+			con =
+					dbCon.getCon();
 
 			try
 			{
@@ -2473,13 +2616,15 @@ public class MainGUI extends javax.swing.JFrame
 				{
 					id = rst.getInt("ThemaID");
 				}
+
 				rst.close();
 				stmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
-				System.out.println(e.toString());
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				System.exit(1);
 			}
+
 			dbCon.closeDB(con);
 			return id;
 		}
@@ -2487,14 +2632,17 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			return -1;
 		}
+
 	}
 
-	public String getInstByID(int instID)
+	public String getInstByID(
+			int instID)
 	{
 		String name = "";
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2506,23 +2654,27 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				name = rst.getString("Name");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return name;
 	}
 
-	public String getStatByID(int statID)
+	public String getStatByID(
+			int statID)
 	{
 		String name = "";
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2534,13 +2686,15 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				name = rst.getString("Name");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return name;
 	}
@@ -2557,7 +2711,8 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2571,13 +2726,15 @@ public class MainGUI extends javax.swing.JFrame
 						rst.getString("Vorname");
 				employees.add(em);
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
@@ -2593,7 +2750,8 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2606,13 +2764,15 @@ public class MainGUI extends javax.swing.JFrame
 				String to = rst.getString("Name");
 				topics.add(to);
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
@@ -2628,7 +2788,8 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2641,13 +2802,15 @@ public class MainGUI extends javax.swing.JFrame
 				String ca = rst.getString("Name");
 				categories.add(ca);
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
@@ -2663,7 +2826,8 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2676,13 +2840,15 @@ public class MainGUI extends javax.swing.JFrame
 				String ar = rst.getString("Name");
 				areas.add(ar);
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
@@ -2698,7 +2864,8 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2711,13 +2878,15 @@ public class MainGUI extends javax.swing.JFrame
 				String mT = rst.getString("Name");
 				meetingTypes.add(mT);
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
@@ -2733,7 +2902,8 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2747,13 +2917,15 @@ public class MainGUI extends javax.swing.JFrame
 				String date = sdf.format(rst.getDate("Datum"));
 				meetingDates.add(date);
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
@@ -2764,7 +2936,8 @@ public class MainGUI extends javax.swing.JFrame
 		String ln = getLastNameOfEmployee(name);
 		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2777,24 +2950,28 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				empID = rst.getInt("Personalnummer");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return empID;
 	}
 
-	public Meeting getMeetingDataByID(int meetingID)
+	public Meeting getMeetingDataByID(
+			int meetingID)
 	{
 		Meeting m = new Meeting();
 		m.setMeetingID(meetingID);
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2809,23 +2986,27 @@ public class MainGUI extends javax.swing.JFrame
 				m.setPlace(rst.getString("Ort"));
 				m.setDate(rst.getDate("Datum"));
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return m;
 	}
 
-	public String getMeetingTypeByID(int id)
+	public String getMeetingTypeByID(
+			int id)
 	{
 		String mType = "";
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2837,18 +3018,21 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				mType = rst.getString("Name");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return mType;
 	}
 
-	public String getFirstNameOfEmployee(String name)
+	public String getFirstNameOfEmployee(
+			String name)
 	{
 		String fn = "";
 		if (name != null)
@@ -2858,11 +3042,13 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				fn = tokenizer.nextToken();
 			}
+
 		}
 		return fn;
 	}
 
-	public String getLastNameOfEmployee(String name)
+	public String getLastNameOfEmployee(
+			String name)
 	{
 		String ln = "";
 		if (name != null)
@@ -2872,7 +3058,10 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				ln = tokenizer.nextToken();
 				break;
+
 			}
+
+
 		}
 		return ln;
 	}
@@ -2886,6 +3075,7 @@ public class MainGUI extends javax.swing.JFrame
 			String em = String.valueOf(e.nextElement());
 			jComboBoxEmployee.addItem(em);
 		}
+
 	}
 
 	public void setComboBoxTopics()
@@ -2897,6 +3087,7 @@ public class MainGUI extends javax.swing.JFrame
 			String to = String.valueOf(e.nextElement());
 			jComboBoxTopic.addItem(to);
 		}
+
 	}
 
 	public void setComboBoxCategory()
@@ -2908,6 +3099,7 @@ public class MainGUI extends javax.swing.JFrame
 			String ca = String.valueOf(e.nextElement());
 			jComboBoxCategory.addItem(ca);
 		}
+
 	}
 
 	public void setComboBoxArea()
@@ -2919,6 +3111,7 @@ public class MainGUI extends javax.swing.JFrame
 			String ar = String.valueOf(e.nextElement());
 			jComboBoxArea.addItem(ar);
 		}
+
 	}
 
 	public void setComboBoxMeetingType()
@@ -2930,6 +3123,7 @@ public class MainGUI extends javax.swing.JFrame
 			String mT = String.valueOf(e.nextElement());
 			jComboBoxMeetingType.addItem(mT);
 		}
+
 	}
 
 	public void setComboBoxMeetingDate()
@@ -2941,6 +3135,7 @@ public class MainGUI extends javax.swing.JFrame
 			String md = String.valueOf(e.nextElement());
 			jComboBoxMeetingDate.addItem(md);
 		}
+
 	}
 
 	public void setComboBoxFinStatus()
@@ -2950,7 +3145,8 @@ public class MainGUI extends javax.swing.JFrame
 		jComboBoxFinStatus.addItem("Alle");
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2962,22 +3158,26 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				jComboBoxFinStatus.addItem(rst.getString("Name"));
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 	}
 
-	public String getFinStatusByID(int statusID)
+	public String getFinStatusByID(
+			int statusID)
 	{
 		String statName = "";
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -2989,13 +3189,15 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				statName = rst.getString("Name");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return statName;
 	}
@@ -3005,7 +3207,8 @@ public class MainGUI extends javax.swing.JFrame
 		int statID = 0;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -3017,13 +3220,15 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				statID = rst.getInt("StatusID");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return statID;
 	}
@@ -3033,7 +3238,8 @@ public class MainGUI extends javax.swing.JFrame
 		int topID = 0;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -3045,13 +3251,15 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				topID = rst.getInt("ThemaID");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return topID;
 	}
@@ -3061,7 +3269,8 @@ public class MainGUI extends javax.swing.JFrame
 		int catID = -1;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -3073,13 +3282,15 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				catID = rst.getInt("KategorieID");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return catID;
 	}
@@ -3089,7 +3300,8 @@ public class MainGUI extends javax.swing.JFrame
 		int arID = 0;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -3101,13 +3313,15 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				arID = rst.getInt("BereichID");
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return arID;
 	}
@@ -3116,7 +3330,8 @@ public class MainGUI extends javax.swing.JFrame
 	 * ermittelt eine Liste aller TBZ_ID's bei denen ThemaID = topID(stat=1)
 	 * oder BereichID = arID(stat2)
 	 */
-	public Vector getTBZ_ListByAreaOrTopicID(int id, int stat)
+	public Vector getTBZ_ListByAreaOrTopicID(
+			int id, int stat)
 	{
 		Vector tbz_list = new Vector();
 		String s = "";
@@ -3128,9 +3343,11 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			s = "BereichID";
 		}
+
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con = dbCon.getCon();
+		con =
+				dbCon.getCon();
 
 		try
 		{
@@ -3142,13 +3359,15 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				tbz_list.add(rst.getInt("TBZ_ID"));
 			}
+
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
+
 		dbCon.closeDB(con);
 		return tbz_list;
 	}
@@ -3157,7 +3376,8 @@ public class MainGUI extends javax.swing.JFrame
 	/*
 	 * ermittelt den Wochentag anhand des Integerwerts von DAY_OF_WEEK
 	 */
-	public String getDayString(int weekDayID)
+	public String getDayString(
+			int weekDayID)
 	{
 		String dayString = "";
 		switch (weekDayID)
@@ -3165,28 +3385,39 @@ public class MainGUI extends javax.swing.JFrame
 			case 1:
 				dayString = "Sonntag";
 				break;
+
 			case 2:
 				dayString = "Montag";
 				break;
+
 			case 3:
 				dayString = "Dienstag";
 				break;
+
 			case 4:
 				dayString = "Mittwoch";
 				break;
+
 			case 5:
 				dayString = "Donnerstag";
 				break;
+
 			case 6:
 				dayString = "Freitag";
 				break;
+
 			case 7:
 				dayString = "Samstag";
 				break;
+
 			default:
+
 				dayString = "";
 				break;
+
 		}
+
+
 		return dayString;
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables

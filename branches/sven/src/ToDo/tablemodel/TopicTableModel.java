@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import java.sql.*;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -97,9 +99,9 @@ public class TopicTableModel extends AbstractTableModel
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TopicTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		DB_ToDo_Connect.closeDB(con);

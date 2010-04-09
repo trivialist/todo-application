@@ -11,6 +11,8 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.sql.*;
 import java.lang.String.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author  Marcus Hertel
@@ -209,8 +211,8 @@ public class ParticipantsGUI extends javax.swing.JFrame {
                         + "' WHERE SitzungsdatenID=" + meetingID;
                 stmt.executeUpdate(sql);
                 stmt.close();
-            } catch(Exception e) {
-                System.out.println(e.toString()); 
+            } catch(Exception ex) {
+                Logger.getLogger(ParticipantsGUI.class.getName()).log(Level.SEVERE, null, ex);
                 System.exit(1);
             }
             dbCon.closeDB(con);

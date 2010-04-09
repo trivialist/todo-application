@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import todo.core.Employee;
 import todo.dbcon.DB_Mitarbeiter_Connect;
@@ -173,9 +175,9 @@ public class TodoNoteDialog extends javax.swing.JDialog
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoNoteDialog.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		DB_Mitarbeiter_Connect.closeDB(con);

@@ -7,57 +7,59 @@
  * the Source Creation and Management node. Right-click the template and choose
  * Open. You can then make changes to the template in the Source Editor.
  */
-
 package todo.dbcon;
 
-
-import java.awt.*; 
-import java.awt.event.*; 
-import java.sql.*; 
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import todo.gui.MainGUI;
 
 /**
  *
  * @author hertel
  */
-public class DB_ToDo_Connect {
-    
-    private static Connection con = null;
-    
-    /** Creates a new instance of DB_ToDo_Connect */
-    public DB_ToDo_Connect() {
-    }
-    
-    
-    public static void openDB() {
-        try { 
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver").newInstance(); 
-          
-            String url = "jdbc:odbc:todo";
-            con = DriverManager.getConnection(url);
-        }
-        catch (Exception ex) 
-        { 
-          System.out.println(ex.toString()); 
-          System.exit(1); 
-        }
-        
-    }
-        
-    public static void closeDB(Connection con) {
-        try {
-            con.close(); 
-        } 
-        catch (Exception ex) 
-        { 
-          System.out.println(ex.toString()); 
-          System.exit(1); 
-        } 
-    }
-    
-    public static Connection getCon() {
-        return con;
-    }
-    
+public class DB_ToDo_Connect
+{
+
+	private static Connection con = null;
+
+	/** Creates a new instance of DB_ToDo_Connect */
+	public DB_ToDo_Connect()
+	{
+	}
+
+	public static void openDB()
+	{
+		try
+		{
+			Class.forName(MainGUI.applicationProperties.getProperty("DatabaseDriver")).newInstance();
+
+			String url = MainGUI.applicationProperties.getProperty("DatabaseDsnTodo");
+			con = DriverManager.getConnection(url);
+		} catch (Exception ex)
+		{
+			Logger.getLogger(DB_ToDo_Connect.class.getName()).log(Level.SEVERE, null, ex);
+			System.exit(1);
+		}
+
+	}
+
+	public static void closeDB(Connection con)
+	{
+		try
+		{
+			con.close();
+		} catch (Exception ex)
+		{
+			Logger.getLogger(DB_ToDo_Connect.class.getName()).log(Level.SEVERE, null, ex);
+			System.exit(1);
+		}
+	}
+
+	public static Connection getCon()
+	{
+		return con;
+	}
 }
 
 

@@ -439,9 +439,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
     private void jButtonSaveAndExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveAndExitActionPerformed
 
-		if(jTextAreaContent.getText().equals("") || jTextHeading.getText().equals(""))
+		if (jTextAreaContent.getText().equals("") || jTextHeading.getText().equals(""))
 		{
-			JOptionPane.showMessageDialog(jTextAreaContent, "Die beiden Eingaben für die Überschrift sowie für "+
+			JOptionPane.showMessageDialog(jTextAreaContent, "Die beiden Eingaben für die Überschrift sowie für " +
 					"den Inhalt müssen ausgefüllt werden.");
 			return;
 		}
@@ -489,7 +489,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				setVisible(false);
 				break;
 			default:
-				System.out.println("Allgemeiner Fehler beim Speichern von Protokollelement.");
+				JOptionPane.showMessageDialog(this, "Allgemeiner Fehler beim Speichern von Protokollelement.");
 				break;
 		}
     }//GEN-LAST:event_jButtonSaveAndExitActionPerformed
@@ -792,9 +792,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			rst.close();
 			stmt.close();
 
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -958,7 +958,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 		Date dat = new Date(td.getReDate().getTime());
-		System.out.println("Datum: " + dat);
 		try
 		{
 			Statement stmt = con.createStatement();
@@ -978,9 +977,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			stmt.executeUpdate(sql);
 			stmt.close();
 
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		DB_ToDo_Connect.closeDB(con);
@@ -1063,9 +1062,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			stmt.executeUpdate(sql);
 			stmt.close();
 
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		DB_ToDo_Connect.closeDB(con);
@@ -1091,9 +1090,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1119,9 +1118,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1147,9 +1146,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1176,9 +1175,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1204,9 +1203,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1232,9 +1231,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1267,9 +1266,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1308,9 +1307,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1347,9 +1346,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1380,9 +1379,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1413,9 +1412,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1446,9 +1445,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1479,9 +1478,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1507,9 +1506,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1543,9 +1542,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			rst.close();
 			stmt.close();
 
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1576,9 +1575,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1609,9 +1608,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1642,9 +1641,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1683,9 +1682,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1724,9 +1723,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1757,9 +1756,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1790,9 +1789,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
@@ -1831,9 +1830,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				}
 				rst.close();
 				stmt.close();
-			} catch (Exception e)
+			} catch (Exception ex)
 			{
-				System.out.println(e.toString());
+				Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				System.exit(1);
 			}
 		}
@@ -1855,7 +1854,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				{
 					String temp = String.valueOf(tokenizer.nextToken());
 					int partID = Integer.valueOf(temp);
-					System.out.println("ID:" + partID);
+					//System.out.println("ID:" + partID);
 					involved.add(partID);
 				}
 				else
@@ -1920,9 +1919,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception e)
+		} catch (Exception ex)
 		{
-			System.out.println(e.toString());
+			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			System.exit(1);
 		}
 		dbCon.closeDB(con);
