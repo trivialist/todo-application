@@ -963,7 +963,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			String sql = "INSERT INTO Protokollelement (KategorieID, SitzungsID, " +
 					"StatusID, InstitutionsID, BereichID, Thema, Inhalt, Wiedervorlagedatum, " +
 					"Verantwortliche, Beteiligte, TBZuordnung_ID, WV_Sitzungsart, Überschrift," +
-					"WiedervorlageGesetzt) " +
+					"WiedervorlageGesetzt, Geloescht) " +
 					"VALUES (" + td.getCategoryID() +
 					", " + meetingID + ", " + td.getStatusID() +
 					", " + td.getInstitutionID() + ", " + td.getAreaID() +
@@ -971,7 +971,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					"', '" + dat + "', '" + td.getRespons() +
 					"', '" + td.getOthers() + "', " + tbz_id +
 					", " + td.getReMeetType() + ",'" + td.getHeading() + "'," +
-					td.getReMeetingEnabled() + ")";
+					td.getReMeetingEnabled() + ", false)";
 
 			stmt.executeUpdate(sql);
 			stmt.close();

@@ -105,7 +105,8 @@ public class DeleteTodoDialog extends javax.swing.JDialog {
         con = dbCon.getCon();
         try {
             Statement stmt = con.createStatement();
-            String sql = "DELETE FROM Protokollelement WHERE ToDoID=" + todoID;
+            //String sql = "DELETE FROM Protokollelement WHERE ToDoID = " + todoID;
+            String sql = "UPDATE Protokollelement SET Geloescht = true WHERE ToDoID = " + todoID;
             stmt.executeUpdate(sql);
             stmt.close();
         }

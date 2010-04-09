@@ -282,7 +282,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
 				//Verantwortliche
 				java.sql.Date dat = new java.sql.Date(meet.getDate().getTime());
 				String sql = "INSERT INTO Sitzungsdaten (Datum, SitzungsartID, " +
-						"Ort, Protokollant) VALUES ('" + dat + "', " + meet.getMeetingTypeID() + ", '" + meet.getPlace() + "', '" + meet.getProt() + "')";
+						"Ort, Protokollant, Geloescht) VALUES ('" + dat + "', " +
+						meet.getMeetingTypeID() + ", '" + meet.getPlace() + "', '" +
+						meet.getProt() + "', false)";
 				stmt.executeUpdate(sql);
 				stmt.close();
 			} catch (Exception ex)

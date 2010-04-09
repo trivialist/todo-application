@@ -120,7 +120,13 @@ public class DeleteMeetingDialog extends javax.swing.JDialog {
         con = dbCon.getCon();
         try {
             Statement stmt = con.createStatement();
-            String sql = "DELETE FROM Sitzungsdaten WHERE SitzungsdatenID=" + meetingID;
+            //String sql = "DELETE FROM Sitzungsdaten WHERE SitzungsdatenID=" + meetingID;
+			String sql = "UPDATE Sitzungsdaten SET Geloescht = true WHERE SitzungsdatenID = " + meetingID;
+            stmt.executeUpdate(sql);
+            stmt.close();
+			stmt = con.createStatement();
+            //String sql = "DELETE FROM Sitzungsdaten WHERE SitzungsdatenID=" + meetingID;
+			sql = "UPDATE Protokollelement SET Geloescht = true WHERE SitzungsID = " + meetingID;
             stmt.executeUpdate(sql);
             stmt.close();
         }

@@ -107,18 +107,18 @@ public class MeetingTableModel extends AbstractTableModel
 
 			if(field.equals("Jahr"))
 			{
-				whereCondition = "WHERE Datum BETWEEN #01/01/" + keyword + "# AND #31/12/" + keyword + "#";
+				whereCondition = "AND Datum BETWEEN #01/01/" + keyword + "# AND #31/12/" + keyword + "#";
 			}
 			else
 			{
-				whereCondition = "WHERE " + field + " LIKE '%" + keyword + "' OR " + field + " LIKE '" + keyword + "%' OR " + field + " LIKE '%" + keyword + "%'";
+				whereCondition = "AND (" + field + " LIKE '%" + keyword + "' OR " + field + " LIKE '" + keyword + "%' OR " + field + " LIKE '%" + keyword + "%')";
 			}
 		}
 
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Sitzungsart INNER JOIN Sitzungsdaten ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID " + whereCondition + " ORDER BY Datum DESC";
+			String sql = "SELECT * FROM Sitzungsart INNER JOIN Sitzungsdaten ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID WHERE Geloescht = false " + whereCondition + " ORDER BY Datum DESC";
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())

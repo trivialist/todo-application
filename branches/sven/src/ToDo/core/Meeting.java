@@ -39,6 +39,9 @@ public class Meeting
 	public String otherPart;
 	@DbColumn(name = "Protokollant")
 	public int recorder;
+	@DbColumn(name = "Geloescht")
+	public boolean deleted;
+	//unknown
 	public String meetingType;
 
 	/** Creates a new instance of Meeting */

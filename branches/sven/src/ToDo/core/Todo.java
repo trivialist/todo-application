@@ -56,6 +56,8 @@ public class Todo
 	public boolean reMeetingEnabled;
 	@DbColumn(name = "updated")
 	public boolean updated;
+	@DbColumn(name = "Geloescht")
+	public boolean deleted;
 	//unknown
 	public String category;
 	public String status;

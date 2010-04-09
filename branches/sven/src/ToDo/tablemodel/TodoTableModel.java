@@ -108,7 +108,7 @@ public class TodoTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Protokollelement WHERE SitzungsID=" + meetingID;
+			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID=" + meetingID;
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())

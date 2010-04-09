@@ -552,7 +552,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Überschrift FROM Protokollelement WHERE SitzungsID = " + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
+			String sql = "SELECT Überschrift FROM Protokollelement WHERE Geloescht = false AND " +
+					"SitzungsID = " + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
 
 			ResultSet rst = stmt.executeQuery(sql);
 
@@ -1297,7 +1298,7 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Protokollelement WHERE SitzungsID=" +
+			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID=" +
 					actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
 			ResultSet rst = stmt.executeQuery(sql);
 			int counter = 1;
@@ -1358,7 +1359,7 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Protokollelement WHERE SitzungsID=" +
+			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID=" +
 					actMeeting.getMeetingID();
 			ResultSet rst = stmt.executeQuery(sql);
 
@@ -1422,7 +1423,7 @@ public class MainGUI extends javax.swing.JFrame
 				if (tbz_id != -1)
 				{
 					String sql = "SELECT * FROM Protokollelement WHERE " +
-							"TBZuordnung_ID=" + tbz_id + " ORDER BY ToDoID DESC";
+							"TBZuordnung_ID=" + tbz_id + " AND Geloescht = false ORDER BY ToDoID DESC";
 					ResultSet rst = stmt.executeQuery(sql);
 
 					while (rst.next())
@@ -1472,8 +1473,7 @@ public class MainGUI extends javax.swing.JFrame
 		return topicData;
 	}
 
-	public ArrayList loadPersonalTodoData(
-			String status)
+	public ArrayList loadPersonalTodoData(String status)
 	{
 		ArrayList<HashMap> personalTodoData = new ArrayList<HashMap>();
 		Meeting m = new Meeting();
@@ -1485,8 +1485,7 @@ public class MainGUI extends javax.swing.JFrame
 		String sql2 = "";   //Query-String für Beteiligte
 
 		dbCon.openDB();
-		con =
-				dbCon.getCon();
+		con = dbCon.getCon();
 
 		/*  zuerst alle Protokollpunkte ermitteln bei denen der ausgewählte
 		 *  Mitarbeiter als Verantwortlicher eingetragen ist
@@ -1500,11 +1499,11 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt = con.createStatement();
 			if (status.equals("Alle"))
 			{
-				sql = "SELECT * FROM Protokollelement WHERE Verantwortliche LIKE '%" + empID + "%'";
+				sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND Verantwortliche LIKE '%" + empID + "%'";
 			}
 			else
 			{
-				sql = "SELECT * FROM Protokollelement WHERE Verantwortliche LIKE '%" + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
+				sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND Verantwortliche LIKE '%" + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
 			}
 
 			ResultSet rst = stmt.executeQuery(sql);
@@ -1633,7 +1632,8 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN " +
 					"(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) " +
-					"ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE KategorieID = ?");
+					"ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht "+
+					"= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ?");
 			pStmt.setInt(1, catID);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1698,13 +1698,11 @@ public class MainGUI extends javax.swing.JFrame
 		Meeting m = new Meeting();
 		int arID = getAreaIDByName(area);
 		int temp = -1;
-		topicTBZ =
-				getTBZ_ListByAreaOrTopicID(arID, 2);
+		topicTBZ = getTBZ_ListByAreaOrTopicID(arID, 2);
 
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con =
-				dbCon.getCon();
+		con = dbCon.getCon();
 
 		try
 		{
@@ -1716,7 +1714,7 @@ public class MainGUI extends javax.swing.JFrame
 				if (temp != -1)
 				{
 					String sql = "SELECT * FROM Protokollelement WHERE " +
-							"TBZuordnung_ID=" + temp + " ORDER BY ToDoID DESC";
+							"TBZuordnung_ID=" + temp + " AND Geloescht = false ORDER BY ToDoID DESC";
 					ResultSet rst = stmt.executeQuery(sql);
 
 					while (rst.next())
@@ -1766,21 +1764,20 @@ public class MainGUI extends javax.swing.JFrame
 		return areaData;
 	}
 
-	public ArrayList loadMeetingDateData(
-			Date dat)
+	public ArrayList loadMeetingDateData(Date dat)
 	{
 		ArrayList<HashMap> meetingDateData = new ArrayList<HashMap>();
 		Meeting m = new Meeting();
 		int tbz_id = -1;
 		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		dbCon.openDB();
-		con =
-				dbCon.getCon();
+		con = dbCon.getCon();
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN " +
 					"Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID " +
-					"WHERE Datum = ? ORDER BY ToDoID DESC");
+					"WHERE Datum = ? AND Protokollelement.Geloescht = false AND "+
+					"Sitzungsdaten.Geloescht = false ORDER BY ToDoID DESC");
 			pStmt.setDate(1, dat);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1843,7 +1840,8 @@ public class MainGUI extends javax.swing.JFrame
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Sitzungsart INNER JOIN (Protokollelement INNER JOIN " +
 					"Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID) " +
 					"ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID " +
-					"WHERE Sitzungsart.Name = ? ORDER BY Protokollelement.ToDoID DESC");
+					"WHERE Sitzungsart.Name = ? AND Protokollelement.Geloescht = false AND Sitzungsdaten.Geloescht = "+
+					"false ORDER BY Protokollelement.ToDoID DESC");
 			pStmt.setString(1, type);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1907,7 +1905,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement WHERE " +
-					"Wiedervorlagedatum < ? AND WiedervorlageGesetzt = true ORDER BY Wiedervorlagedatum DESC");
+					"Wiedervorlagedatum < ? AND WiedervorlageGesetzt = true AND Geloescht = false " +
+					"ORDER BY Wiedervorlagedatum DESC");
 			pStmt.setDate(1, date);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -2143,7 +2142,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement " +
 					"INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID " +
-					"WHERE Protokollelement.StatusID = ? " +
+					"WHERE Protokollelement.StatusID = ? AND Geloescht = false " +
 					"ORDER BY Wiedervorlagedatum DESC");
 			pStmt.setInt(1, getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
 			ResultSet rst = pStmt.executeQuery();
@@ -2217,7 +2216,7 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Sitzungsdaten";
+			String sql = "SELECT * FROM Sitzungsdaten WHERE Geloescht = false";
 			ResultSet rst = stmt.executeQuery(sql);
 			while (rst.next())
 			{
