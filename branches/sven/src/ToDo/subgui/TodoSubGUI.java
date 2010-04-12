@@ -470,7 +470,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 						if (jCalendarComboBoxReDate.getCalendar().getTime().before(Calendar.getInstance().getTime()))
 						{
 							JOptionPane.showMessageDialog(null, "Fehler beim Speichern. " +
-									"Das angegebene Wiedervorlagedatum liegt zeitlich vor dem aktuellen Datum",
+									"Das angegebene Wiedervorlagedatum liegt zeitlich vor dem aktuellen Datum.\n" +
+									"Wählen Sie ein Datum das in der Zukunft liegt.",
 									"Fehler", JOptionPane.ERROR_MESSAGE);
 							reDateChange = true;
 						}
@@ -771,10 +772,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				jComboBoxReMeetType.setSelectedItem(getMeetingTypeByID(rst.getInt("WV_Sitzungsart")));
 				jTextHeading.setText(rst.getString("Überschrift"));
 				jTextAreaContent.setText(rst.getString("Inhalt"));
-				Date reDate = rst.getDate("Wiedervorlagedatum");
-				if (reDate != null)
+				if (rst.getBoolean("WiedervorlageGesetzt"))
 				{
-					cal.setTime(reDate);
+					cal.setTime(rst.getDate("Wiedervorlagedatum"));
 					jCalendarComboBoxReDate.setCalendar(cal);
 					jCheckBoxNoReDate.setSelected(false);
 				}
@@ -992,11 +992,29 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 */
 	public void editTodo()
 	{
-		// da nur das verändern des Status und der WV(Datum und Art) erlaubt ist
-		// müssen auch nur diese Felder abgefragt und anschließend in
-		// der Tabelle Protokollelement aktualisiert werden
+		java.util.Date reDate = new java.util.Date();
+		StringBuffer dbStringOthers = new StringBuffer("");
+		StringBuffer dbStringResponsible = new StringBuffer("");
+		int tbz_id = -1;
 
-		// ### Status
+		if (!String.valueOf(jComboBoxCategory.getSelectedItem()).equals("Bitte wählen..."))
+		{
+			td.setCategoryID(getCatIDByName(String.valueOf(jComboBoxCategory.getSelectedItem())));
+		}
+		else
+		{
+			td.setCategoryID(-1);
+		}
+
+		if (!String.valueOf(jComboBoxInstitution.getSelectedItem()).equals("Bitte wählen..."))
+		{
+			td.setInstitutionID(getInstIDByName(String.valueOf(jComboBoxInstitution.getSelectedItem())));
+		}
+		else
+		{
+			td.setInstitutionID(-1);
+		}
+
 		if (!String.valueOf(jComboBoxStatus.getSelectedItem()).equals("Bitte wählen..."))
 		{
 			td.setStatusID(getStatIDByName(String.valueOf(jComboBoxStatus.getSelectedItem())));
@@ -1005,6 +1023,25 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		{
 			td.setStatusID(-1);
 		}
+
+		if (!String.valueOf(jComboBoxArea.getSelectedItem()).equals("Bitte wählen..."))
+		{
+			td.setAreaID(getAreaIDByName(String.valueOf(jComboBoxArea.getSelectedItem())));
+		}
+		else
+		{
+			td.setAreaID(-1);
+		}
+
+		if (!String.valueOf(jComboBoxTopic.getSelectedItem()).equals("Bitte wählen..."))
+		{
+			td.setTopicID(getTopicIDByName(String.valueOf(jComboBoxTopic.getSelectedItem())));
+		}
+		else
+		{
+			td.setTopicID(-1);
+		}
+
 		if (!String.valueOf(jComboBoxReMeetType.getSelectedItem()).equals("Alle"))
 		{
 			td.setReMeetType(getReMeetTypeByName(String.valueOf(jComboBoxReMeetType.getSelectedItem())));
@@ -1013,6 +1050,44 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		{
 			td.setReMeetType(-1);
 		}
+
+		if (td.getAreaID() != -1 && td.getTopicID() != -1)
+		{
+			tbz_id = getTBZ_ID_ByAreaAndTopicID(td.getAreaID(), td.getTopicID());
+		}
+		else
+		{
+			tbz_id = -1;
+		}
+
+		reDate = jCalendarComboBoxReDate.getCalendar().getTime();
+		td.setReDate(reDate);
+
+		if (!jCheckBoxNoReDate.isSelected())
+		{
+			td.setReMeetingEnabled(true);
+		}
+
+		td.setHeading(jTextHeading.getText());
+		td.setContent(jTextAreaContent.getText());
+
+		//Beteiligte
+		Enumeration othersEnum = involved.elements();
+		while (othersEnum.hasMoreElements())
+		{
+			int employeeID = Integer.valueOf(othersEnum.nextElement().toString()).intValue();
+			dbStringOthers.append("," + employeeID);
+		}
+		td.setOthers(String.valueOf(dbStringOthers));
+
+		//Verantwortliche
+		Enumeration respEnum = responsible.elements();
+		while (respEnum.hasMoreElements())
+		{
+			int employeeID = Integer.valueOf(respEnum.nextElement().toString()).intValue();
+			dbStringResponsible.append("," + employeeID);
+		}
+		td.setResponse(String.valueOf(dbStringResponsible));
 
 		TodoNoteDialog subgui = null;
 
@@ -1046,10 +1121,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			DB_ToDo_Connect.closeDB(con);
 		}
 
-		td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());
-
 		// ### Update Prtotokollelement
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 		Date dat = new Date(td.getReDate().getTime());
@@ -1057,7 +1129,15 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "UPDATE Protokollelement SET StatusID = '" + td.getStatusID() + "', Wiedervorlagedatum = '" + dat + "', WV_Sitzungsart = '" + td.getReMeetType() + "' WHERE ToDoID = " + todoID;
+			String sql = "UPDATE Protokollelement SET KategorieID = " + td.getCategoryID() + 
+					", SitzungsID = " + meetingID + ", StatusID = " + td.getStatusID() +
+					", InstitutionsID = " + td.getInstitutionID() + ", BereichID = " + td.getAreaID() +
+					", Thema = '" + td.getTopic() + "', Inhalt = '" + td.getContent() +
+					"', Wiedervorlagedatum = '" + dat + "', Verantwortliche = '" + td.getRespons() +
+					"', Beteiligte ='" + td.getOthers() + "', TBZuordnung_ID = " + tbz_id +
+					", WV_Sitzungsart = " + td.getReMeetType() + ", Überschrift = '" + td.getHeading() +
+					"', WiedervorlageGesetzt = " + td.getReMeetingEnabled() +
+					", Geloescht = false WHERE ToDoID = " + todoID;
 			stmt.executeUpdate(sql);
 			stmt.close();
 
