@@ -30,7 +30,9 @@ import java.awt.Color;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
+import javax.swing.tree.TreePath;
 import todo.dbcon.drivers.MsAccessDriver;
+import todo.tablemodel.EmployeeTreeModel.NameLeaf;
 
 /**
  *
@@ -82,7 +84,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			editTodoInit(hideElements);
 		}
 		setCalendarChooser();
-		jTableEmployees.setAutoCreateRowSorter(true);
 		jTableInvolved.setAutoCreateRowSorter(true);
 		jTableResponsibles.setAutoCreateRowSorter(true);
 	}
@@ -120,8 +121,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         jLabel2 = new javax.swing.JLabel();
         jLabelStatus = new javax.swing.JLabel();
         jLabelTopicAndArea = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableEmployees = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableResponsibles = new javax.swing.JTable();
@@ -138,6 +137,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         jLabel4 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextAreaContent = new javax.swing.JTextArea();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTreeEmployee = new javax.swing.JTree();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Protokolleinträge erstellen und bearbeiten");
@@ -234,7 +235,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
                 jButtonSaveAndExitActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 650, -1, -1));
+        jPanel1.add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 650, -1, -1));
 
         jComboBoxCategory.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -291,18 +292,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         jLabelTopicAndArea.setBorder(javax.swing.BorderFactory.createTitledBorder("Bereich und                                  Thema"));
         jPanel1.add(jLabelTopicAndArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 510, 50));
 
-        jTableEmployees.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jScrollPane1.setViewportView(jTableEmployees);
-
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 420, 220, 220));
-
         jLabel7.setText("Mitarbeiter");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, -1, -1));
 
@@ -316,10 +305,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         ));
         jScrollPane2.setViewportView(jTableResponsibles);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 420, 210, 90));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 420, 210, 90));
 
         jLabel8.setText("Verantwortliche");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 400, -1, -1));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 400, -1, -1));
 
         jTableInvolved.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -331,10 +320,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         ));
         jScrollPane3.setViewportView(jTableInvolved);
 
-        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 540, 210, 100));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 540, 210, 100));
 
         jLabel9.setText("Beteiligte");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 520, -1, -1));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 520, -1, -1));
         jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 690, 500, 30));
 
         jButtonSendTask.setText("Aufgabe erstellen");
@@ -344,7 +333,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
                 jButtonSendTaskActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonSendTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 650, -1, -1));
+        jPanel1.add(jButtonSendTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 650, -1, -1));
         jPanel1.add(jComboBoxReMeetType, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 80, 120, -1));
 
         jLabelReDateAndMeetType.setBorder(javax.swing.BorderFactory.createTitledBorder("Wiedervorlage am           bei Sitzung"));
@@ -362,6 +351,13 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         jScrollPane4.setViewportView(jTextAreaContent);
 
         jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 510, 130));
+
+        jTreeEmployee.setModel(new EmployeeTreeModel());
+        jTreeEmployee.setRootVisible(false);
+        jTreeEmployee.setShowsRootHandles(true);
+        jScrollPane5.setViewportView(jTreeEmployee);
+
+        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 420, 210, 250));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 550, 690));
 
@@ -396,7 +392,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 }//GEN-LAST:event_jButtonEditTopicAndAreaActionPerformed
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-		jTableEmployees.setModel(new EmployeeTableModel());
 		jTableInvolved.setModel(new InvolvedTableModel(involved, meetingID));
 		jTableResponsibles.setModel(new ResponsibleTableModel(responsible, meetingID));
 		//Comboboxen neu initialisieren, weil evtl. neue
@@ -497,7 +492,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private void jButtonRemoveInvolvedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveInvolvedActionPerformed
 		if (jTableInvolved.getSelectedRow() != -1)
 		{
-			Object invID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
+			Object invID = jTableInvolved.getValueAt(jTableInvolved.getSelectedRow(), -1);
 			Integer temp = new Integer(String.valueOf(invID));
 			int iID = temp.intValue();
 			if (involved.contains(iID))
@@ -509,15 +504,20 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     }//GEN-LAST:event_jButtonRemoveInvolvedActionPerformed
 
     private void jButtonAddInvolvedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddInvolvedActionPerformed
-		if (jTableEmployees.getSelectedRow() != -1)
+		TreePath path = jTreeEmployee.getSelectionPath();
+		Object selectedObject = path.getPath()[path.getPathCount()-1];
+
+		if(selectedObject instanceof NameLeaf)
 		{
-			Object invID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
-			Integer temp = new Integer(String.valueOf(invID));
-			int iID = temp.intValue();
-			if (!involved.contains(iID))
+			NameLeaf selectedName = (NameLeaf)selectedObject;
+			if(!involved.contains(selectedName.getId()))
 			{
-				involved.add(iID);
+				involved.add(selectedName.getId());
 			}
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Namen aus und nicht das übergeordnete Gruppenelement.");
 		}
 		jTableInvolved.setModel(new InvolvedTableModel(involved, meetingID));
     }//GEN-LAST:event_jButtonAddInvolvedActionPerformed
@@ -525,7 +525,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private void jButtonRemoveResponsibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveResponsibleActionPerformed
 		if (jTableResponsibles.getSelectedRow() != -1)
 		{
-			Object respID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
+			Object respID = jTableResponsibles.getValueAt(jTableResponsibles.getSelectedRow(), -1);
 			Integer temp = new Integer(String.valueOf(respID));
 			int rID = temp.intValue();
 			if (responsible.contains(rID))
@@ -537,15 +537,20 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     }//GEN-LAST:event_jButtonRemoveResponsibleActionPerformed
 
     private void jButtonAddResponsibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddResponsibleActionPerformed
-		if (jTableEmployees.getSelectedRow() != -1)
+		TreePath path = jTreeEmployee.getSelectionPath();
+		Object selectedObject = path.getPath()[path.getPathCount()-1];
+
+		if(selectedObject instanceof NameLeaf)
 		{
-			Object respID = jTableEmployees.getValueAt(jTableEmployees.getSelectedRow(), -1);
-			Integer temp = new Integer(String.valueOf(respID));
-			int rID = temp.intValue();
-			if (!responsible.contains(rID))
+			NameLeaf selectedName = (NameLeaf)selectedObject;
+			if(!responsible.contains(selectedName.getId()))
 			{
-				responsible.add(rID);
+				responsible.add(selectedName.getId());
 			}
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Namen aus und nicht das übergeordnete Gruppenelement.");
 		}
 		jTableResponsibles.setModel(new ResponsibleTableModel(responsible, meetingID));
     }//GEN-LAST:event_jButtonAddResponsibleActionPerformed
@@ -827,7 +832,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		jComboBoxTopic.setEnabled(false);
 		jButtonEditTopicAndArea.setVisible(false);
 		jTextHeading.setEnabled(false);
-		jTableEmployees.setEnabled(false);
+		jTreeEmployee.setEnabled(false);
 		jTableResponsibles.setEnabled(false);
 		jTableInvolved.setEnabled(false);
 		jButtonAddResponsible.setVisible(false);
@@ -2070,11 +2075,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private javax.swing.JLabel jLabelStatus;
     private javax.swing.JLabel jLabelTopicAndArea;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTableEmployees;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTableInvolved;
     private javax.swing.JTable jTableResponsibles;
     private javax.swing.JTextArea jTextAreaContent;
@@ -2082,5 +2086,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private javax.swing.JTextField jTextFieldMonth;
     private javax.swing.JTextField jTextFieldYear;
     private javax.swing.JTextField jTextHeading;
+    private javax.swing.JTree jTreeEmployee;
     // End of variables declaration//GEN-END:variables
 }
