@@ -4,6 +4,7 @@
  */
 package todo.joc;
 
+import todo.gui.GlobalError;
 import com.moyosoft.connector.com.*;
 import com.moyosoft.connector.exception.*;
 import com.moyosoft.connector.ms.outlook.*;
@@ -14,7 +15,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import todo.subgui.MeetingSubGUI;
 
 /**
  *
@@ -97,13 +97,13 @@ public class TaskRequest
 		{
 			Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(null, "COM-Fehler: " + ex.getMessage());
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		} catch (LibraryNotFoundException ex)
 		{
 			// Wenn dieser Fehler auftritt, fehlt die Datei 'moyocore.dll' im Java-Lib-Pfad
 			Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(null, "Die Java Outlook Bibliothek moyocore.dll konnte nicht gefunden werden.");
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 	}
 

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import todo.subgui.TodoSubGUI;
 import todo.dialog.DeleteTodoDialog;
 import todo.tablemodel.TodoTableModel;
@@ -161,8 +162,6 @@ public class TodoGUI extends javax.swing.JFrame
     }//GEN-LAST:event_jButtonEditMeetingActionPerformed
 
     private void jButtonNewMeetingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewMeetingActionPerformed
-		String meetingType = "";
-		String date = "";
 		TodoSubGUI newTodo = new TodoSubGUI(0, meetingID, "", "", 0, true);
 		newTodo.setVisible(true);
     }//GEN-LAST:event_jButtonNewMeetingActionPerformed
@@ -173,7 +172,17 @@ public class TodoGUI extends javax.swing.JFrame
 		{
 			int todoID = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), -1).toString());
 			int insertId = -1;
-			ResultSet results = null;
+
+			String copyReason = JOptionPane.showInputDialog(rootPane,
+					"Sie möchten ein Element kopieren.\nBitte geben Sie den " +
+					"Grund an, warum dieses bereits bestehendes Element kopiert werden soll.\n\n",
+					"Grund für Kopie", JOptionPane.QUESTION_MESSAGE);
+
+			if (copyReason == null)
+			{
+				return;
+			}
+			copyReason = "Kopiertes Element (" + todoID + "): " + copyReason;
 
 			DB_ToDo_Connect.openDB();
 			Connection con = DB_ToDo_Connect.getCon();
@@ -192,11 +201,11 @@ public class TodoGUI extends javax.swing.JFrame
 				String sql = "INSERT INTO Protokollelement (ToDoID, KategorieID, SitzungsID, StatusID, " +
 						"InstitutionsID, BereichID, TBZuordnung_ID, Thema, Inhalt, Bereich, " +
 						"Wiedervorlagedatum, WV_Sitzungsart, Verantwortliche, Beteiligte, updated, " +
-						"Überschrift, WiedervorlageGesetzt) SELECT " + insertId + " AS ToDoID, KategorieID, " +
+						"Überschrift, WiedervorlageGesetzt, Kopiergrund) SELECT " + insertId + " AS ToDoID, KategorieID, " +
 						"SitzungsID, 3 AS StatusID, InstitutionsID, BereichID, TBZuordnung_ID, Thema, " +
 						"Inhalt, Bereich, Wiedervorlagedatum, WV_Sitzungsart, Verantwortliche, Beteiligte, " +
-						"updated, Überschrift, WiedervorlageGesetzt FROM Protokollelement WHERE " +
-						"ToDoID = " + todoID;
+						"updated, Überschrift, WiedervorlageGesetzt, '" + copyReason +
+						"' AS Kopiergrund FROM Protokollelement WHERE ToDoID = " + todoID;
 				stmt.executeUpdate(sql);
 				stmt.close();
 

@@ -9,6 +9,7 @@
  */
 package todo.tablemodel;
 
+import todo.gui.GlobalError;
 import todo.core.Employee;
 import todo.dbcon.DB_Mitarbeiter_Connect;
 import java.util.ArrayList;
@@ -89,7 +90,6 @@ public class ResponsibleTableModel extends AbstractTableModel
 
 	protected void loadData()
 	{
-		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
 		DB_Mitarbeiter_Connect.openDB();
 		con = DB_Mitarbeiter_Connect.getCon();
 
@@ -115,7 +115,7 @@ public class ResponsibleTableModel extends AbstractTableModel
 			} catch (Exception ex)
 			{
 				Logger.getLogger(ResponsibleTableModel.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
 		}
 		DB_Mitarbeiter_Connect.closeDB(con);

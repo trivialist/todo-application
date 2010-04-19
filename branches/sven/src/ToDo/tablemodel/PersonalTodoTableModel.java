@@ -4,6 +4,7 @@
  */
 package todo.tablemodel;
 
+import todo.gui.GlobalError;
 import todo.core.Todo;
 import todo.core.Employee;
 import todo.dbcon.DB_ToDo_Connect;
@@ -122,7 +123,6 @@ public class PersonalTodoTableModel extends AbstractTableModel
 
 	protected void loadData()
 	{
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
@@ -143,11 +143,10 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			while (rst.next())
 			{
 				Todo td = new Todo();
-				java.util.Date rd = new java.util.Date();
 				td.setTodoID(rst.getInt("ToDoID"));
 				td.setTopic(rst.getString("Thema"));
 				td.setCategory(rst.getString("Kategorie"));
-				rd = rst.getDate("WV");
+				java.util.Date rd = rst.getDate("WV");
 				if (rd != null)
 				{
 					td.setReDate(rd);
@@ -161,14 +160,13 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		} catch (Exception ex)
 		{
 			Logger.getLogger(PersonalTodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 		DB_ToDo_Connect.closeDB(con);
 	}
 
 	protected void loadOpData()
 	{
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
@@ -187,11 +185,10 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			while (rst.next())
 			{
 				Todo td = new Todo();
-				java.util.Date rd = new java.util.Date();
 				td.setTodoID(rst.getInt("ToDoID"));
 				td.setTopic(rst.getString("Thema"));
 				td.setCategory(rst.getString("Kategorie"));
-				rd = rst.getDate("WV");
+				java.util.Date rd = rst.getDate("WV");
 				if (rd != null)
 				{
 					td.setReDate(rd);
@@ -205,7 +202,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		} catch (Exception ex)
 		{
 			Logger.getLogger(PersonalTodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 		DB_ToDo_Connect.closeDB(con);
 	}

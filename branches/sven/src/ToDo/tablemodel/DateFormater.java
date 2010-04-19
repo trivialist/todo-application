@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package todo.tablemodel;
 
 import java.text.SimpleDateFormat;
@@ -13,10 +12,11 @@ import java.util.Date;
  */
 public class DateFormater implements Comparable
 {
+
 	private Date displayDate;
 	private boolean dateNotSetFlag;
 	private SimpleDateFormat dateFormatterInstance = new SimpleDateFormat("dd.MM.yyyy");
-	
+
 	public DateFormater(Date displayDate, boolean dateNotSetFlag)
 	{
 		this.displayDate = displayDate;
@@ -37,7 +37,7 @@ public class DateFormater implements Comparable
 	@Override
 	public String toString()
 	{
-		if(!dateNotSetFlag)
+		if (!dateNotSetFlag)
 		{
 			return "kein";
 		}
@@ -56,9 +56,9 @@ public class DateFormater implements Comparable
 	{
 		DateFormater dateCompareObject = (DateFormater) compareObject;
 
-		if(!dateNotSetFlag)
+		if (!dateNotSetFlag)
 		{
-			if(!dateCompareObject.dateNotSetFlag)
+			if (!dateCompareObject.dateNotSetFlag)
 			{
 				return 0;
 			}
@@ -68,7 +68,7 @@ public class DateFormater implements Comparable
 			}
 		}
 
-		if(!dateCompareObject.dateNotSetFlag)
+		if (!dateCompareObject.dateNotSetFlag)
 		{
 			return -1;
 		}

@@ -5,6 +5,7 @@
  */
 package todo.subgui;
 
+import todo.gui.GlobalError;
 import todo.core.Memo;
 import todo.core.Topic;
 import todo.core.FinStatus;
@@ -26,12 +27,12 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.util.Calendar;
-import java.awt.Color;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 import todo.dbcon.drivers.MsAccessDriver;
+import todo.tablemodel.EmployeeTreeModel.Group;
 import todo.tablemodel.EmployeeTreeModel.NameLeaf;
 
 /**
@@ -70,7 +71,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		jTextFieldMonth.setVisible(false);
 		jTextFieldYear.setVisible(false);
 		jComboBoxTopic.setEnabled(false);
-		jLabelError.setVisible(false);
 		jButtonSendTask.setVisible(false);
 		jButtonMemo.setVisible(false);
 		if (status == 0)
@@ -86,6 +86,23 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		setCalendarChooser();
 		jTableInvolved.setAutoCreateRowSorter(true);
 		jTableResponsibles.setAutoCreateRowSorter(true);
+
+		EmployeeTreeModel tm = (EmployeeTreeModel) jTreeEmployee.getModel();
+		EmployeeTreeModel.Group etm = (Group) tm.getRoot();
+		ArrayList<Object> childs = etm.getChilds();
+		for (Object child : childs)
+		{
+			if (child.toString().equals("Verwaltung"))
+			{
+				Object path[] =
+				{
+					tm.getRoot(), child
+				};
+				TreePath tp = new TreePath(path);
+				jTreeEmployee.expandPath(tp);
+				break;
+			}
+		}
 	}
 
 	/** This method is called from within the constructor to
@@ -128,7 +145,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableInvolved = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
-        jLabelError = new javax.swing.JLabel();
         jButtonSendTask = new javax.swing.JButton();
         jComboBoxReMeetType = new javax.swing.JComboBox();
         jLabelReDateAndMeetType = new javax.swing.JLabel();
@@ -139,6 +155,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         jTextAreaContent = new javax.swing.JTextArea();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTreeEmployee = new javax.swing.JTree();
+        jTextField1 = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Protokolleinträge erstellen und bearbeiten");
@@ -324,7 +342,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
         jLabel9.setText("Beteiligte");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 520, -1, -1));
-        jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 690, 500, 30));
 
         jButtonSendTask.setText("Aufgabe erstellen");
         jButtonSendTask.setActionCommand("Aufgabe senden");
@@ -359,7 +376,14 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
         jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 420, 210, 250));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 550, 690));
+        jTextField1.setEditable(false);
+        jTextField1.setText("Normales Element");
+        jTextField1.setBorder(null);
+        jTextField1.setOpaque(false);
+        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 690, 540, 20));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 550, 10));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 550, 710));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -505,12 +529,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
     private void jButtonAddInvolvedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddInvolvedActionPerformed
 		TreePath path = jTreeEmployee.getSelectionPath();
-		Object selectedObject = path.getPath()[path.getPathCount()-1];
+		Object selectedObject = path.getPath()[path.getPathCount() - 1];
 
-		if(selectedObject instanceof NameLeaf)
+		if (selectedObject instanceof NameLeaf)
 		{
-			NameLeaf selectedName = (NameLeaf)selectedObject;
-			if(!involved.contains(selectedName.getId()))
+			NameLeaf selectedName = (NameLeaf) selectedObject;
+			if (!involved.contains(selectedName.getId()))
 			{
 				involved.add(selectedName.getId());
 			}
@@ -538,12 +562,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
     private void jButtonAddResponsibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddResponsibleActionPerformed
 		TreePath path = jTreeEmployee.getSelectionPath();
-		Object selectedObject = path.getPath()[path.getPathCount()-1];
+		Object selectedObject = path.getPath()[path.getPathCount() - 1];
 
-		if(selectedObject instanceof NameLeaf)
+		if (selectedObject instanceof NameLeaf)
 		{
-			NameLeaf selectedName = (NameLeaf)selectedObject;
-			if(!responsible.contains(selectedName.getId()))
+			NameLeaf selectedName = (NameLeaf) selectedObject;
+			if (!responsible.contains(selectedName.getId()))
 			{
 				responsible.add(selectedName.getId());
 			}
@@ -577,8 +601,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		{
 			if (!(String.valueOf(jComboBoxArea.getSelectedItem()).equals("Bitte wählen...")))
 			{
-				ArrayList<Topic> topicAL = new ArrayList<Topic>();
-				topicAL = getTopicsForArea(String.valueOf(jComboBoxArea.getSelectedItem()));
+				ArrayList<Topic> topicAL = getTopicsForArea(String.valueOf(jComboBoxArea.getSelectedItem()));
 				jComboBoxTopic.removeAllItems();
 				jComboBoxTopic.addItem("Bitte wählen...");
 				for (int i = 0; i < topicAL.size(); i++)
@@ -593,10 +616,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private void jCalendarComboBoxReDateStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCalendarComboBoxReDateStateChanged
 		if (evt.getSource() == jCalendarComboBoxReDate)
 		{
-			java.util.Date newReDate = new java.util.Date();
-			cal.set(jCalendarComboBoxReDate.getCalendar().get(cal.YEAR),
-					jCalendarComboBoxReDate.getCalendar().get(cal.MONTH) + 1,
-					jCalendarComboBoxReDate.getCalendar().get(cal.DAY_OF_MONTH));
+			cal.set(jCalendarComboBoxReDate.getCalendar().get(Calendar.YEAR),
+					jCalendarComboBoxReDate.getCalendar().get(Calendar.MONTH) + 1,
+					jCalendarComboBoxReDate.getCalendar().get(Calendar.DAY_OF_MONTH));
 			reDateChange = true;
 		}
     }//GEN-LAST:event_jCalendarComboBoxReDateStateChanged
@@ -672,18 +694,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 	public void initComboBoxes()
 	{
-		ArrayList<Category> catAL = new ArrayList<Category>();
-		ArrayList<Institution> inst = new ArrayList<Institution>();
-		ArrayList<FinStatus> stat = new ArrayList<FinStatus>();
-		ArrayList<Area> area = new ArrayList<Area>();
-		ArrayList<Topic> topicAL = new ArrayList<Topic>();
-		ArrayList<MeetingType> meetTypeAL = new ArrayList<MeetingType>();
-		catAL = getAllCategories();
-		inst = getAllInstitutions();
-		stat = getEveryStatus();
-		area = getAllAreas();
-		topicAL = getAllTopics();
-		meetTypeAL = getAllMeetingTypes();
+		ArrayList<Category> catAL = getAllCategories();
+		ArrayList<Institution> inst = getAllInstitutions();
+		ArrayList<FinStatus> stat = getEveryStatus();
+		ArrayList<Area> area = getAllAreas();
+		ArrayList<Topic> topicAL = getAllTopics();
+		ArrayList<MeetingType> meetTypeAL = getAllMeetingTypes();
 		for (int i = 0; i < catAL.size(); i++)
 		{
 			jComboBoxCategory.addItem(catAL.get(i).getCatName());
@@ -756,9 +772,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		initComboBoxes();
 		involved.clear();
 		responsible.clear();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -792,6 +807,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				td.setOthers(rst.getString("Beteiligte"));
 				getAllResponsibles();
 				getAllInvolved();
+
+				String copyReason = rst.getString("Kopiergrund");
+				if (copyReason != null)
+				{
+					jTextField1.setText(copyReason);
+				}
 			}
 			rst.close();
 			stmt.close();
@@ -799,9 +820,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		// Button zum Erstellen einer Outlook-Aufgabe einblenden wenn Kategorie=Aufgabe
 		if (isTask())
 		{
@@ -851,12 +872,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 */
 	public void newTodo()
 	{
-		java.util.Date reDate = new java.util.Date();
 		StringBuffer dbStringOthers = new StringBuffer("");
 		StringBuffer dbStringResponsible = new StringBuffer("");
 		int tbz_id = -1;
-		boolean tbz_ok = true;
-		jLabelError.setForeground(Color.red);
 
 		if (!String.valueOf(jComboBoxCategory.getSelectedItem()).equals("Bitte wählen..."))
 		{
@@ -930,7 +948,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			tbz_id = -1;
 		}
 
-		reDate = jCalendarComboBoxReDate.getCalendar().getTime();
+		java.util.Date reDate = jCalendarComboBoxReDate.getCalendar().getTime();
 		td.setReDate(reDate);
 
 		if (!jCheckBoxNoReDate.isSelected())
@@ -958,7 +976,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		}
 		td.setResponse(String.valueOf(dbStringResponsible));
 		//if(tbz_ok) {
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 		Date dat = new Date(td.getReDate().getTime());
@@ -984,7 +1001,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 		DB_ToDo_Connect.closeDB(con);
 		//}
@@ -997,7 +1014,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 */
 	public void editTodo()
 	{
-		java.util.Date reDate = new java.util.Date();
 		StringBuffer dbStringOthers = new StringBuffer("");
 		StringBuffer dbStringResponsible = new StringBuffer("");
 		int tbz_id = -1;
@@ -1065,7 +1081,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			tbz_id = -1;
 		}
 
-		reDate = jCalendarComboBoxReDate.getCalendar().getTime();
+		java.util.Date reDate = jCalendarComboBoxReDate.getCalendar().getTime();
 		td.setReDate(reDate);
 
 		if (!jCheckBoxNoReDate.isSelected())
@@ -1134,7 +1150,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "UPDATE Protokollelement SET KategorieID = " + td.getCategoryID() + 
+			String sql = "UPDATE Protokollelement SET KategorieID = " + td.getCategoryID() +
 					", SitzungsID = " + meetingID + ", StatusID = " + td.getStatusID() +
 					", InstitutionsID = " + td.getInstitutionID() + ", BereichID = " + td.getAreaID() +
 					", Thema = '" + td.getTopic() + "', Inhalt = '" + td.getContent() +
@@ -1149,7 +1165,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 		DB_ToDo_Connect.closeDB(con);
 	}
@@ -1157,9 +1173,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public ArrayList getAllCategories()
 	{
 		ArrayList<Category> catObjects = new ArrayList<Category>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1177,18 +1192,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return catObjects;
 	}
 
 	public ArrayList getAllInstitutions()
 	{
 		ArrayList<Institution> instObjects = new ArrayList<Institution>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1205,18 +1219,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return instObjects;
 	}
 
 	public ArrayList getEveryStatus()
 	{
 		ArrayList<FinStatus> statObjects = new ArrayList<FinStatus>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1233,18 +1246,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return statObjects;
 	}
 
 	public ArrayList getAllAreas()
 	{
 		ArrayList<Area> areaObjects = new ArrayList<Area>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1262,18 +1274,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return areaObjects;
 	}
 
 	public ArrayList getAllTopics()
 	{
 		ArrayList<Topic> topicObjects = new ArrayList<Topic>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1290,18 +1301,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return topicObjects;
 	}
 
 	public ArrayList getAllMeetingTypes()
 	{
 		ArrayList<MeetingType> meetingTypeObjects = new ArrayList<MeetingType>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1318,9 +1328,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return meetingTypeObjects;
 	}
 
@@ -1334,9 +1344,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public ArrayList getAreasForTopic(String topicName)
 	{
 		ArrayList<Area> areaObjects = new ArrayList<Area>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1353,9 +1362,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 
 		for (int i = 0; i < areaObjects.size(); i++)
 		{
@@ -1375,9 +1384,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public ArrayList getTopicsForArea(String areaName)
 	{
 		ArrayList<Topic> topicObjects = new ArrayList<Topic>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1394,9 +1402,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 
 		for (int i = 0; i < topicObjects.size(); i++)
 		{
@@ -1414,9 +1422,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public int getCatIDByName(String catName)
 	{
 		int id = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1433,9 +1440,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return id;
 	}
 
@@ -1447,9 +1454,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public int getInstIDByName(String instName)
 	{
 		int id = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1466,9 +1472,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return id;
 	}
 
@@ -1480,9 +1486,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public int getStatIDByName(String statName)
 	{
 		int id = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1499,9 +1504,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return id;
 	}
 
@@ -1513,9 +1518,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public int getAreaIDByName(String areaName)
 	{
 		int id = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1532,9 +1536,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return id;
 	}
 
@@ -1546,9 +1550,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public int getTopicIDByName(String topicName)
 	{
 		int id = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1565,18 +1568,17 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return id;
 	}
 
 	public int getReMeetTypeByName(String meetType)
 	{
 		int id = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1593,9 +1595,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return id;
 	}
 
@@ -1608,9 +1610,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public int getTBZ_ID_ByAreaAndTopicID(int areaID, int topicID)
 	{
 		int tbz_id = -1;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1629,9 +1630,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return tbz_id;
 	}
 
@@ -1643,9 +1644,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getCatNameByID(int id)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1662,9 +1662,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1676,9 +1676,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getInstNameByID(int id)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1695,9 +1694,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1709,9 +1708,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getStatNameByID(int id)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1728,9 +1726,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1742,9 +1740,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getAreaNameByTBZ_ID(int tbz_id)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1770,9 +1767,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1784,9 +1781,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getTopicNameByTBZ_ID(int tbz_id)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1812,9 +1808,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1826,9 +1822,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getTopicNameByID(int topicID)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1845,9 +1840,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1859,9 +1854,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getAreaNameByID(int areaID)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1878,9 +1872,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1892,9 +1886,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getMeetingTypeByID(int meetTypeID)
 	{
 		String name = "";
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		if (meetTypeID == -1)
 		{
@@ -1919,10 +1912,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			} catch (Exception ex)
 			{
 				Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return name;
 	}
 
@@ -1956,7 +1949,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 */
 	public void getAllResponsibles()
 	{
-		Vector respVec = new Vector();
 		if (td.getRespons() != null)
 		{
 			StringTokenizer tokenizer = new StringTokenizer(td.getRespons(), ", ");
@@ -1985,9 +1977,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	public String getMailAddressByEmpID(int empID)
 	{
 		String mail = "";
-		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_Mitarbeiter_Connect.openDB();
+		con = DB_Mitarbeiter_Connect.getCon();
 
 		try
 		{
@@ -2008,9 +1999,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return mail;
 	}
 
@@ -2070,7 +2061,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabelError;
     private javax.swing.JLabel jLabelReDateAndMeetType;
     private javax.swing.JLabel jLabelStatus;
     private javax.swing.JLabel jLabelTopicAndArea;
@@ -2079,9 +2069,11 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTableInvolved;
     private javax.swing.JTable jTableResponsibles;
     private javax.swing.JTextArea jTextAreaContent;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextFieldDay;
     private javax.swing.JTextField jTextFieldMonth;
     private javax.swing.JTextField jTextFieldYear;

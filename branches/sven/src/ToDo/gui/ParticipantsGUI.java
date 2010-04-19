@@ -11,11 +11,13 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.sql.*;
 import java.lang.String.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 import todo.tablemodel.EmployeeTreeModel;
+import todo.tablemodel.EmployeeTreeModel.Group;
 import todo.tablemodel.EmployeeTreeModel.NameLeaf;
 
 /**
@@ -39,6 +41,23 @@ public class ParticipantsGUI extends javax.swing.JFrame
 		initComponents();
 		jTextAreaOtherParticipants.setText(others);
 		jTable2.setAutoCreateRowSorter(true);
+
+		EmployeeTreeModel tm = (EmployeeTreeModel) jTreeParticipiants.getModel();
+		EmployeeTreeModel.Group etm = (Group) tm.getRoot();
+		ArrayList<Object> childs = etm.getChilds();
+		for (Object child : childs)
+		{
+			if (child.toString().equals("Verwaltung"))
+			{
+				Object path[] =
+				{
+					tm.getRoot(), child
+				};
+				TreePath tp = new TreePath(path);
+				jTreeParticipiants.expandPath(tp);
+				break;
+			}
+		}
 	}
 
 	/** This method is called from within the constructor to
@@ -215,9 +234,8 @@ public class ParticipantsGUI extends javax.swing.JFrame
 	 */
 	public void saveParticipants(int meetingID, String part, String othPart)
 	{
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -228,9 +246,9 @@ public class ParticipantsGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(ParticipantsGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAddParticipant;

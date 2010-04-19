@@ -9,6 +9,7 @@
  */
 package todo.tablemodel;
 
+import todo.gui.GlobalError;
 import todo.core.Meeting;
 import todo.dbcon.DB_ToDo_Connect;
 import java.util.ArrayList;
@@ -93,7 +94,6 @@ public class MeetingTableModel extends AbstractTableModel
 
 	protected void loadData(String keyword, String field)
 	{
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
@@ -105,7 +105,7 @@ public class MeetingTableModel extends AbstractTableModel
 				field = "Name";
 			}
 
-			if(field.equals("Jahr"))
+			if (field.equals("Jahr"))
 			{
 				whereCondition = "AND Datum BETWEEN #01/01/" + keyword + "# AND #31/12/" + keyword + "#";
 			}
@@ -146,7 +146,7 @@ public class MeetingTableModel extends AbstractTableModel
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingTableModel.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 		DB_ToDo_Connect.closeDB(con);
 	}

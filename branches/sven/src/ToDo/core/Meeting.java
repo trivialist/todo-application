@@ -24,25 +24,25 @@ public class Meeting
 {
 
 	@DbId(name = "SitzungsdatenID")
-	public int meetingID;
+	private int meetingID;
 	@DbColumn(name = "Datum")
-	public Date date;
+	private Date date;
 	@DbColumn(name = "Ort")
-	public String place;
+	private String place;
 	@DbColumn(name = "Tagesordnung")
-	public int prot;
+	private int prot;
 	@DbColumn(name = "Teilnehmer")
-	public String partic;
+	private String partic;
 	@DbColumn(name = "SitzungsartID")
-	public int meetingTypeID;
+	private int meetingTypeID;
 	@DbColumn(name = "Sonstige")
-	public String otherPart;
+	private String otherPart;
 	@DbColumn(name = "Protokollant")
-	public int recorder;
+	private int recorder;
 	@DbColumn(name = "Geloescht")
-	public boolean deleted;
+	private boolean deleted;
 	//unknown
-	public String meetingType;
+	private String meetingType;
 
 	/** Creates a new instance of Meeting */
 	public Meeting()
@@ -142,5 +142,25 @@ public class Meeting
 		setDate(Calendar.getInstance().getTime());
 		setMeetingTypeID(0);
 		setPlace("");
+	}
+
+	public int getRecorder()
+	{
+		return recorder;
+	}
+
+	public void setRecorder(int recorder)
+	{
+		this.recorder = recorder;
+	}
+
+	public boolean isDeleted()
+	{
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted)
+	{
+		this.deleted = deleted;
 	}
 }

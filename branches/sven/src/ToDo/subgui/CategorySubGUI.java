@@ -5,6 +5,7 @@
  */
 package todo.subgui;
 
+import todo.gui.GlobalError;
 import todo.core.Category;
 import todo.dbcon.DB_ToDo_Connect;
 import java.sql.*;
@@ -124,11 +125,10 @@ public class CategorySubGUI extends javax.swing.JFrame
 	{
 		catName = jTextFieldCatName.getText();
 		catDescription = jTextFieldCatDescription.getText();
-		if (catName != "")
+		if (!catName.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 			try
 			{
 				Statement stmt = con.createStatement();
@@ -139,9 +139,9 @@ public class CategorySubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(CategorySubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{
@@ -153,11 +153,10 @@ public class CategorySubGUI extends javax.swing.JFrame
 	{
 		catName = jTextFieldCatName.getText();
 		catDescription = jTextFieldCatDescription.getText();
-		if (catName != "")
+		if (!catName.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -170,9 +169,9 @@ public class CategorySubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(CategorySubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{

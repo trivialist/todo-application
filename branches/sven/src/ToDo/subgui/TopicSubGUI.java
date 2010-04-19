@@ -10,6 +10,7 @@
  */
 package todo.subgui;
 
+import todo.gui.GlobalError;
 import todo.core.Topic;
 import todo.dbcon.DB_ToDo_Connect;
 import java.sql.*;
@@ -148,11 +149,10 @@ public class TopicSubGUI extends javax.swing.JFrame
 	{
 		name = jTextFieldTopicName.getText();
 		description = jTextFieldTopicDescription.getText();
-		if (name != "")
+		if (!name.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 			try
 			{
 				Statement stmt = con.createStatement();
@@ -163,9 +163,9 @@ public class TopicSubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(TopicSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{
@@ -177,11 +177,10 @@ public class TopicSubGUI extends javax.swing.JFrame
 	{
 		name = jTextFieldTopicName.getText();
 		description = jTextFieldTopicDescription.getText();
-		if (name != "")
+		if (!name.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -194,9 +193,9 @@ public class TopicSubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(TopicSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{

@@ -10,6 +10,7 @@
  */
 package todo.dialog;
 
+import todo.gui.GlobalError;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -33,8 +34,7 @@ public class TodoNoteDialog extends javax.swing.JDialog
 		super(parent, modal);
 		initComponents();
 
-		ArrayList<Employee> allEmployees = new ArrayList<Employee>();
-		allEmployees = getAllEmployees();
+		ArrayList<Employee> allEmployees = getAllEmployees();
 		for (int i = 0; i < allEmployees.size(); i++)
 		{
 			jComboBoxUser.addItem(allEmployees.get(i).getLastName() + ", " + allEmployees.get(i).getName());
@@ -132,12 +132,12 @@ public class TodoNoteDialog extends javax.swing.JDialog
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
 	{//GEN-HEADEREND:event_jButton1ActionPerformed
-		if(jTextAreaNote.getText().equals(""))
+		if (jTextAreaNote.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(rootPane, "Das Feld für Bemerkungen bzw. Notizen muss ausgefüllt werden.");
 			return;
 		}
-	
+
 		dispose();
 	}//GEN-LAST:event_jButton1ActionPerformed
 
@@ -178,7 +178,7 @@ public class TodoNoteDialog extends javax.swing.JDialog
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoNoteDialog.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 		DB_Mitarbeiter_Connect.closeDB(con);
 		return employeeObjects;

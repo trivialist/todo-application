@@ -5,6 +5,7 @@
  */
 package todo.subgui;
 
+import todo.gui.GlobalError;
 import todo.core.Employee;
 import todo.core.Meeting;
 import todo.core.MeetingType;
@@ -202,10 +203,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
     private void jCalendarComboBoxDateStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCalendarComboBoxDateStateChanged
 		if (evt.getSource() == jCalendarComboBoxDate)
 		{
-			java.util.Date newReDate = new java.util.Date();
-			cal.set(jCalendarComboBoxDate.getCalendar().get(cal.YEAR),
-					jCalendarComboBoxDate.getCalendar().get(cal.MONTH) + 1,
-					jCalendarComboBoxDate.getCalendar().get(cal.DAY_OF_MONTH));
+			cal.set(jCalendarComboBoxDate.getCalendar().get(Calendar.YEAR),
+					jCalendarComboBoxDate.getCalendar().get(Calendar.MONTH) + 1,
+					jCalendarComboBoxDate.getCalendar().get(Calendar.DAY_OF_MONTH));
 			reDateChange = true;
 		}
 }//GEN-LAST:event_jCalendarComboBoxDateStateChanged
@@ -214,10 +214,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	{
 		jComboBoxMeetingType.addItem("Bitte wählen...");
 		jComboBoxProt.addItem("Bitte wählen...");
-		ArrayList<Employee> emp = new ArrayList<Employee>();
-		ArrayList<MeetingType> mt = new ArrayList<MeetingType>();
-		mt = getAllMeetingTypes();
-		emp = getAllEmployees();
+		ArrayList<MeetingType> mt = getAllMeetingTypes();
+		ArrayList<Employee> emp = getAllEmployees();
 		for (int i = 0; i < mt.size(); i++)
 		{
 			jComboBoxMeetingType.addItem(mt.get(i).getMeetingType());
@@ -234,10 +232,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	 */
 	public void editMeetingInit()
 	{
-		ArrayList<Employee> emp = new ArrayList<Employee>();
-		ArrayList<MeetingType> mt = new ArrayList<MeetingType>();
-		mt = getAllMeetingTypes();
-		emp = getAllEmployees();
+		ArrayList<MeetingType> mt = getAllMeetingTypes();
+		ArrayList<Employee> emp = getAllEmployees();
 		for (int i = 0; i < mt.size(); i++)
 		{
 			jComboBoxMeetingType.addItem(mt.get(i).getMeetingType());
@@ -273,9 +269,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		}
 		if (!meet.getMeetingType().equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 			try
 			{
 				Statement stmt = con.createStatement();
@@ -290,9 +285,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{
@@ -321,9 +316,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		}
 		if (!meet.getMeetingType().equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 			try
 			{
 				Statement stmt = con.createStatement();
@@ -335,9 +329,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{
@@ -351,9 +345,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	public String getNameOfProt(int protID)
 	{
 		String protName = "";
-		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
-		dbCon.openDB();
-		con2 = dbCon.getCon();
+		DB_Mitarbeiter_Connect.openDB();
+		con2 = DB_Mitarbeiter_Connect.getCon();
 
 		try
 		{
@@ -370,9 +363,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return protName;
 	}
 
@@ -382,9 +375,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	public ArrayList getAllEmployees()
 	{
 		ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
-		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_Mitarbeiter_Connect.openDB();
+		con = DB_Mitarbeiter_Connect.getCon();
 
 		try
 		{
@@ -402,9 +394,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return employeeObjects;
 	}
 
@@ -414,9 +406,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	public ArrayList getAllMeetingTypes()
 	{
 		ArrayList<MeetingType> meetingTypeObjects = new ArrayList<MeetingType>();
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -434,17 +425,16 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return meetingTypeObjects;
 	}
 
 	public void getMeetingData()
 	{
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -480,17 +470,16 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 	}
 
 	public int getMeetingTypeIDByName(String meetingType)
 	{
 		int mtID = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -507,18 +496,17 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return mtID;
 	}
 
 	public int getProtIDByName(String protName)
 	{
 		int prID = 0;
-		DB_Mitarbeiter_Connect dbCon = new DB_Mitarbeiter_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_Mitarbeiter_Connect.openDB();
+		con = DB_Mitarbeiter_Connect.getCon();
 
 		String name = "";
 		String lastName = "";
@@ -553,9 +541,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		return prID;
 	}
 
@@ -585,9 +573,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	public void getMeetingID()
 	{
 		int mID = 0;
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-		dbCon.openDB();
-		con = dbCon.getCon();
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -604,9 +591,9 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
-		dbCon.closeDB(con);
+		DB_ToDo_Connect.closeDB(con);
 		meetingID = mID;
 	}
 

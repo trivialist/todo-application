@@ -23,41 +23,43 @@ public class Todo
 {
 
 	@DbId(name = "ToDoID")
-	public int todoID;
+	private int todoID;
 	@DbColumn(name = "KategorieID")
-	public int categoryID;
+	private int categoryID;
 	@DbColumn(name = "SitzungsID")
-	public int meetingID;
+	private int meetingID;
 	@DbColumn(name = "StatusID")
-	public int statusID;
+	private int statusID;
 	@DbColumn(name = "InstitutionID")
-	public int institutionID;
+	private int institutionID;
 	@DbColumn(name = "TBZuordnung_ID")
-	public int tbz_id;
+	private int tbz_id;
 	@DbColumn(name = "BereichID")
-	public int areaID;
+	private int areaID;
 	@DbColumn(name = "Bereich")
-	public String area;
+	private String area;
 	@DbColumn(name = "Thema")
-	public String topic;
+	private String topic;
 	@DbColumn(name = "Inhalt")
-	public String content;
+	private String content;
 	@DbColumn(name = "Wiedervorlagedatum")
-	public Date reDate;
+	private Date reDate;
 	@DbColumn(name = "WV_Sitzungsart")
-	public int reMeetType;
+	private int reMeetType;
 	@DbColumn(name = "Verantwortliche")
-	public String responsible;
+	private String responsible;
 	@DbColumn(name = "Beteiligte")
-	public String involved;
+	private String involved;
 	@DbColumn(name = "Überschrift")
-	public String heading;
+	private String heading;
 	@DbColumn(name = "WiedervorlageGesetzt")
-	public boolean reMeetingEnabled;
+	private boolean reMeetingEnabled;
 	@DbColumn(name = "updated")
-	public boolean updated;
+	private boolean updated;
 	@DbColumn(name = "Geloescht")
-	public boolean deleted;
+	private boolean deleted;
+	@DbColumn(name = "Kopiergrund")
+	private String copyReason;
 	//unknown
 	public String category;
 	public String status;
@@ -297,5 +299,35 @@ public class Todo
 		category = "";
 		status = "";
 		heading = "";
+	}
+
+	public String getCopyReason()
+	{
+		return copyReason;
+	}
+
+	public void setCopyReason(String copyReason)
+	{
+		this.copyReason = copyReason;
+	}
+
+	public boolean isUpdated()
+	{
+		return updated;
+	}
+
+	public void setUpdated(boolean updated)
+	{
+		this.updated = updated;
+	}
+
+	public boolean isDeleted()
+	{
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted)
+	{
+		this.deleted = deleted;
 	}
 }

@@ -5,6 +5,7 @@
  */
 package todo.subgui;
 
+import todo.gui.GlobalError;
 import todo.core.MeetingType;
 import todo.dbcon.DB_ToDo_Connect;
 import java.sql.*;
@@ -114,11 +115,10 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame
 	public void newMeetingType()
 	{
 		meetingType = jTextFieldMeetingType.getText();
-		if (meetingType != "")
+		if (!meetingType.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 			try
 			{
 				Statement stmt = con.createStatement();
@@ -128,9 +128,9 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(MeetingTypeSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{
@@ -141,11 +141,10 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame
 	public void editMeetingType()
 	{
 		meetingType = jTextFieldMeetingType.getText();
-		if (meetingType != "")
+		if (!meetingType.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -156,9 +155,9 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(MeetingSearchSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{

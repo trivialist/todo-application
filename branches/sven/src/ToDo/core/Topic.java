@@ -17,11 +17,11 @@ public class Topic
 {
 
 	@DbId(name = "ThemaID")
-	public int topicID;
+	private int topicID;
 	@DbColumn(name = "Name")
-	public String name;
+	private String name;
 	@DbColumn(name = "Beschreibung")
-	public String description;
+	private String description;
 
 	/** Creates a new instance of Topic */
 	public Topic(int topicID, String name, String description)

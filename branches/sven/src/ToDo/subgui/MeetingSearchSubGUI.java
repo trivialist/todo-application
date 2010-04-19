@@ -21,6 +21,7 @@ import todo.gui.MeetingGUI;
  */
 public class MeetingSearchSubGUI extends javax.swing.JFrame
 {
+
 	private MeetingGUI parentGui;
 
 	/** Creates new form MeetingSearchSubGUI */
@@ -104,24 +105,23 @@ public class MeetingSearchSubGUI extends javax.swing.JFrame
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
 	{//GEN-HEADEREND:event_jButton1ActionPerformed
-		if(jComboBox1.getSelectedItem().toString().equals("Jahr"))
+		if (jComboBox1.getSelectedItem().toString().equals("Jahr"))
 		{
 			int jahr = 0;
 			try
 			{
 				jahr = Integer.parseInt(jTextField1.getText());
-			}
-			catch(NumberFormatException ex)
+			} catch (NumberFormatException ex)
 			{
 				Logger.getLogger(MeetingSearchSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				JOptionPane.showMessageDialog(parentGui, "Ihre Eingabe kann in keine Zahl, in diesem "+
+				JOptionPane.showMessageDialog(parentGui, "Ihre Eingabe kann in keine Zahl, in diesem " +
 						"Fall eine Jahreszahl, umgewandelt werden.");
 				return;
 			}
 
-			if(jahr < 1990 || jahr > 2020)
+			if (jahr < 1990 || jahr > 2020)
 			{
-				JOptionPane.showMessageDialog(parentGui, "Bitte geben Sie ein gültiges Jahr im Format JJJJ "+
+				JOptionPane.showMessageDialog(parentGui, "Bitte geben Sie ein gültiges Jahr im Format JJJJ " +
 						"an. Beispiel: 2010");
 				return;
 			}

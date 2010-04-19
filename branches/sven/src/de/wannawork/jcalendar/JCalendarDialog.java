@@ -92,8 +92,6 @@ public class JCalendarDialog {
          * @param MessageOption that was pressed
          */
 	private int showConfirmDialog() {
-		JTextField tf = new JTextField();
-
 		JPanel calPanel = new JPanel();
 		FlowLayout layout = new FlowLayout();
 		layout.setAlignment(FlowLayout.LEFT);

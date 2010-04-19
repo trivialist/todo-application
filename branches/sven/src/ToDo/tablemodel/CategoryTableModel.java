@@ -9,6 +9,7 @@
  */
 package todo.tablemodel;
 
+import todo.gui.GlobalError;
 import todo.core.Category;
 import todo.dbcon.DB_ToDo_Connect;
 import java.util.ArrayList;
@@ -84,7 +85,6 @@ public class CategoryTableModel extends AbstractTableModel
 
 	protected void loadData()
 	{
-		DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
@@ -106,7 +106,7 @@ public class CategoryTableModel extends AbstractTableModel
 		} catch (Exception ex)
 		{
 			Logger.getLogger(CategoryTableModel.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 		DB_ToDo_Connect.closeDB(con);
 	}

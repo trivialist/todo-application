@@ -5,6 +5,7 @@
  */
 package todo.subgui;
 
+import todo.gui.GlobalError;
 import todo.core.Area;
 import todo.dbcon.DB_ToDo_Connect;
 import java.sql.*;
@@ -127,9 +128,8 @@ public class AreaSubGUI extends javax.swing.JFrame
 		areaDescription = jTextFieldAreaDescription.getText();
 		if (!areaName.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 			try
 			{
 				Statement stmt = con.createStatement();
@@ -143,7 +143,7 @@ public class AreaSubGUI extends javax.swing.JFrame
 				JOptionPane.showMessageDialog(null, "Abfragefehler in Prozedur: newArea(), class AreaSubGUI" +
 						ex.toString(), "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{
@@ -157,9 +157,8 @@ public class AreaSubGUI extends javax.swing.JFrame
 		areaDescription = jTextFieldAreaDescription.getText();
 		if (!areaName.equals(""))
 		{
-			DB_ToDo_Connect dbCon = new DB_ToDo_Connect();
-			dbCon.openDB();
-			con = dbCon.getCon();
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -172,9 +171,9 @@ public class AreaSubGUI extends javax.swing.JFrame
 			} catch (Exception ex)
 			{
 				Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				System.exit(1);
+				GlobalError.showErrorAndExit();
 			}
-			dbCon.closeDB(con);
+			DB_ToDo_Connect.closeDB(con);
 		}
 		else
 		{

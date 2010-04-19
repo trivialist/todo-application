@@ -9,6 +9,7 @@
  */
 package todo.dbcon;
 
+import todo.gui.GlobalError;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +40,7 @@ public class DB_ToDo_Connect
 		} catch (Exception ex)
 		{
 			Logger.getLogger(DB_ToDo_Connect.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 
 	}
@@ -52,7 +53,7 @@ public class DB_ToDo_Connect
 		} catch (Exception ex)
 		{
 			Logger.getLogger(DB_ToDo_Connect.class.getName()).log(Level.SEVERE, null, ex);
-			System.exit(1);
+			GlobalError.showErrorAndExit();
 		}
 	}
 
