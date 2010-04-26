@@ -119,6 +119,6 @@ public class MsAccessDriver extends DbDriver
 			throw new DbStorageException("The MsAccessDriver was unable to set the given value(s) into the destination object.");
 		}
 
-		throw new DbStorageException("The MsAccessDriver was unable to set the given value(s) into the destination object.");
+		//throw new DbStorageException("The MsAccessDriver was unable to set the given value(s) into the destination object.");
 	}
 }

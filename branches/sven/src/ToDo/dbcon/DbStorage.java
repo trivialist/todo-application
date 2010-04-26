@@ -1,11 +1,8 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * $Id$
  */
 package todo.dbcon;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import todo.dbcon.annotations.DbId;
 import todo.dbcon.annotations.DbColumn;
 import todo.dbcon.annotations.DbTable;
@@ -18,34 +15,33 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import todo.dbcon.StorageSession.STORAGE_STATUS;
 import todo.dbcon.annotations.DbRelation;
 
 /**
+ * Main class for persistence
+ *
+ * @author Sven Skrabal
+ *
  * @todo multiple generated fields
  * @todo multiple primary keys
  * @todo save status in hidden field: changed/unchanged fields
  * @todo better load behaviour
  * @todo load with sort criterias
- * @todo null-pointer checks
  * @todo DbStorage/DB must be a singleton
- * 
- * @author Sven Skrabal
+ * @todo switch to prepared statements
+ * @todo add relations
+ * @todo support collection/arrays
+ * @todo use generics
+ * @todo close db connections properly
+ *
  */
 public class DbStorage
 {
-
-	public static class StorageSession
-	{
-
-		public String tableName = "";
-		public HashMap<String, Field> columnFields = new HashMap<String, Field>();
-		public String generatedColumn = "";
-		public Field generatedField = null;
-		public int generatedId = -1;
-	}
 	private boolean debugEnabled = false;
 	private DbDriver currentDriver = null;
 	private Connection databaseConnection = null;
+	private StorageSessionManager sessionManager = StorageSessionManager.getInstance();
 
 	public void setDbDriver(DbDriver dbDriver)
 	{
@@ -57,10 +53,9 @@ public class DbStorage
 		databaseConnection = newConnection;
 	}
 
-	private void findFields(Object objectToScan, StorageSession session) throws DbStorageException
+	private void findFields(Class<?> objectClass, StorageSession session) throws DbStorageException
 	{
 		//check for proper input data
-		Class<?> objectClass = (Class<?>) objectToScan.getClass();
 		if (!objectClass.isAnnotationPresent(DbTable.class))
 		{
 			throw new DbStorageException("Referenced object hasn't got the right annotation's present.");
@@ -82,6 +77,10 @@ public class DbStorage
 			{
 				session.generatedColumn = currentField.getAnnotation(DbId.class).name();
 				session.generatedField = currentField;
+			}
+			else if (currentField.isAnnotationPresent(DbRelation.class))
+			{
+				session.relationFields.add(currentField);
 			}
 		}
 	}
@@ -109,18 +108,6 @@ public class DbStorage
 		} catch (SQLException ex)
 		{
 			throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
-		} finally
-		{
-			try
-			{
-				if (databaseStatement != null)
-				{
-					databaseStatement.close();
-				}
-			} catch (SQLException ex)
-			{
-				throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
-			}
 		}
 
 		return returnResult;
@@ -148,6 +135,7 @@ public class DbStorage
 				ResultSet resultSet = databaseStatement.executeQuery("SELECT MAX(" + session.generatedColumn + ") FROM " + session.tableName);
 				resultSet.next();
 				session.generatedId = resultSet.getInt(1);
+				resultSet.close();
 			}
 
 			databaseConnection.commit();
@@ -156,7 +144,8 @@ public class DbStorage
 		} catch (SQLException ex)
 		{
 			throw new DbStorageException("The storage engine was unable to serve your request. Reason:\n" + ex.getMessage());
-		} finally
+		}
+		finally
 		{
 			try
 			{
@@ -175,36 +164,78 @@ public class DbStorage
 
 	public StorageSession insert(Object objectToInsert) throws DbStorageException
 	{
-		StorageSession session = new StorageSession();
-		findFields(objectToInsert, session);
-		String sqlClause = createInsertStatement(objectToInsert, session);
-		runSqlStatement(sqlClause, true, session);
+		StorageSession session = sessionManager.registerObject(objectToInsert);
+
+		if(session.currentStatus == STORAGE_STATUS.UNDEFINED)
+		{
+			findFields(objectToInsert.getClass(), session);
+			String sqlClause = createInsertStatement(objectToInsert, session);
+			runSqlStatement(sqlClause, true, session);
+
+			session.currentStatus = STORAGE_STATUS.STORED;
+		}
 
 		return session;
 	}
 
 	public StorageSession update(Object objectToUpdate) throws DbStorageException
 	{
-		StorageSession session = new StorageSession();
-		findFields(objectToUpdate, session);
+		StorageSession session = sessionManager.registerObject(objectToUpdate);
+
+		if(session.currentStatus != STORAGE_STATUS.LOADED || session.currentStatus != STORAGE_STATUS.STORED)
+		{
+			throw new DbStorageException("Object cannot be updated. It either wasnt loaded from the database nor it was saved before.");
+		}
+
+		findFields(objectToUpdate.getClass(), session);
 		String sqlClause = createUpdateStatement(objectToUpdate, session);
 		runSqlStatement(sqlClause, false, session);
+		session.currentStatus = STORAGE_STATUS.STORED;
 
 		return session;
 	}
 
 	public void delete(Object objectToDelete) throws DbStorageException
 	{
-		StorageSession session = new StorageSession();
-		findFields(objectToDelete, session);
+		StorageSession session = sessionManager.registerObject(objectToDelete);
+
+		if(session.currentStatus != STORAGE_STATUS.LOADED || session.currentStatus != STORAGE_STATUS.STORED)
+		{
+			throw new DbStorageException("Object cannot be deleted. It either wasnt loaded from the database nor it was saved before.");
+		}
+
+		findFields(objectToDelete.getClass(), session);
 		String sqlClause = createDeleteStatement(objectToDelete, session);
 		runSqlStatement(sqlClause, false, session);
+		session.currentStatus = STORAGE_STATUS.STORED;
+	}
+
+	public Object loadFirst(Object objectClass, HashMap<String, Object> whereConditions) throws DbStorageException
+	{
+		return load(objectClass, whereConditions).get(0);
 	}
 
 	public LinkedList<Object> load(Object objectClass, HashMap<String, Object> whereConditions) throws DbStorageException
 	{
-		StorageSession session = new StorageSession();
-		findFields(objectClass, session);
+		Object newObjectInstance = null;
+		try
+		{
+			newObjectInstance = objectClass.getClass().newInstance();
+		} catch (InstantiationException ex)
+		{
+			throw new DbStorageException(ex.getMessage());
+		} catch (IllegalAccessException ex)
+		{
+			throw new DbStorageException(ex.getMessage());
+		}
+
+		if(newObjectInstance == null)
+		{
+			throw new DbStorageException("Null-pointer found.");
+		}
+
+		StorageSession session = sessionManager.registerObject(newObjectInstance);
+		findFields(objectClass.getClass(), session);
 
 		LinkedList<Object> returnList = new LinkedList<Object>();
 		String sqlClause = createSelectStatement(objectClass, whereConditions, session);
@@ -212,6 +243,7 @@ public class DbStorage
 		try
 		{
 			ResultSet resultSet = runSqlQuery(sqlClause);
+			session.currentStatus = STORAGE_STATUS.LOADED;
 
 			if (resultSet == null)
 			{
@@ -220,28 +252,18 @@ public class DbStorage
 
 			while (resultSet.next())
 			{
-				try
+				for (String columnName : session.columnFields.keySet())
 				{
-					Object newObjectInstance = objectClass.getClass().newInstance();
-
-					for (String columnName : session.columnFields.keySet())
-					{
-						Field columnField = session.columnFields.get(columnName);
-						currentDriver.setObjectValue(columnField, resultSet.getObject(columnName), newObjectInstance);
-					}
-
-					returnList.addLast(newObjectInstance);
-
-				} catch (InstantiationException ex)
-				{
-					throw new DbStorageException(ex.toString());
-				} catch (IllegalAccessException ex)
-				{
-					throw new DbStorageException(ex.toString());
+					Field columnField = session.columnFields.get(columnName);
+					currentDriver.setObjectValue(columnField, resultSet.getObject(columnName), newObjectInstance);
 				}
+				
+				session.generatedId = resultSet.getInt(session.generatedColumn);
+
+				returnList.addLast(newObjectInstance);
 			}
 
-		} catch (SQLException ex)
+		} catch (Exception ex)
 		{
 			throw new DbStorageException("The storage engine was unable to load the given object from " +
 					"the database. Reason:\n" + ex.toString());
@@ -252,6 +274,11 @@ public class DbStorage
 
 	private String createInsertStatement(Object objectToInsert, StorageSession session) throws DbStorageException
 	{
+		if (objectToInsert == null)
+		{
+			throw new DbStorageException("Null-pointer found.");
+		}
+
 		StringBuilder sqlClause = new StringBuilder("INSERT INTO " + session.tableName + " (");
 		StringBuilder dataValues = new StringBuilder();
 
@@ -265,13 +292,16 @@ public class DbStorage
 				Field columnField = session.columnFields.get(columnName);
 				Object storeValue = session.columnFields.get(columnName).get(objectToInsert);
 
+				if (storeValue == null)
+				{
+					throw new DbStorageException("Null-pointer found.");
+				}
+
 				if (columnField.isAnnotationPresent(DbRelation.class))
 				{
-					System.out.println("Oh, jeah!");
 					StorageSession result = insert(storeValue);
 					storeValue = result.generatedId;
 					columnField = result.generatedField;
-					System.out.println(result.generatedId);
 				}
 
 				if (columnIterator.hasNext())
@@ -303,6 +333,11 @@ public class DbStorage
 
 	private String createUpdateStatement(Object objectToUpdate, StorageSession session) throws DbStorageException
 	{
+		if (objectToUpdate == null)
+		{
+			throw new DbStorageException("Null-pointer found.");
+		}
+
 		StringBuilder sqlClause = new StringBuilder("UPDATE " + session.tableName + " SET ");
 		StringBuilder whereClause = new StringBuilder("");
 
@@ -314,15 +349,17 @@ public class DbStorage
 			while (columnIterator.hasNext())
 			{
 				String columnName = columnIterator.next();
+				Field columField = session.columnFields.get(columnName);
+				Object storeValue = session.columnFields.get(columnName).get(objectToUpdate);
+
+				sqlClause.append(columnName + " = " + currentDriver.getEscapedValue(columField, storeValue));
+
 				if (columnIterator.hasNext())
 				{
-					sqlClause.append(columnName + " = " + currentDriver.getEscapedValue(session.columnFields.get(columnName), session.columnFields.get(columnName).get(objectToUpdate)) + ", ");
-				}
-				else
-				{
-					sqlClause.append(columnName + " = " + currentDriver.getEscapedValue(session.columnFields.get(columnName), session.columnFields.get(columnName).get(objectToUpdate)));
+					sqlClause.append(", ");
 				}
 			}
+
 			//where condition
 			whereClause.append(session.generatedColumn + " = " + currentDriver.getEscapedValue(session.generatedField, session.generatedField.get(objectToUpdate)));
 			sqlClause.append(" WHERE " + whereClause);
@@ -340,6 +377,11 @@ public class DbStorage
 
 	private String createDeleteStatement(Object objectToDelete, StorageSession session) throws DbStorageException
 	{
+		if (objectToDelete == null)
+		{
+			throw new DbStorageException("Null-pointer found.");
+		}
+
 		StringBuilder sqlClause = new StringBuilder("DELETE FROM " + session.tableName + " WHERE ");
 		try
 		{
@@ -356,45 +398,56 @@ public class DbStorage
 		return sqlClause.toString();
 	}
 
-	private Field findField(Object objectToScan, String columnName, StorageSession session) throws DbStorageException
+	private Field findField(Class<?> objectClass, String columnName, StorageSession session) throws DbStorageException
 	{
-		Field resultField = null;
-
 		//check for proper input data
-		Class<?> objectClass = (Class<?>) objectToScan.getClass();
 		if (!objectClass.isAnnotationPresent(DbTable.class))
 		{
 			throw new DbStorageException("Referenced object hasn't got the right annotation's present.");
 		}
 
-		//find columns
+		//find columns and check their name
 		Field[] declaredFields = objectClass.getDeclaredFields();
 		for (Field currentField : declaredFields)
 		{
 			currentField.setAccessible(true);
-			if ((currentField.isAnnotationPresent(DbColumn.class) && currentField.getAnnotation(DbColumn.class).name().equals(columnName)) || currentField.getName().equals(columnName))
+			if ((currentField.isAnnotationPresent(DbColumn.class) && currentField.getAnnotation(DbColumn.class).name().equals(columnName)) ||
+					currentField.getName().equals(columnName))
 			{
 				return currentField;
 			}
 		}
 
+		//check if generated field matches search criteria
 		if (session.generatedField.getAnnotation(DbId.class).name().equals(columnName) || session.generatedField.getName().equals(columnName))
 		{
 			return session.generatedField;
 		}
 
-		return resultField;
+		//check if relation field matches search criteria
+
+		throw new DbStorageException("Given column name wasnt found.");
 	}
 
 	private String createSelectStatement(Object objectInstance, HashMap<String, Object> loadParameters, StorageSession session) throws DbStorageException
 	{
+		if (objectInstance == null)
+		{
+			throw new DbStorageException("Null-pointer found.");
+		}
+
 		StringBuilder sqlClause = new StringBuilder("SELECT * FROM " + session.tableName + " WHERE ");
 
-		Iterator<String> columnIterator = (Iterator<String>) loadParameters.keySet().iterator();
+		Iterator<String> columnIterator = loadParameters.keySet().iterator();
 		while (columnIterator.hasNext())
 		{
 			String columnName = columnIterator.next();
-			Field columnField = findField(objectInstance, columnName, session);
+			Field columnField = findField(objectInstance.getClass(), columnName, session);
+
+			if (loadParameters.get(columnName) == null)
+			{
+				throw new DbStorageException("Null-pointer found.");
+			}
 
 			if (columnField.isAnnotationPresent(DbColumn.class))
 			{
@@ -413,9 +466,4 @@ public class DbStorage
 
 		return sqlClause.toString();
 	}
-
-	/*public int getGeneratedKey()
-	{
-	return generatedId;
-	}*/
 }

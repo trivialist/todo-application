@@ -7,6 +7,8 @@ package todo.dbcon;
 
 import todo.dbcon.annotations.DbColumn;
 import todo.dbcon.annotations.DbId;
+import todo.dbcon.annotations.DbRelation;
+import todo.dbcon.annotations.DbRelation.RELATION_TYPE;
 import todo.dbcon.annotations.DbTable;
 
 /**
@@ -21,4 +23,6 @@ public class ForeignElement
 	public int id;
 	@DbColumn(name="Name")
 	public String name;
+	@DbRelation(type = RELATION_TYPE.MANY_TO_ONE)
+	public BaseElement base[];
 }
