@@ -21,12 +21,14 @@ import javax.swing.table.TableModel;
  */
 public class MigrateTableModel implements TableModel
 {
+
 	Vector<String> colNames = new Vector<String>();
 	ArrayList<Element> data = new ArrayList<Element>();
 	int meetingId;
 
 	public class Element
 	{
+
 		public String thema;
 		public String inhalt;
 		public String heading;
@@ -41,7 +43,10 @@ public class MigrateTableModel implements TableModel
 
 		meetingId = sitzung;
 
-		if(meetingId == -1)return;
+		if (meetingId == -1)
+		{
+			return;
+		}
 
 		DB_ToDo_Connect.openDB();
 		Connection con = DB_ToDo_Connect.getCon();
@@ -51,7 +56,7 @@ public class MigrateTableModel implements TableModel
 			String sql = "SELECT Thema, Inhalt, Überschrift, ToDoID FROM Protokollelement WHERE updated = false AND SitzungsID = " + meetingId;
 			ResultSet rst = stmt.executeQuery(sql);
 
-			while(rst.next())
+			while (rst.next())
 			{
 				Element tmp = new Element();
 
@@ -59,9 +64,11 @@ public class MigrateTableModel implements TableModel
 				tmp.inhalt = rst.getString("Inhalt");
 				tmp.heading = rst.getString("Überschrift");
 				tmp.id = rst.getInt("ToDoID");
-				
+
 				data.add(tmp);
 			}
+
+			DB_ToDo_Connect.closeDB(con);
 
 		} catch (SQLException ex)
 		{
@@ -96,7 +103,7 @@ public class MigrateTableModel implements TableModel
 
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
-		switch(columnIndex)
+		switch (columnIndex)
 		{
 			case 0:
 				return data.get(rowIndex).thema;
@@ -111,9 +118,9 @@ public class MigrateTableModel implements TableModel
 
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	{
-		if(columnIndex == 2)
+		if (columnIndex == 2)
 		{
-			data.get(rowIndex).heading = (String)aValue;
+			data.get(rowIndex).heading = (String) aValue;
 		}
 	}
 
@@ -128,5 +135,26 @@ public class MigrateTableModel implements TableModel
 	public void saveModifiedModel()
 	{
 
+		DB_ToDo_Connect.openDB();
+		Connection con = DB_ToDo_Connect.getCon();
+		try
+		{
+			for (Element tmp : data)
+			{
+				Statement stmt = con.createStatement();
+				String sql = "UPDATE Protokollelement SET Überschrift = '" + tmp.heading + "', updated = true WHERE SitzungsID = " + meetingId;
+				stmt.execute(sql);
+			}
+
+			Statement stmt = con.createStatement();
+			String sql = "UPDATE Sitzungsdaten SET updated = true WHERE SitzungsdatenID = " + meetingId;
+			stmt.execute(sql);
+
+			DB_ToDo_Connect.closeDB(con);
+
+		} catch (SQLException ex)
+		{
+			Logger.getLogger(MigrateTableModel.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 }

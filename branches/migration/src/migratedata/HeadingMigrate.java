@@ -45,13 +45,10 @@ public class HeadingMigrate extends javax.swing.JFrame
 		con = DB_ToDo_Connect.getCon();
 		initComponents();
 
-		DB_ToDo_Connect.getCon();
-		con = DB_ToDo_Connect.getCon();
-
 		try
 		{
 			stmt = con.createStatement();
-			rst = stmt.executeQuery("SELECT * FROM Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID WHERE Tagesordnung <> ''");
+			rst = stmt.executeQuery("SELECT * FROM Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID WHERE updated = false");
 
 			if (rst.next())
 			{
@@ -62,6 +59,8 @@ public class HeadingMigrate extends javax.swing.JFrame
 				jTextField3.setText(rst.getString("Ort"));
 				jTextArea1.setText(rst.getString("Tagesordnung"));
 			}
+
+			DB_ToDo_Connect.closeDB(con);
 
 		} catch (SQLException ex)
 		{
@@ -108,7 +107,6 @@ public class HeadingMigrate extends javax.swing.JFrame
         jLabel2.setText("Sitzung:");
 
         jTextField1.setEditable(false);
-        jTextField1.setText("sd");
 
         jLabel3.setText("Datum:");
 
@@ -121,12 +119,16 @@ public class HeadingMigrate extends javax.swing.JFrame
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
         jTextArea1.setRows(5);
-        jTextArea1.setText("sds");
         jScrollPane1.setViewportView(jTextArea1);
 
         jLabel5.setText("Zugeordnete Protokollelemente:");
 
         jButton1.setText("Speichern & weiter");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new MigrateTableModel(-1));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
@@ -187,6 +189,43 @@ public class HeadingMigrate extends javax.swing.JFrame
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+	{//GEN-HEADEREND:event_jButton1ActionPerformed
+		MigrateTableModel mgt = (MigrateTableModel) jTable1.getModel();
+		mgt.saveModifiedModel();
+
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+
+		try
+		{
+			stmt = con.createStatement();
+			rst = stmt.executeQuery("SELECT * FROM Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID WHERE updated = false");
+
+			if (rst.next())
+			{
+				meetingId = rst.getInt("SitzungsdatenID");
+				jTable1.setModel(new MigrateTableModel(meetingId));
+				jTextField1.setText(rst.getString("Name"));
+				jTextField2.setText(rst.getString("Datum"));
+				jTextField3.setText(rst.getString("Ort"));
+				jTextArea1.setText(rst.getString("Tagesordnung"));
+			}
+
+			DB_ToDo_Connect.closeDB(con);
+
+		} catch (SQLException ex)
+		{
+			Logger.getLogger(HeadingMigrate.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+		jTable1.setDefaultRenderer(Object.class, new MyCellRenderer());
+
+		jTable1.getColumnModel().getColumn(0).setPreferredWidth(160);
+		jTable1.getColumnModel().getColumn(1).setPreferredWidth(500);
+		jTable1.getColumnModel().getColumn(2).setPreferredWidth(550);
+	}//GEN-LAST:event_jButton1ActionPerformed
 
 	/**
 	 * @param args the command line arguments
