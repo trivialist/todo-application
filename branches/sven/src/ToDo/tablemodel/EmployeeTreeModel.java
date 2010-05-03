@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import todo.dbcon.DB_ToDo_Connect;
+import todo.dbcon.DB_Mitarbeiter_Connect;
 
 /**
  *
@@ -26,8 +26,8 @@ public class EmployeeTreeModel implements TreeModel
 
 	public EmployeeTreeModel()
 	{
-		DB_ToDo_Connect.openDB();
-		Connection dbConnection = DB_ToDo_Connect.getCon();
+		DB_Mitarbeiter_Connect.openDB();
+		Connection dbConnection = DB_Mitarbeiter_Connect.getCon();
 		try
 		{
 			Statement dbStatement = dbConnection.createStatement();
@@ -59,7 +59,7 @@ public class EmployeeTreeModel implements TreeModel
 		{
 			Logger.getLogger(MeetingTableModel.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		DB_ToDo_Connect.closeDB(dbConnection);
+		DB_Mitarbeiter_Connect.closeDB(dbConnection);
 	}
 
 	public static class Group
