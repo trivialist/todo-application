@@ -45,7 +45,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			{
 				if (status != 0)
 				{
-					sStat = " WHERE Geloescht = false AND Protokollelement.StatusID=" + status;
+					sStat = " AND Geloescht = false AND Protokollelement.StatusID=" + status;
 				}
 			}
 			this.loadOpData();
@@ -179,7 +179,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 					"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) " +
 					"INNER JOIN (Status INNER JOIN Protokollelement ON Status.StatusID = Protokollelement.StatusID) " +
 					"ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Kategorie.KategorieID = Protokollelement.KategorieID " +
-					sStat;
+					"WHERE (Kategorie.Name <> 'Information' OR (Kategorie.Name = 'Information' AND WiedervorlageGesetzt = true)) " + sStat;
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())

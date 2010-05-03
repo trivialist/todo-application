@@ -28,8 +28,8 @@ public class PersonalTodoListGUI extends javax.swing.JFrame
 	private int empID;
 	private int statID;
 	private static Connection con;
-	protected int __WV_MIN_WIDTH = 30; //Mindestgrösse der Wiedervorlage-Spalte
-	protected int __WV_MAX_WIDTH = 45; //Maximalgrösse der Wiedervorlage-Spalte
+	protected int __WV_MIN_WIDTH = 60; //Mindestgrösse der Wiedervorlage-Spalte
+	protected int __WV_MAX_WIDTH = 75; //Maximalgrösse der Wiedervorlage-Spalte
 	protected int __STATUS_MIN_WIDTH = 15; //Mindestgrösse der Status-Spalte
 	protected int __STATUS_MAX_WIDTH = 45; //Maximalgrösse der Status-Spalte
 	protected int __KATEGORIE_MAX_WIDTH = 100;
