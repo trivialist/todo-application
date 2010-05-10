@@ -1216,7 +1216,7 @@ public class MainGUI extends javax.swing.JFrame
 
 		try
 		{
-			FileInputStream inputStream = new FileInputStream(new File("./ToDoAppSettings.xml"));
+			FileInputStream inputStream = new FileInputStream(new File("H:\\ToDo\\config\\ToDoAppSettings.xml"));
 			applicationProperties.loadFromXML(inputStream);
 			inputStream.close();
 

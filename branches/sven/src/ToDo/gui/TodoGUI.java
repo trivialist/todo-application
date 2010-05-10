@@ -119,10 +119,6 @@ public class TodoGUI extends javax.swing.JFrame
 		if (evt.WINDOW_GAINED_FOCUS != 1)
 		{
 			jTable1.setModel(new TodoTableModel(meetingID));
-			TableColumn tc = jTable1.getColumn(jTable1.getColumnName(3));
-			tc.setPreferredWidth(10);
-			tc = jTable1.getColumn(jTable1.getColumnName(4));
-			tc.setPreferredWidth(5);
 		}
     }//GEN-LAST:event_formWindowGainedFocus
 

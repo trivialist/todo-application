@@ -28,14 +28,6 @@ public class PersonalTodoListGUI extends javax.swing.JFrame
 	private int empID;
 	private int statID;
 	private static Connection con;
-	protected int __WV_MIN_WIDTH = 60; //Mindestgrösse der Wiedervorlage-Spalte
-	protected int __WV_MAX_WIDTH = 75; //Maximalgrösse der Wiedervorlage-Spalte
-	protected int __STATUS_MIN_WIDTH = 15; //Mindestgrösse der Status-Spalte
-	protected int __STATUS_MAX_WIDTH = 45; //Maximalgrösse der Status-Spalte
-	protected int __KATEGORIE_MAX_WIDTH = 100;
-	protected int __KATEGORIE_MIN_WIDTH = 95;
-	protected int __THEMA_MAX_WIDTH = 100;
-	protected int __THEMA_MIN_WIDTH = 95;
 
 	/** Creates new form PersonalTodoListGUI */
 	public PersonalTodoListGUI(int empID, int statID)
@@ -121,14 +113,6 @@ public class PersonalTodoListGUI extends javax.swing.JFrame
 		if (evt.WINDOW_GAINED_FOCUS != 1)
 		{
 			jTable1.setModel(new PersonalTodoTableModel(empID, statID));
-			jTable1.getColumn("Wiedervorlage").setMaxWidth(__WV_MAX_WIDTH);
-			jTable1.getColumn("Wiedervorlage").setMinWidth(__WV_MIN_WIDTH);
-			jTable1.getColumn("Status").setMaxWidth(__STATUS_MAX_WIDTH);
-			jTable1.getColumn("Status").setMinWidth(__STATUS_MIN_WIDTH);
-			jTable1.getColumn("Kategorie").setMaxWidth(__KATEGORIE_MAX_WIDTH);
-			jTable1.getColumn("Kategorie").setMinWidth(__KATEGORIE_MIN_WIDTH);
-			jTable1.getColumn("Thema").setMaxWidth(__THEMA_MAX_WIDTH);
-			jTable1.getColumn("Thema").setMinWidth(__THEMA_MIN_WIDTH);
 			jTable1.setAutoCreateRowSorter(true);
 		}
     }//GEN-LAST:event_formWindowGainedFocus

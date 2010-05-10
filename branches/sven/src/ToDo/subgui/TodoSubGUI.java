@@ -364,6 +364,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
 
         jTextAreaContent.setColumns(20);
+        jTextAreaContent.setLineWrap(true);
         jTextAreaContent.setRows(5);
         jScrollPane4.setViewportView(jTextAreaContent);
 
