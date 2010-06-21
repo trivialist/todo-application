@@ -89,8 +89,10 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			case 2:
 				return new DateFormater(this.ptdObjects.get(zeile).getReDate(), this.ptdObjects.get(zeile).getReMeetingEnabled());
 			case 3:
-				return this.ptdObjects.get(zeile).getStatus();
+				return this.ptdObjects.get(zeile).getReMeetingType();
 			case 4:
+				return this.ptdObjects.get(zeile).getStatus();
+			case 5:
 				return this.ptdObjects.get(zeile).getHeading();
 			default:
 				return null;
@@ -135,7 +137,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
+			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
 					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
 					"FROM Kategorie INNER JOIN " +
 					"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) " +
@@ -161,6 +163,19 @@ public class PersonalTodoTableModel extends AbstractTableModel
 				td.setContent(rst.getString("Inhalt"));
 				td.setStatus(rst.getString("Status"));
 				td.setHeading(rst.getString("Überschrift"));
+				int id = rst.getInt("WV_Sitzungsart");
+				if(td.getReMeetingEnabled() && id != -1)
+				{
+					Statement stmt2 = con.createStatement();
+					sql = "SELECT Name FROM Sitzungsart WHERE SitzungsartID = " + id;
+					ResultSet rst2 = stmt2.executeQuery(sql);
+					rst2.next();
+					td.setReMeetingType(rst2.getString("Name"));
+				}
+				else
+				{
+					td.setReMeetingType("");
+				}
 				ptdObjects.add(td);
 			}
 			rst.close();
@@ -181,7 +196,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
+			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
 					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
 					"FROM Kategorie INNER JOIN " +
 					"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) " +
@@ -205,6 +220,19 @@ public class PersonalTodoTableModel extends AbstractTableModel
 				td.setContent(rst.getString("Inhalt"));
 				td.setStatus(rst.getString("Status"));
 				td.setHeading(rst.getString("Überschrift"));
+				int id = rst.getInt("WV_Sitzungsart");
+				if(td.getReMeetingEnabled() && id != -1)
+				{
+					Statement stmt2 = con.createStatement();
+					sql = "SELECT Name FROM Sitzungsart WHERE SitzungsartID = " + id;
+					ResultSet rst2 = stmt2.executeQuery(sql);
+					rst2.next();
+					td.setReMeetingType(rst2.getString("Name"));
+				}
+				else
+				{
+					td.setReMeetingType("");
+				}
 				ptdObjects.add(td);
 			}
 			rst.close();
@@ -222,6 +250,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		columnNames.add("Thema");
 		columnNames.add("Kategorie");
 		columnNames.add("Wiedervorlage");
+		columnNames.add("WV-Sitzungsart");
 		columnNames.add("Status");
 		columnNames.add("Überschrift");
 	}

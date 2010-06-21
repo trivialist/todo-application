@@ -64,6 +64,7 @@ public class Todo
 	public String category;
 	public String status;
 	public int topicID;
+	private String reMeetingType;
 
 	/** Creates a new instance of Todo */
 	public Todo()
@@ -329,5 +330,15 @@ public class Todo
 	public void setDeleted(boolean deleted)
 	{
 		this.deleted = deleted;
+	}
+
+	public String getReMeetingType()
+	{
+		return reMeetingType;
+	}
+
+	public void setReMeetingType(String reMeetingType)
+	{
+		this.reMeetingType = reMeetingType;
 	}
 }

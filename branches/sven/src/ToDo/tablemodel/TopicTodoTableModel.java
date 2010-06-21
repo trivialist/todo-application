@@ -56,8 +56,10 @@ public class TopicTodoTableModel extends AbstractTableModel
 			case 2:
 				return new DateFormater(this.ptdObjects.get(zeile).getReDate(), this.ptdObjects.get(zeile).getReMeetingEnabled());
 			case 3:
-				return this.ptdObjects.get(zeile).getStatus();
+				return this.ptdObjects.get(zeile).getReMeetingType();
 			case 4:
+				return this.ptdObjects.get(zeile).getStatus();
+			case 5:
 				return this.ptdObjects.get(zeile).getHeading();
 			default:
 				return null;
@@ -103,11 +105,11 @@ public class TopicTodoTableModel extends AbstractTableModel
 
 			if(statusId == -1)
 			{
-				sql = "SELECT Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Kategorie INNER JOIN (Status INNER JOIN (Thema INNER JOIN (TBZ INNER JOIN Protokollelement ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID) ON Status.StatusID = Protokollelement.StatusID) ON Kategorie.KategorieID = Protokollelement.KategorieID WHERE Thema.ThemaID = " + topicId;
+				sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Kategorie INNER JOIN (Status INNER JOIN (Thema INNER JOIN (TBZ INNER JOIN Protokollelement ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID) ON Status.StatusID = Protokollelement.StatusID) ON Kategorie.KategorieID = Protokollelement.KategorieID WHERE Thema.ThemaID = " + topicId;
 			}
 			else
 			{
-				sql = "SELECT Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Kategorie INNER JOIN (Status INNER JOIN (Thema INNER JOIN (TBZ INNER JOIN Protokollelement ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID) ON Status.StatusID = Protokollelement.StatusID) ON Kategorie.KategorieID = Protokollelement.KategorieID WHERE Thema.ThemaID = " + topicId + " AND Protokollelement.StatusID = " + statusId;
+				sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Kategorie INNER JOIN (Status INNER JOIN (Thema INNER JOIN (TBZ INNER JOIN Protokollelement ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID) ON Status.StatusID = Protokollelement.StatusID) ON Kategorie.KategorieID = Protokollelement.KategorieID WHERE Thema.ThemaID = " + topicId + " AND Protokollelement.StatusID = " + statusId;
 			}
 
 			ResultSet rst = stmt.executeQuery(sql);
@@ -127,6 +129,19 @@ public class TopicTodoTableModel extends AbstractTableModel
 				td.setContent(rst.getString("Inhalt"));
 				td.setStatus(rst.getString("Status"));
 				td.setHeading(rst.getString("Überschrift"));
+				int id = rst.getInt("WV_Sitzungsart");
+				if(td.getReMeetingEnabled() && id != -1)
+				{
+					Statement stmt2 = con.createStatement();
+					sql = "SELECT Name FROM Sitzungsart WHERE SitzungsartID = " + id;
+					ResultSet rst2 = stmt2.executeQuery(sql);
+					rst2.next();
+					td.setReMeetingType(rst2.getString("Name"));
+				}
+				else
+				{
+					td.setReMeetingType("");
+				}
 				ptdObjects.add(td);
 			}
 			rst.close();
@@ -144,6 +159,7 @@ public class TopicTodoTableModel extends AbstractTableModel
 		columnNames.add("Thema");
 		columnNames.add("Kategorie");
 		columnNames.add("Wiedervorlage");
+		columnNames.add("WV-Sitzungsart");
 		columnNames.add("Status");
 		columnNames.add("Überschrift");
 	}
