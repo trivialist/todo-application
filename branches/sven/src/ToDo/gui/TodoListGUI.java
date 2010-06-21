@@ -10,31 +10,26 @@
  */
 package todo.gui;
 
-import todo.gui.GlobalError;
 import todo.subgui.TodoSubGUI;
 import todo.dbcon.DB_ToDo_Connect;
-import todo.tablemodel.PersonalTodoTableModel;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.AbstractTableModel;
 
 /**
  *
  * @author Marcus Hertel
  */
-public class PersonalTodoListGUI extends javax.swing.JFrame
+public class TodoListGUI extends javax.swing.JFrame
 {
-
-	private int empID;
-	private int statID;
 	private static Connection con;
 
 	/** Creates new form PersonalTodoListGUI */
-	public PersonalTodoListGUI(int empID, int statID)
+	public TodoListGUI(AbstractTableModel dataModel)
 	{
-		this.empID = empID;
-		this.statID = statID;
 		initComponents();
+		jTable1.setModel(dataModel);
 		jTable1.setAutoCreateRowSorter(true);
 	}
 
@@ -94,7 +89,7 @@ public class PersonalTodoListGUI extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButtonDetails)
-                .addContainerGap(923, Short.MAX_VALUE))
+                .addContainerGap(925, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -110,11 +105,6 @@ public class PersonalTodoListGUI extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-		if (evt.WINDOW_GAINED_FOCUS != 1)
-		{
-			jTable1.setModel(new PersonalTodoTableModel(empID, statID));
-			jTable1.setAutoCreateRowSorter(true);
-		}
     }//GEN-LAST:event_formWindowGainedFocus
 
 	/*
@@ -180,7 +170,7 @@ public class PersonalTodoListGUI extends javax.swing.JFrame
 
 		} catch (Exception ex)
 		{
-			Logger.getLogger(PersonalTodoListGUI.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(TodoListGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
 		DB_ToDo_Connect.closeDB(con);

@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import todo.subgui.MeetingSubGUI;
 import todo.subgui.TodoSubGUI;
-import todo.dialog.NoPersonalTodoDialog;
 import todo.core.Todo;
 import todo.core.Meeting;
 import todo.dbcon.DB_ToDo_Connect;
@@ -27,7 +26,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
-import java.text.ParseException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -36,6 +34,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import todo.dbcon.DB_Mitarbeiter_Connect;
+import todo.tablemodel.CategoryTodoTableModel;
+import todo.tablemodel.PersonalTodoTableModel;
+import todo.tablemodel.TopicTodoTableModel;
+import todo.tablemodel.WvTodoTableModel;
 
 /**
  *
@@ -43,7 +45,6 @@ import todo.dbcon.DB_Mitarbeiter_Connect;
  */
 public class MainGUI extends javax.swing.JFrame
 {
-
 	private static Connection con;
 	private static String winClassName = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	private static Meeting actMeeting;
@@ -58,7 +59,6 @@ public class MainGUI extends javax.swing.JFrame
 	private boolean noInvolvData = false;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	private Calendar glCal = Calendar.getInstance();
-	private boolean __BUTTON_CREATE_OP_LIST_VISIBLE = false;
 	public static final Properties applicationProperties = new Properties();
 
 	/** Creates new form MainGUI */
@@ -66,7 +66,6 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		initComponents();
 		actMeeting = new Meeting();
-		jButtonCreateOP_List.setVisible(__BUTTON_CREATE_OP_LIST_VISIBLE);
 		jLabelError.setText("");
 		if (actMeeting.getMeetingID() == 0)
 		{
@@ -89,9 +88,6 @@ public class MainGUI extends javax.swing.JFrame
 		setComboBoxFinStatus();
 		setComboBoxTopics();
 		setComboBoxCategory();
-		setComboBoxArea();
-		setComboBoxMeetingType();
-		setComboBoxMeetingDate();
 	}
 
 	/** This method is called from within the constructor to
@@ -116,31 +112,24 @@ public class MainGUI extends javax.swing.JFrame
         jComboBoxEmployee = new javax.swing.JComboBox();
         jComboBoxFinStatus = new javax.swing.JComboBox();
         jComboBoxTopic = new javax.swing.JComboBox();
-        jComboBoxArea = new javax.swing.JComboBox();
         jComboBoxCategory = new javax.swing.JComboBox();
-        jComboBoxMeetingType = new javax.swing.JComboBox();
         jCalendarComboBoxReDate = new de.wannawork.jcalendar.JCalendarComboBox();
-        jComboBoxMeetingDate = new javax.swing.JComboBox();
         jButtonCreatePersonalProtocol = new javax.swing.JButton();
         jButtonCreateTopicList = new javax.swing.JButton();
-        jButtonCreateAreaList = new javax.swing.JButton();
         jButtonCreateCategoryList = new javax.swing.JButton();
-        jButtonCreateOP_List = new javax.swing.JButton();
-        jButtonCreateMeetingTypeList = new javax.swing.JButton();
-        jButtonCreateMeetingDateList = new javax.swing.JButton();
         jButtonCreateReDateList = new javax.swing.JButton();
         jButtonCreateListProtocol = new javax.swing.JButton();
+        CategoryListOutput = new javax.swing.JButton();
+        TopicListOutput = new javax.swing.JButton();
+        WvListOutput = new javax.swing.JButton();
         jLabelError = new javax.swing.JLabel();
         jLabelEmployee = new javax.swing.JLabel();
         jLabelFinStatus = new javax.swing.JLabel();
         jLabelCategory = new javax.swing.JLabel();
         jLabelTopic = new javax.swing.JLabel();
-        jLabelArea = new javax.swing.JLabel();
-        jLabelMeetingType2 = new javax.swing.JLabel();
-        jLabelMeetingDate2 = new javax.swing.JLabel();
         jLabelReDate = new javax.swing.JLabel();
-        jLabelOP_List = new javax.swing.JLabel();
         jLabelOP_List1 = new javax.swing.JLabel();
+        jLabelOP_List = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         Programm = new javax.swing.JMenu();
         jMenuItemNewMeeting = new javax.swing.JMenuItem();
@@ -160,8 +149,9 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11));
+        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         setMaximizedBounds(new java.awt.Rectangle(20, 20, 600, 800));
+        setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -171,8 +161,8 @@ public class MainGUI extends javax.swing.JFrame
         });
 
         jPanel1.setMaximumSize(new java.awt.Dimension(1024, 768));
-        jPanel1.setMinimumSize(new java.awt.Dimension(600, 700));
-        jPanel1.setPreferredSize(new java.awt.Dimension(600, 750));
+        jPanel1.setMinimumSize(new java.awt.Dimension(600, 500));
+        jPanel1.setPreferredSize(new java.awt.Dimension(600, 590));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabelMeeting.setFont(new java.awt.Font("Tahoma", 1, 12));
@@ -215,7 +205,7 @@ public class MainGUI extends javax.swing.JFrame
         });
         jPanel1.add(jButtonCreateProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 150, 160, -1));
 
-        jButtonCreatePersonalProtocolList.setText("Liste ToDo");
+        jButtonCreatePersonalProtocolList.setText("Liste");
         jButtonCreatePersonalProtocolList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCreatePersonalProtocolListActionPerformed(evt);
@@ -243,26 +233,20 @@ public class MainGUI extends javax.swing.JFrame
                 jComboBoxFinStatusActionPerformed(evt);
             }
         });
-        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 270, 130, -1));
+        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 400, 130, -1));
 
-        jPanel1.add(jComboBoxTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 400, 200, -1));
+        jPanel1.add(jComboBoxTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 200, -1));
 
-        jPanel1.add(jComboBoxArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 570, 200, -1));
-
-        jPanel1.add(jComboBoxCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 350, 200, -1));
-
-        jPanel1.add(jComboBoxMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 620, 200, -1));
+        jPanel1.add(jComboBoxCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 360, 200, -1));
 
         jCalendarComboBoxReDate.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jCalendarComboBoxReDateStateChanged(evt);
             }
         });
-        jPanel1.add(jCalendarComboBoxReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, 200, 20));
+        jPanel1.add(jCalendarComboBoxReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 520, 200, 20));
 
-        jPanel1.add(jComboBoxMeetingDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 670, 200, -1));
-
-        jButtonCreatePersonalProtocol.setText("Druck ToDo");
+        jButtonCreatePersonalProtocol.setText("Druckvorschau");
         jButtonCreatePersonalProtocol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCreatePersonalProtocolActionPerformed(evt);
@@ -276,15 +260,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateTopicListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateTopicList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 400, 140, -1));
-
-        jButtonCreateAreaList.setText("Druckvorschau");
-        jButtonCreateAreaList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCreateAreaListActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonCreateAreaList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 570, 140, -1));
+        jPanel1.add(jButtonCreateTopicList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 460, 140, -1));
 
         jButtonCreateCategoryList.setText("Druckvorschau");
         jButtonCreateCategoryList.addActionListener(new java.awt.event.ActionListener() {
@@ -292,32 +268,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateCategoryListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateCategoryList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 350, 140, -1));
-
-        jButtonCreateOP_List.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButtonCreateOP_List.setText("OP Liste - Druck");
-        jButtonCreateOP_List.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCreateOP_ListActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonCreateOP_List, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 500, 140, -1));
-
-        jButtonCreateMeetingTypeList.setText("Druckvorschau");
-        jButtonCreateMeetingTypeList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCreateMeetingTypeListActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonCreateMeetingTypeList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 620, 140, -1));
-
-        jButtonCreateMeetingDateList.setText("Druckvorschau");
-        jButtonCreateMeetingDateList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCreateMeetingDateListActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonCreateMeetingDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 670, 140, -1));
+        jPanel1.add(jButtonCreateCategoryList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 380, 140, -1));
 
         jButtonCreateReDateList.setText("Druckvorschau");
         jButtonCreateReDateList.addActionListener(new java.awt.event.ActionListener() {
@@ -325,7 +276,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateReDateListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 450, 140, -1));
+        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 530, 140, -1));
 
         jButtonCreateListProtocol.setText("Protokoll (kurz)");
         jButtonCreateListProtocol.addActionListener(new java.awt.event.ActionListener() {
@@ -335,6 +286,30 @@ public class MainGUI extends javax.swing.JFrame
         });
         jPanel1.add(jButtonCreateListProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 160, -1));
 
+        CategoryListOutput.setText("Liste");
+        CategoryListOutput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CategoryListOutputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(CategoryListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 350, 140, -1));
+
+        TopicListOutput.setText("Liste");
+        TopicListOutput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TopicListOutputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(TopicListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, 140, -1));
+
+        WvListOutput.setText("Liste");
+        WvListOutput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                WvListOutputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(WvListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 500, 140, -1));
+
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 310, 40));
 
@@ -342,39 +317,27 @@ public class MainGUI extends javax.swing.JFrame
         jLabelEmployee.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mitarbeiter", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
         jPanel1.add(jLabelEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, 220, 50));
 
-        jLabelFinStatus.setBackground(new java.awt.Color(255, 255, 255));
         jLabelFinStatus.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bearbeitungstatus", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 250, 150, 50));
+        jLabelFinStatus.setOpaque(true);
+        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 250, 150, 310));
 
         jLabelCategory.setBackground(new java.awt.Color(255, 255, 255));
         jLabelCategory.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kategorie", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 530, 50));
+        jPanel1.add(jLabelCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 530, 80));
 
         jLabelTopic.setBackground(new java.awt.Color(255, 255, 255));
         jLabelTopic.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thema", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 380, 530, 50));
-
-        jLabelArea.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bereich", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 550, 530, 50));
-
-        jLabelMeetingType2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelMeetingType2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sitzungsart", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelMeetingType2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 600, 530, 50));
-
-        jLabelMeetingDate2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelMeetingDate2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sitzungsdatum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelMeetingDate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 650, 530, 50));
+        jPanel1.add(jLabelTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 530, 80));
 
         jLabelReDate.setBackground(new java.awt.Color(255, 255, 255));
         jLabelReDate.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Wiedervorlagedatum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 430, 530, 50));
+        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 490, 530, 70));
+
+        jLabelOP_List1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Auswertungen nach Kategorie", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
+        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 550, 260));
 
         jLabelOP_List.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "OP-Liste", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
         jPanel1.add(jLabelOP_List, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 550, 80));
-
-        jLabelOP_List1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Auswertungen nach Kategorie", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
-        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 550, 180));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -483,8 +446,13 @@ public class MainGUI extends javax.swing.JFrame
     private void jButtonCreateTopicListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateTopicListActionPerformed
 		if (jComboBoxTopic.getSelectedItem().toString().equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben kein Thema ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben kein Thema ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
+		else if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
@@ -502,7 +470,7 @@ public class MainGUI extends javax.swing.JFrame
 			 * in die HashMap tl
 			 */
 
-			ArrayList<HashMap> tl = loadTopicData(jComboBoxTopic.getSelectedItem().toString());
+			ArrayList<HashMap> tl = loadTopicData(jComboBoxTopic.getSelectedItem().toString(), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
 			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(tl);
 
 			if (!tl.isEmpty())
@@ -523,9 +491,7 @@ public class MainGUI extends javax.swing.JFrame
 			}
 			else
 			{
-				NoPersonalTodoDialog nPTD = new NoPersonalTodoDialog(mainGUI, true,
-						jComboBoxTopic.getSelectedItem().toString());
-				nPTD.setVisible(true);
+				JOptionPane.showMessageDialog(this, "Es wurden keine Elemente gefunden!");
 			}
 		}
 }//GEN-LAST:event_jButtonCreateTopicListActionPerformed
@@ -548,8 +514,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Überschrift FROM Protokollelement WHERE Geloescht = false AND " +
-					"SitzungsID = " + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
+			String sql = "SELECT Überschrift FROM Protokollelement WHERE Geloescht = false AND "
+					+ "SitzungsID = " + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
 
 			ResultSet rst = stmt.executeQuery(sql);
 
@@ -697,15 +663,15 @@ public class MainGUI extends javax.swing.JFrame
 		} //else {
 		if (jComboBoxEmployee.getSelectedItem().toString().equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
 			if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-						"Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+						+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 			else
 			{
@@ -768,9 +734,7 @@ public class MainGUI extends javax.swing.JFrame
 				}
 				else
 				{
-					NoPersonalTodoDialog nPTD = new NoPersonalTodoDialog(mainGUI, true,
-							jComboBoxEmployee.getSelectedItem().toString());
-					nPTD.setVisible(true);
+					JOptionPane.showMessageDialog(this, "Es wurden keine Elemente gefunden!");
 				}
 			}
 		}
@@ -781,8 +745,13 @@ public class MainGUI extends javax.swing.JFrame
     private void jButtonCreateCategoryListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateCategoryListActionPerformed
 		if (jComboBoxCategory.getSelectedItem().toString().equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben keine Kategorie ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keine Kategorie ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
+		else if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
@@ -798,7 +767,7 @@ public class MainGUI extends javax.swing.JFrame
 			 * Laden aller mit dem ausgewählten Thema verknüpften Protokollelemente
 			 * in die HashMap cl
 			 */
-			ArrayList<HashMap> cl = loadCategoryData(jComboBoxCategory.getSelectedItem().toString());
+			ArrayList<HashMap> cl = loadCategoryData(jComboBoxCategory.getSelectedItem().toString(), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
 			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(cl);
 
 			if (!cl.isEmpty())
@@ -819,37 +788,38 @@ public class MainGUI extends javax.swing.JFrame
 			}
 			else
 			{
-				NoPersonalTodoDialog nPTD = new NoPersonalTodoDialog(mainGUI, true,
-						jComboBoxCategory.getSelectedItem().toString());
-				nPTD.setVisible(true);
+				JOptionPane.showMessageDialog(this, "Es wurden keine Elemente gefunden!");
 			}
 		}
 }//GEN-LAST:event_jButtonCreateCategoryListActionPerformed
 
-    private void jButtonCreateAreaListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateAreaListActionPerformed
-		if (jComboBoxArea.getSelectedItem().toString().equals(""))
+    private void jButtonCreateReDateListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateReDateListActionPerformed
+		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben keinen Bereich ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
-			String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "Bereicheliste.jrxml";
+			String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "WV_Liste.jrxml";
 			Calendar cal = Calendar.getInstance();
+			Todo td = new Todo();
 
 			HashMap<String, Object> params = new HashMap<String, Object>();
-			String actDate = getDayString(cal.get(Calendar.DAY_OF_WEEK)) + ", " + cal.get(Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR);
-			params.put("Datum", actDate);
-			params.put("Bereich", jComboBoxArea.getSelectedItem().toString());
+
+			params.put("Datum", sdf.format(cal.getTime()));
+			params.put("Wiedervorlagedatum", sdf.format(jCalendarComboBoxReDate.getCalendar().getTime()));
 			params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
 			/*
-			 * Laden aller mit dem ausgewählten Thema verknüpften Protokollelemente
-			 * in die HashMap al
+			 * Laden aller mit dem ausgewählten Datum verknüpften Protokollelemente
+			 * in die HashMap rdl
 			 */
-			ArrayList<HashMap> al = loadAreaData(jComboBoxArea.getSelectedItem().toString());
-			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(al);
+			td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());
+			java.sql.Date date = new Date(td.getReDate().getTime());
+			ArrayList<HashMap> rdl = loadReDateData(date, getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
+			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(rdl);
 
-			if (!al.isEmpty())
+			if (!rdl.isEmpty())
 			{
 				try
 				{
@@ -867,231 +837,10 @@ public class MainGUI extends javax.swing.JFrame
 			}
 			else
 			{
-				NoPersonalTodoDialog nPTD = new NoPersonalTodoDialog(mainGUI, true,
-						jComboBoxArea.getSelectedItem().toString());
-				nPTD.setVisible(true);
+				JOptionPane.showMessageDialog(this, "Es wurden keine Elemente gefunden!");
 			}
-		}
-    }//GEN-LAST:event_jButtonCreateAreaListActionPerformed
-
-    private void jButtonCreateReDateListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateReDateListActionPerformed
-		String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "WV_Liste.jrxml";
-		Calendar cal = Calendar.getInstance();
-		Todo td = new Todo();
-
-		HashMap<String, Object> params = new HashMap<String, Object>();
-
-		params.put("Datum", sdf.format(cal.getTime()));
-		params.put("Wiedervorlagedatum", sdf.format(jCalendarComboBoxReDate.getCalendar().getTime()));
-		params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
-		/*
-		 * Laden aller mit dem ausgewählten Datum verknüpften Protokollelemente
-		 * in die HashMap rdl
-		 */
-		td.setReDate(jCalendarComboBoxReDate.getCalendar().getTime());
-		java.sql.Date date = new Date(td.getReDate().getTime());
-		ArrayList<HashMap> rdl = loadReDateData(date);
-		JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(rdl);
-
-		if (!rdl.isEmpty())
-		{
-			try
-			{
-				JasperReport jasperReport =
-						JasperCompileManager.compileReport(reportSource);
-
-				JasperPrint jasperPrint =
-						JasperFillManager.fillReport(jasperReport, params, dataSet);
-
-				JasperViewer.viewReport(jasperPrint, false);
-			} catch (JRException ex)
-			{
-				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
-		else
-		{
-			NoPersonalTodoDialog nPTD = new NoPersonalTodoDialog(mainGUI, true,
-					jComboBoxArea.getSelectedItem().toString());
-			nPTD.setVisible(true);
 		}
     }//GEN-LAST:event_jButtonCreateReDateListActionPerformed
-
-    private void jButtonCreateMeetingDateListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateMeetingDateListActionPerformed
-		if (jComboBoxMeetingDate.getSelectedItem().toString().equals(""))
-		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben kein Sitzungsdatum ausgewählt.", "Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-		else
-		{
-			String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "Sitzungsdatumliste.jrxml";
-			Calendar cal = Calendar.getInstance();
-
-			HashMap<String, Object> params = new HashMap<String, Object>();
-			String actDate = getDayString(cal.get(Calendar.DAY_OF_WEEK)) + ", " + cal.get(Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR);
-			params.put("Datum", actDate);
-			params.put("Sitzungsdatum", jComboBoxMeetingDate.getSelectedItem().toString());
-			params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
-			/*
-			 * Laden aller mit dem ausgewählten Datum verknüpften Protokollelemente
-			 * in die HashMap rdl
-			 */
-			java.util.Date temp = new java.util.Date();
-			try
-			{
-				temp = sdf.parse(jComboBoxMeetingDate.getSelectedItem().toString());
-			} catch (ParseException ex)
-			{
-				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-			}
-			java.sql.Date d = new java.sql.Date(temp.getTime());
-			ArrayList<HashMap> mdl = loadMeetingDateData(d);
-			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(mdl);
-
-			if (!mdl.isEmpty())
-			{
-				try
-				{
-					JasperReport jasperReport =
-							JasperCompileManager.compileReport(reportSource);
-
-					JasperPrint jasperPrint =
-							JasperFillManager.fillReport(jasperReport, params, dataSet);
-
-					JasperViewer.viewReport(jasperPrint, false);
-				} catch (JRException ex)
-				{
-					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-			else
-			{
-				NoPersonalTodoDialog nPTD = new NoPersonalTodoDialog(mainGUI, true,
-						jComboBoxArea.getSelectedItem().toString());
-				nPTD.setVisible(true);
-			}
-		}
-    }//GEN-LAST:event_jButtonCreateMeetingDateListActionPerformed
-
-    private void jButtonCreateMeetingTypeListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateMeetingTypeListActionPerformed
-		if (jComboBoxMeetingType.getSelectedItem().toString().equals(""))
-		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben keine Sitzungsart ausgewählt.", "Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-		else
-		{
-			String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "Sitzungsartliste.jrxml";
-			Calendar cal = Calendar.getInstance();
-
-			HashMap<String, Object> params = new HashMap<String, Object>();
-			String actDate = getDayString(cal.get(Calendar.DAY_OF_WEEK)) + ", " + cal.get(Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR);
-			params.put("Datum", actDate);
-			params.put("Sitzungsart", jComboBoxMeetingType.getSelectedItem().toString());
-			params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
-			/*
-			 * Laden aller mit dem ausgewählten Datum verknüpften Protokollelemente
-			 * in die HashMap rdl
-			 */
-
-			ArrayList<HashMap> mtl = loadMeetingTypeData(jComboBoxMeetingType.getSelectedItem().toString());
-			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(mtl);
-
-			if (!mtl.isEmpty())
-			{
-				try
-				{
-					JasperReport jasperReport =
-							JasperCompileManager.compileReport(reportSource);
-
-					JasperPrint jasperPrint =
-							JasperFillManager.fillReport(jasperReport, params, dataSet);
-
-					JasperViewer.viewReport(jasperPrint, false);
-				} catch (JRException ex)
-				{
-					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-			else
-			{
-				NoPersonalTodoDialog nPTD = new NoPersonalTodoDialog(mainGUI, true,
-						jComboBoxArea.getSelectedItem().toString());
-				nPTD.setVisible(true);
-			}
-		}
-    }//GEN-LAST:event_jButtonCreateMeetingTypeListActionPerformed
-
-    private void jButtonCreateOP_ListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateOP_ListActionPerformed
-		// Auswahl für THEMA darf nicht leer sein
-		if (jComboBoxTopic.getSelectedItem().toString().equals(""))
-		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben kein ! Thema ! ausgewählt. Für diesen Report müssen Sie " +
-					"Thema, Bereich, Kategorie und Wiedervorlagedatum angeben. " +
-					"Außerdem müssen Sie einen oder \"Alle Mitarbeiter \" auswählen", "Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-		else
-		{
-			// Auswahl für BEREICH darf nicht leer sein
-			if (jComboBoxArea.getSelectedItem().toString().equals(""))
-			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-						"Sie haben keinen ! Bereich ! ausgewählt. Für diesen Report müssen Sie " +
-						"Thema, Bereich, Kategorie und Wiedervorlagedatum angeben. " +
-						"Außerdem müssen Sie einen oder \"Alle Mitarbeiter \" auswählen", "Fehler", JOptionPane.ERROR_MESSAGE);
-			}
-			else
-			{
-				// Auswahl für KATEGORIE darf nicht leer sein
-				if (jComboBoxCategory.getSelectedItem().toString().equals(""))
-				{
-					JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-							"Sie haben keine ! Kategorie ! ausgewählt. Für diesen Report müssen Sie " +
-							"Thema, Bereich, Kategorie und Wiedervorlagedatum angeben. " +
-							"Außerdem müssen Sie einen oder \"Alle Mitarbeiter \" auswählen", "Fehler", JOptionPane.ERROR_MESSAGE);
-				}
-				else
-				{
-					String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "OP_Liste.jrxml";
-					Calendar cal = Calendar.getInstance();
-
-					HashMap<String, Object> params = new HashMap<String, Object>();
-
-					params.put("Datum", sdf.format(cal.getTime()));
-					params.put("Thema", jComboBoxTopic.getSelectedItem().toString());
-					params.put("Bereich", jComboBoxArea.getSelectedItem().toString());
-					params.put("Kategorie", jComboBoxCategory.getSelectedItem().toString());
-					params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
-					/*
-					 * Laden aller mit dem ausgewählten Parametern verknüpften Protokollelemente
-					 * in die HashMap opl
-					 */
-
-					ArrayList<HashMap> opl = loadOpListData();
-					JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(opl);
-
-					if (!opl.isEmpty())
-					{
-						try
-						{
-							JasperReport jasperReport =
-									JasperCompileManager.compileReport(reportSource);
-
-							JasperPrint jasperPrint =
-									JasperFillManager.fillReport(jasperReport, params, dataSet);
-
-							JasperViewer.viewReport(jasperPrint, false);
-						} catch (JRException ex)
-						{
-							Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-						}
-					}
-				}
-			}
-		}
-    }//GEN-LAST:event_jButtonCreateOP_ListActionPerformed
 
     private void jMenuItemNewMeetingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewMeetingActionPerformed
 		String meetingType = "";
@@ -1136,21 +885,21 @@ public class MainGUI extends javax.swing.JFrame
 		} /*else {*/
 		if (jComboBoxEmployee.getSelectedItem().toString().equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-					"Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
 			if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-						"Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+						+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 			else
 			{
 				int statID = getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString());
 				empID = getEmployeeIDByName(jComboBoxEmployee.getSelectedItem().toString());
-				PersonalTodoListGUI newPTDL = new PersonalTodoListGUI(empID, statID);
+				TodoListGUI newPTDL = new TodoListGUI(new PersonalTodoTableModel(empID, statID));
 				newPTDL.setVisible(true);
 			}
 		}
@@ -1208,6 +957,48 @@ public class MainGUI extends javax.swing.JFrame
 	{//GEN-HEADEREND:event_jComboBoxFinStatusActionPerformed
 	}//GEN-LAST:event_jComboBoxFinStatusActionPerformed
 
+	private void CategoryListOutputActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_CategoryListOutputActionPerformed
+	{//GEN-HEADEREND:event_CategoryListOutputActionPerformed
+		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			TodoListGUI tmpGui = new TodoListGUI(new CategoryTodoTableModel(getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString())));
+			tmpGui.setVisible(true);
+		}
+	}//GEN-LAST:event_CategoryListOutputActionPerformed
+
+	private void TopicListOutputActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_TopicListOutputActionPerformed
+	{//GEN-HEADEREND:event_TopicListOutputActionPerformed
+		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			TodoListGUI tmpGui = new TodoListGUI(new TopicTodoTableModel(getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString())));
+			tmpGui.setVisible(true);
+		}
+	}//GEN-LAST:event_TopicListOutputActionPerformed
+
+	private void WvListOutputActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_WvListOutputActionPerformed
+	{//GEN-HEADEREND:event_WvListOutputActionPerformed
+		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			TodoListGUI tmpGui = new TodoListGUI(new WvTodoTableModel(new java.sql.Date(jCalendarComboBoxReDate.getCalendar().getTime().getTime()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString())));
+			tmpGui.setVisible(true);
+		}
+	}//GEN-LAST:event_WvListOutputActionPerformed
+
 	/**
 	 * @param args the command line arguments
 	 */
@@ -1216,17 +1007,18 @@ public class MainGUI extends javax.swing.JFrame
 
 		try
 		{
-			FileInputStream inputStream = new FileInputStream(new File("H:\\ToDo\\config\\ToDoAppSettings.xml"));
+			FileInputStream inputStream = new FileInputStream(new File("./ToDoAppSettings.xml"));
+			//FileInputStream inputStream = new FileInputStream(new File("H:\\ToDo\\config\\ToDoAppSettings.xml"));
 			applicationProperties.loadFromXML(inputStream);
 			inputStream.close();
 
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-			JOptionPane.showMessageDialog(mainGUI, "Die Datei 'ToDoAppSettings.xml' konnte " +
-					"nicht gefunden werden oder es trat ein Fehler beim Laden auf!\n" +
-					"Bitte überprüfen Sie, ob die Datei vorhanden ist und starten Sie " +
-					"die Anwendung dann erneut.", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(mainGUI, "Die Datei 'ToDoAppSettings.xml' konnte "
+					+ "nicht gefunden werden oder es trat ein Fehler beim Laden auf!\n"
+					+ "Bitte überprüfen Sie, ob die Datei vorhanden ist und starten Sie "
+					+ "die Anwendung dann erneut.", "Fehler", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
 
@@ -1245,15 +1037,14 @@ public class MainGUI extends javax.swing.JFrame
 		} catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-			JOptionPane.showMessageDialog(mainGUI, "Die Anwendung konnte die Datei zur " +
-					"Ausgabe von Fehlermeldungen nicht öffnen.\n\nBitte informieren Sie Ihren " +
-					"Administrator über diese Fehlermeldung oder starten Sie die Anwendung erneut.");
+			JOptionPane.showMessageDialog(mainGUI, "Die Anwendung konnte die Datei zur "
+					+ "Ausgabe von Fehlermeldungen nicht öffnen.\n\nBitte informieren Sie Ihren "
+					+ "Administrator über diese Fehlermeldung oder starten Sie die Anwendung erneut.");
 			System.exit(1);
 		}
 
 		java.awt.EventQueue.invokeLater(new Runnable()
 		{
-
 			public void run()
 			{
 				setLookAndFeel();
@@ -1287,8 +1078,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID=" +
-					actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
+			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID="
+					+ actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
 			ResultSet rst = stmt.executeQuery(sql);
 			int counter = 1;
 
@@ -1342,8 +1133,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID=" +
-					actMeeting.getMeetingID();
+			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID="
+					+ actMeeting.getMeetingID();
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -1378,7 +1169,7 @@ public class MainGUI extends javax.swing.JFrame
 		return shortTodoData;
 	}
 
-	public ArrayList loadTopicData(String topic)
+	public ArrayList loadTopicData(String topic, int statusId)
 	{
 		ArrayList<HashMap> topicData = new ArrayList<HashMap>();
 		int topID = getTopicIDByName(topic);
@@ -1397,8 +1188,19 @@ public class MainGUI extends javax.swing.JFrame
 				tbz_id = ((Integer) eTbz.nextElement()).intValue();
 				if (tbz_id != -1)
 				{
-					String sql = "SELECT * FROM Protokollelement WHERE " +
-							"TBZuordnung_ID=" + tbz_id + " AND Geloescht = false ORDER BY ToDoID DESC";
+					String sql;
+					if (statusId == -1)
+					{
+						sql = "SELECT * FROM Protokollelement WHERE "
+								+ "TBZuordnung_ID=" + tbz_id + " AND Geloescht = false ORDER BY ToDoID DESC";
+					}
+					else
+					{
+						sql = "SELECT * FROM Protokollelement WHERE "
+								+ "TBZuordnung_ID=" + tbz_id + " AND Geloescht = false "
+								+ "AND StatusID = " + statusId + " "
+								+ "ORDER BY ToDoID DESC";
+					}
 					ResultSet rst = stmt.executeQuery(sql);
 
 					while (rst.next())
@@ -1535,13 +1337,13 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt2 = con.createStatement();
 			if (status.equals("Alle"))
 			{
-				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%" +
-						empID + "%'";
+				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
+						+ empID + "%'";
 			}
 			else
 			{
-				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%" +
-						empID + "%' AND StatusID=" + getFinStatusIDByName(status);
+				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
+						+ empID + "%' AND StatusID=" + getFinStatusIDByName(status);
 			}
 
 			ResultSet rst2 = stmt2.executeQuery(sql2);
@@ -1582,7 +1384,7 @@ public class MainGUI extends javax.swing.JFrame
 		return personalTodoData;
 	}
 
-	public ArrayList loadCategoryData(String cat)
+	public ArrayList loadCategoryData(String cat, int statusId)
 	{
 		ArrayList<HashMap> topicData = new ArrayList<HashMap>();
 		int catID = getCategoryIDByName(cat);
@@ -1593,10 +1395,22 @@ public class MainGUI extends javax.swing.JFrame
 
 		try
 		{
-			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN " +
-					"(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) " +
-					"ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht " +
-					"= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ?");
+			PreparedStatement pStmt;
+			if (statusId == -1)
+			{
+				pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN "
+						+ "(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) "
+						+ "ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht "
+						+ "= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ?");
+			}
+			else
+			{
+				pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN "
+						+ "(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) "
+						+ "ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht "
+						+ "= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ? AND StatusID = ?");
+				pStmt.setInt(2, statusId);
+			}
 			pStmt.setInt(1, catID);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1670,8 +1484,8 @@ public class MainGUI extends javax.swing.JFrame
 				temp = ((Integer) eTbz.nextElement()).intValue();
 				if (temp != -1)
 				{
-					String sql = "SELECT * FROM Protokollelement WHERE " +
-							"TBZuordnung_ID=" + temp + " AND Geloescht = false ORDER BY ToDoID DESC";
+					String sql = "SELECT * FROM Protokollelement WHERE "
+							+ "TBZuordnung_ID=" + temp + " AND Geloescht = false ORDER BY ToDoID DESC";
 					ResultSet rst = stmt.executeQuery(sql);
 
 					while (rst.next())
@@ -1727,10 +1541,10 @@ public class MainGUI extends javax.swing.JFrame
 		con = DB_ToDo_Connect.getCon();
 		try
 		{
-			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN " +
-					"Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID " +
-					"WHERE Datum = ? AND Protokollelement.Geloescht = false AND " +
-					"Sitzungsdaten.Geloescht = false ORDER BY ToDoID DESC");
+			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN "
+					+ "Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID "
+					+ "WHERE Datum = ? AND Protokollelement.Geloescht = false AND "
+					+ "Sitzungsdaten.Geloescht = false ORDER BY ToDoID DESC");
 			pStmt.setDate(1, dat);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1785,11 +1599,11 @@ public class MainGUI extends javax.swing.JFrame
 		con = DB_ToDo_Connect.getCon();
 		try
 		{
-			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Sitzungsart INNER JOIN (Protokollelement INNER JOIN " +
-					"Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID) " +
-					"ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID " +
-					"WHERE Sitzungsart.Name = ? AND Protokollelement.Geloescht = false AND Sitzungsdaten.Geloescht = " +
-					"false ORDER BY Protokollelement.ToDoID DESC");
+			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Sitzungsart INNER JOIN (Protokollelement INNER JOIN "
+					+ "Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID) "
+					+ "ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID "
+					+ "WHERE Sitzungsart.Name = ? AND Protokollelement.Geloescht = false AND Sitzungsdaten.Geloescht = "
+					+ "false ORDER BY Protokollelement.ToDoID DESC");
 			pStmt.setString(1, type);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1836,8 +1650,7 @@ public class MainGUI extends javax.swing.JFrame
 		return meetingTypeData;
 	}
 
-	public ArrayList loadReDateData(
-			Date date)
+	public ArrayList loadReDateData(Date date, int statusId)
 	{
 		ArrayList<HashMap> reDateData = new ArrayList<HashMap>();
 		int tbz_id = -1;
@@ -1846,10 +1659,23 @@ public class MainGUI extends javax.swing.JFrame
 
 		try
 		{
-			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement WHERE " +
-					"Wiedervorlagedatum < ? AND WiedervorlageGesetzt = true AND Geloescht = false " +
-					"ORDER BY Wiedervorlagedatum DESC");
+			PreparedStatement pStmt;
+			if (statusId == -1)
+			{
+				pStmt = con.prepareStatement("SELECT * FROM Protokollelement WHERE "
+						+ "Wiedervorlagedatum < ? AND Wiedervorlagedatum > ? AND WiedervorlageGesetzt = true AND Geloescht = false "
+						+ "ORDER BY Wiedervorlagedatum DESC");
+			}
+			else
+			{
+				pStmt = con.prepareStatement("SELECT * FROM Protokollelement WHERE "
+						+ "Wiedervorlagedatum < ? AND Wiedervorlagedatum > ? AND WiedervorlageGesetzt = true AND Geloescht = false "
+						+ "AND StatusID = ? "
+						+ "ORDER BY Wiedervorlagedatum DESC");
+				pStmt.setInt(3, statusId);
+			}
 			pStmt.setDate(1, date);
+			pStmt.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
 			ResultSet rst = pStmt.executeQuery();
 
 			while (rst.next())
@@ -1901,20 +1727,20 @@ public class MainGUI extends javax.swing.JFrame
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
-		if (!jComboBoxEmployee.getSelectedItem().toString().equals("") &&
-				!jComboBoxEmployee.getSelectedItem().toString().equals("Alle Mitarbeiter"))
+		if (!jComboBoxEmployee.getSelectedItem().toString().equals("")
+				&& !jComboBoxEmployee.getSelectedItem().toString().equals("Alle Mitarbeiter"))
 		{
 			// Es wurde ein Mitarbeiter ausgewählt
 			try
 			{
-				PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement " +
-						"INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID " +
-						"WHERE TBZ.BereichID = ?" +
-						"AND TBZ.ThemaID = ? " +
-						"AND Protokollelement.KategorieID = ? " +
-						"AND Protokollelement.Verantwortliche LIKE '%?%' " +
-						"ORDER BY Wiedervorlagedatum DESC");
-				pStmt.setInt(1, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
+				PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement "
+						+ "INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID "
+						+ "WHERE TBZ.BereichID = ?"
+						+ "AND TBZ.ThemaID = ? "
+						+ "AND Protokollelement.KategorieID = ? "
+						+ "AND Protokollelement.Verantwortliche LIKE '%?%' "
+						+ "ORDER BY Wiedervorlagedatum DESC");
+				//pStmt.setInt(1, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
 				pStmt.setInt(2, getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()));
 				pStmt.setInt(3, getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()));
 				pStmt.setString(4, String.valueOf(getEmployeeIDByName(jComboBoxEmployee.getSelectedItem().toString())));
@@ -1985,14 +1811,14 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				try
 				{
-					PreparedStatement pStmt = con.prepareStatement("SELECT * FROM (Protokollelement INNER JOIN " +
-							"Sitzungsdaten ON Protokollelement.SitzungsID=Sitzungsdaten.SitzungsdatenID) " +
-							"INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID " +
-							"WHERE TBZ.BereichID = ? " + //p1=BereichID
+					PreparedStatement pStmt = con.prepareStatement("SELECT * FROM (Protokollelement INNER JOIN "
+							+ "Sitzungsdaten ON Protokollelement.SitzungsID=Sitzungsdaten.SitzungsdatenID) "
+							+ "INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID "
+							+ "WHERE TBZ.BereichID = ? " + //p1=BereichID
 							"AND TBZ.ThemaID = ? " + //p2=ThemaID
 							"AND Protokollelement.KategorieID = ? " + //p3=KategorieID
 							"ORDER BY Wiedervorlagedatum DESC");
-					pStmt.setInt(1, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
+					//pStmt.setInt(1, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
 					pStmt.setInt(2, getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()));
 					pStmt.setInt(3, getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()));
 					ResultSet rst = pStmt.executeQuery();
@@ -2047,10 +1873,10 @@ public class MainGUI extends javax.swing.JFrame
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-						"Sie haben keine Auswahl bei ! Mitarbeiter ! getroffen. Für diesen Report müssen Sie " +
-						"Thema, Bereich, Kategorie und Wiedervorlagedatum angeben. " +
-						"Außerdem müssen Sie einen oder \"Alle Mitarbeiter \" auswählen", "Fehler", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
+						+ "Sie haben keine Auswahl bei ! Mitarbeiter ! getroffen. Für diesen Report müssen Sie "
+						+ "Thema, Bereich, Kategorie und Wiedervorlagedatum angeben. "
+						+ "Außerdem müssen Sie einen oder \"Alle Mitarbeiter \" auswählen", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
@@ -2068,10 +1894,10 @@ public class MainGUI extends javax.swing.JFrame
 
 		try
 		{
-			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement " +
-					"INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID " +
-					"WHERE Protokollelement.StatusID = ? AND Geloescht = false " +
-					"ORDER BY Wiedervorlagedatum DESC");
+			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement "
+					+ "INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID "
+					+ "WHERE Protokollelement.StatusID = ? AND Geloescht = false "
+					+ "ORDER BY Wiedervorlagedatum DESC");
 			pStmt.setInt(1, getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
 			ResultSet rst = pStmt.executeQuery();
 
@@ -2085,6 +1911,7 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Status", getStatByID(rst.getInt("StatusID")));
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
+				fields.put("Typ", "");
 				java.util.Date rd = rst.getDate("Wiedervorlagedatum");
 				if (rd != null)
 				{
@@ -2139,8 +1966,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Sitzungsdaten WHERE Geloescht = false " +
-					"ORDER BY SitzungsdatenID DESC";
+			String sql = "SELECT * FROM Sitzungsdaten WHERE Geloescht = false "
+					+ "ORDER BY SitzungsdatenID DESC";
 			ResultSet rst = stmt.executeQuery(sql);
 			rst.next();
 
@@ -2244,8 +2071,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT SitzungsartID, Name FROM Sitzungsart WHERE SitzungsartID=" +
-					actMeeting.getMeetingTypeID();
+			String sql = "SELECT SitzungsartID, Name FROM Sitzungsart WHERE SitzungsartID="
+					+ actMeeting.getMeetingTypeID();
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -2293,8 +2120,8 @@ public class MainGUI extends javax.swing.JFrame
 			try
 			{
 				Statement stmt = con.createStatement();
-				String sql = "SELECT Nachname, Vorname FROM Stammdaten WHERE " +
-						"Personalnummer=" + id;
+				String sql = "SELECT Nachname, Vorname FROM Stammdaten WHERE "
+						+ "Personalnummer=" + id;
 				ResultSet rst = stmt.executeQuery(sql);
 
 				while (rst.next())
@@ -2621,8 +2448,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			while (rst.next())
 			{
-				String em = rst.getString("Nachname") + ", " +
-						rst.getString("Vorname");
+				String em = rst.getString("Nachname") + ", "
+						+ rst.getString("Vorname");
 				employees.add(em);
 			}
 
@@ -2831,8 +2658,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Nachname, Vorname, Personalnummer FROM Stammdaten " +
-					"WHERE Nachname LIKE '" + ln + "' AND Vorname LIKE '" + fn + "'";
+			String sql = "SELECT Nachname, Vorname, Personalnummer FROM Stammdaten "
+					+ "WHERE Nachname LIKE '" + ln + "' AND Vorname LIKE '" + fn + "'";
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -2987,42 +2814,6 @@ public class MainGUI extends javax.swing.JFrame
 
 	}
 
-	public void setComboBoxArea()
-	{
-		jComboBoxArea.removeAllItems();
-		Enumeration e = areas.elements();
-		while (e.hasMoreElements())
-		{
-			String ar = String.valueOf(e.nextElement());
-			jComboBoxArea.addItem(ar);
-		}
-
-	}
-
-	public void setComboBoxMeetingType()
-	{
-		jComboBoxMeetingType.removeAllItems();
-		Enumeration e = meetingTypes.elements();
-		while (e.hasMoreElements())
-		{
-			String mT = String.valueOf(e.nextElement());
-			jComboBoxMeetingType.addItem(mT);
-		}
-
-	}
-
-	public void setComboBoxMeetingDate()
-	{
-		jComboBoxMeetingDate.removeAllItems();
-		Enumeration e = meetingDates.elements();
-		while (e.hasMoreElements())
-		{
-			String md = String.valueOf(e.nextElement());
-			jComboBoxMeetingDate.addItem(md);
-		}
-
-	}
-
 	public void setComboBoxFinStatus()
 	{
 		jComboBoxFinStatus.removeAllItems();
@@ -3088,6 +2879,11 @@ public class MainGUI extends javax.swing.JFrame
 		int statID = 0;
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
+
+		if (statusName.equals("Alle"))
+		{
+			return -1;
+		}
 
 		try
 		{
@@ -3292,13 +3088,12 @@ public class MainGUI extends javax.swing.JFrame
 		return dayString;
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton CategoryListOutput;
     private javax.swing.JMenu Programm;
-    private javax.swing.JButton jButtonCreateAreaList;
+    private javax.swing.JButton TopicListOutput;
+    private javax.swing.JButton WvListOutput;
     private javax.swing.JButton jButtonCreateCategoryList;
     private javax.swing.JButton jButtonCreateListProtocol;
-    private javax.swing.JButton jButtonCreateMeetingDateList;
-    private javax.swing.JButton jButtonCreateMeetingTypeList;
-    private javax.swing.JButton jButtonCreateOP_List;
     private javax.swing.JButton jButtonCreatePersonalProtocol;
     private javax.swing.JButton jButtonCreatePersonalProtocolList;
     private javax.swing.JButton jButtonCreateProtocol;
@@ -3307,25 +3102,19 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JButton jButtonManageMeeting;
     private javax.swing.JButton jButtonManageTodo;
     private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxReDate;
-    private javax.swing.JComboBox jComboBoxArea;
     private javax.swing.JComboBox jComboBoxCategory;
     private javax.swing.JComboBox jComboBoxEmployee;
     private javax.swing.JComboBox jComboBoxFinStatus;
-    private javax.swing.JComboBox jComboBoxMeetingDate;
-    private javax.swing.JComboBox jComboBoxMeetingType;
     private javax.swing.JComboBox jComboBoxTopic;
     private javax.swing.JLabel jLabelAnalysis1;
-    private javax.swing.JLabel jLabelArea;
     private javax.swing.JLabel jLabelCategory;
     private javax.swing.JLabel jLabelEmployee;
     private javax.swing.JLabel jLabelError;
     private javax.swing.JLabel jLabelFinStatus;
     private javax.swing.JLabel jLabelMeeting;
     private javax.swing.JLabel jLabelMeetingDate;
-    private javax.swing.JLabel jLabelMeetingDate2;
     private javax.swing.JLabel jLabelMeetingPlace;
     private javax.swing.JLabel jLabelMeetingType;
-    private javax.swing.JLabel jLabelMeetingType2;
     private javax.swing.JLabel jLabelOP_List;
     private javax.swing.JLabel jLabelOP_List1;
     private javax.swing.JLabel jLabelReDate;

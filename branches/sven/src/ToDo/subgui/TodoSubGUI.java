@@ -487,7 +487,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					else
 					{
 						// Überprüfen ob Wiedervorlagedatum nach aktuellem Datum -> sonst Fehlermeldung und break;
-						if (jCalendarComboBoxReDate.getCalendar().getTime().before(Calendar.getInstance().getTime()))
+						if (jCalendarComboBoxReDate.getCalendar().getTime().before(new java.util.Date()))
 						{
 							JOptionPane.showMessageDialog(null, "Fehler beim Speichern. " +
 									"Das angegebene Wiedervorlagedatum liegt zeitlich vor dem aktuellen Datum.\n" +
@@ -675,7 +675,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private void jComboBoxCategoryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCategoryItemStateChanged
 		if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED)
 		{
-			if (!(String.valueOf(jComboBoxCategory.getSelectedItem()).equals("Aufgabe")))
+			if (isTask())
 			{
 				jButtonSendTask.setVisible(true);
 			}
@@ -2013,7 +2013,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 */
 	public boolean isTask()
 	{
-		if (jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe"))
+		if (jComboBoxCategory.getSelectedItem().toString().contains("Aufgabe"))
 		{
 			return true;
 		}

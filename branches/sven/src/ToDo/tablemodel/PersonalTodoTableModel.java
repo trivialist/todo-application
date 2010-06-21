@@ -63,6 +63,19 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		}
 	}
 
+	@Override
+	public Class<?> getColumnClass(int columnIndex)
+	{
+		if(columnIndex == 2)
+		{
+			return DateFormater.class;
+		}
+		else
+		{
+			return String.class;
+		}
+	}
+
 	public Object getValueAt(final int zeile, final int spalte)
 	{
 		switch (spalte)
@@ -74,14 +87,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			case 1:
 				return this.ptdObjects.get(zeile).getCategory();
 			case 2:
-				if (this.ptdObjects.get(zeile).getReDate() != null)
-				{
-					return sdf.format(this.ptdObjects.get(zeile).getReDate());
-				}
-				else
-				{
-					return "kein";
-				}
+				return new DateFormater(this.ptdObjects.get(zeile).getReDate(), this.ptdObjects.get(zeile).getReMeetingEnabled());
 			case 3:
 				return this.ptdObjects.get(zeile).getStatus();
 			case 4:
@@ -129,8 +135,8 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
-					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
+			String sql = "SELECT Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
+					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
 					"FROM Kategorie INNER JOIN " +
 					"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) " +
 					"INNER JOIN (Status INNER JOIN Protokollelement ON Status.StatusID = Protokollelement.StatusID) " +
@@ -147,12 +153,14 @@ public class PersonalTodoTableModel extends AbstractTableModel
 				td.setTopic(rst.getString("Thema"));
 				td.setCategory(rst.getString("Kategorie"));
 				java.util.Date rd = rst.getDate("WV");
+				td.setReMeetingEnabled(rst.getBoolean("WiedervorlageGesetzt"));
 				if (rd != null)
 				{
 					td.setReDate(rd);
 				}
 				td.setContent(rst.getString("Inhalt"));
 				td.setStatus(rst.getString("Status"));
+				td.setHeading(rst.getString("Überschrift"));
 				ptdObjects.add(td);
 			}
 			rst.close();
@@ -173,8 +181,8 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
-					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
+			String sql = "SELECT Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
+					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
 					"FROM Kategorie INNER JOIN " +
 					"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) " +
 					"INNER JOIN (Status INNER JOIN Protokollelement ON Status.StatusID = Protokollelement.StatusID) " +
@@ -189,12 +197,14 @@ public class PersonalTodoTableModel extends AbstractTableModel
 				td.setTopic(rst.getString("Thema"));
 				td.setCategory(rst.getString("Kategorie"));
 				java.util.Date rd = rst.getDate("WV");
+				td.setReMeetingEnabled(rst.getBoolean("WiedervorlageGesetzt"));
 				if (rd != null)
 				{
 					td.setReDate(rd);
 				}
 				td.setContent(rst.getString("Inhalt"));
 				td.setStatus(rst.getString("Status"));
+				td.setHeading(rst.getString("Überschrift"));
 				ptdObjects.add(td);
 			}
 			rst.close();
