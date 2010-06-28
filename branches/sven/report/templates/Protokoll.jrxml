@@ -12,7 +12,7 @@
 	<parameter name="Datum" class="java.lang.String"/>
 	<parameter name="Ort" class="java.lang.String"/>
 	<parameter name="Protokollant" class="java.lang.String"/>
-	<parameter name="Tagesordnung" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Agenda" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="Teilnehmer" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="Sonstige" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="IMAGE" class="java.lang.String"/>

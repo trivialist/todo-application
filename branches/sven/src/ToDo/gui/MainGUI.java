@@ -149,7 +149,7 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        setFont(new java.awt.Font("Tahoma", 0, 11));
         setMaximizedBounds(new java.awt.Rectangle(20, 20, 600, 800));
         setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -303,6 +303,7 @@ public class MainGUI extends javax.swing.JFrame
         jPanel1.add(TopicListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, 140, -1));
 
         WvListOutput.setText("Liste");
+        WvListOutput.setEnabled(false);
         WvListOutput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 WvListOutputActionPerformed(evt);
@@ -507,8 +508,8 @@ public class MainGUI extends javax.swing.JFrame
 		prot.add(actMeeting.getProt());
 
 		//erzeuge Tagesordnung
-		StringBuilder agenda = new StringBuilder();
-
+		//StringBuilder agenda = new StringBuilder();
+                String agenda ="";
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 		try
@@ -522,7 +523,7 @@ public class MainGUI extends javax.swing.JFrame
 			int counter = 1;
 			while (rst.next())
 			{
-				agenda.append("TOP " + counter + " " + rst.getString("Überschrift") + "\n");
+				agenda += "TOP " + counter + " " + rst.getString("Überschrift") + "\n";
 				counter++;
 			}
 
@@ -543,7 +544,7 @@ public class MainGUI extends javax.swing.JFrame
 		params.put("Teilnehmer", getNameAndLastNameByID(getIdsFromIdString(actMeeting.getPartic())));
 		params.put("Sonstige", actMeeting.getOtherPaticipants());
 		params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
-		params.put("Tagesordnung", agenda.toString());
+		params.put("Agenda", agenda);//.toString());
 		ArrayList<HashMap> td = loadTodoData();
 
 		JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(td);
@@ -1007,8 +1008,7 @@ public class MainGUI extends javax.swing.JFrame
 
 		try
 		{
-			FileInputStream inputStream = new FileInputStream(new File("./ToDoAppSettings.xml"));
-			//FileInputStream inputStream = new FileInputStream(new File("H:\\ToDo\\config\\ToDoAppSettings.xml"));
+			FileInputStream inputStream = new FileInputStream(new File("H:\\ToDo\\config\\ToDoAppSettings.xml"));
 			applicationProperties.loadFromXML(inputStream);
 			inputStream.close();
 

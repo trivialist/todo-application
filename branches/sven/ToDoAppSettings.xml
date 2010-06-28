@@ -3,8 +3,8 @@
 <properties>
 <comment>ToDO Einstellungen</comment>
 <!-- H:\\ToDo\\report\\templates\\ -->
-<entry key="JasperReportsTemplatePath">E:\\Konzept-e\\sven\\report\\templates\\</entry>
-<entry key="LoggerLogfilePath">C:\\Users\\sven\\Desktop\\ToDoAppLogfile.log</entry>
+<entry key="JasperReportsTemplatePath">H:\\ToDo\\report\\templates\\</entry>
+<entry key="LoggerLogfilePath">R:\\ToDoAppLogfile.log</entry>
 <entry key="DatabaseDriver">sun.jdbc.odbc.JdbcOdbcDriver</entry>
 <entry key="DatabaseDsnMitarbeiter">jdbc:odbc:mitarbeiter</entry>
 <entry key="DatabaseDsnTodo">jdbc:odbc:todo</entry>

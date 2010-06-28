@@ -162,11 +162,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
         setTitle("Protokolleinträge erstellen und bearbeiten");
         setMinimumSize(new java.awt.Dimension(550, 530));
         setResizable(false);
-        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
-            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
-                formWindowGainedFocus(evt);
-            }
-            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -415,24 +413,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		TopicGUI topicGUI = new TopicGUI();
 		topicGUI.setVisible(true);
 }//GEN-LAST:event_jButtonEditTopicAndAreaActionPerformed
-
-    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-		jTableInvolved.setModel(new InvolvedTableModel(involved, meetingID));
-		jTableResponsibles.setModel(new ResponsibleTableModel(responsible, meetingID));
-		//Comboboxen neu initialisieren, weil evtl. neue
-		//Kategorie,Status,Institution oder Bereich erstellt wurde
-		if (!reDateChange)
-		{
-			if (status == 0)
-			{
-				newTodoInit();
-			}
-			if (status == 1)
-			{
-				editTodoInit(hideElement);
-			}
-		}
-    }//GEN-LAST:event_formWindowGainedFocus
 
     private void jButtonNewStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewStatusActionPerformed
 		String statusName = "";
@@ -688,6 +668,24 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
     private void jButtonMemoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMemoActionPerformed
     }//GEN-LAST:event_jButtonMemoActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        jTableInvolved.setModel(new InvolvedTableModel(involved, meetingID));
+		jTableResponsibles.setModel(new ResponsibleTableModel(responsible, meetingID));
+		//Comboboxen neu initialisieren, weil evtl. neue
+		//Kategorie,Status,Institution oder Bereich erstellt wurde
+		if (!reDateChange)
+		{
+			if (status == 0)
+			{
+				newTodoInit();
+			}
+			if (status == 1)
+			{
+				editTodoInit(hideElement);
+			}
+		}
+    }//GEN-LAST:event_formWindowOpened
 
 	public void stateChanged(ChangeEvent e)
 	{
