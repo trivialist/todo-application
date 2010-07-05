@@ -255,7 +255,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	 */
 	public void newMeeting()
 	{
-		meet.setDate(cal.getTime());
+		meet.setDate(jCalendarComboBoxDate.getCalendar().getTime());
 		meet.setMeetingType(String.valueOf(jComboBoxMeetingType.getSelectedItem()));
 		meet.setMeetingTypeID(getMeetingTypeIDByName(meet.getMeetingType()));
 		meet.setPlace(jTextFieldPlace.getText());
@@ -579,7 +579,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Sitzungsdaten";
+			String sql = "SELECT * FROM Sitzungsdaten ORDER BY SitzungsdatenID ASC";
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
