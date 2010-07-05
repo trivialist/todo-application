@@ -537,7 +537,8 @@ public class MainGUI extends javax.swing.JFrame
 		DB_ToDo_Connect.closeDB(con);
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("SitzName", actMeeting.getMeetingType());
+		params.put("Tagesordnung", agenda.toString());
+                params.put("SitzName", actMeeting.getMeetingType());
 		params.put("Datum", sdf.format(actMeeting.getDate()));
 		params.put("Ort", actMeeting.getPlace());
 		params.put("Protokollant", getNameAndLastNameByID(prot));
@@ -547,7 +548,7 @@ public class MainGUI extends javax.swing.JFrame
 		params.put("Agenda", agenda);//.toString());
 		ArrayList<HashMap> td = loadTodoData();
 
-		JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(td);
+                JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(td);
 
 		/*if(data.isEmpty()) {
 		HashMap<String,String> fields= new HashMap<String,String>();
