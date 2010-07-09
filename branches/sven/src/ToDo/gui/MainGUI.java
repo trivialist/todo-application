@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import todo.dbcon.DB_Mitarbeiter_Connect;
 import todo.tablemodel.CategoryTodoTableModel;
+import todo.tablemodel.OpListTableModel;
 import todo.tablemodel.PersonalTodoTableModel;
 import todo.tablemodel.TopicTodoTableModel;
 import todo.tablemodel.WvTodoTableModel;
@@ -88,6 +89,7 @@ public class MainGUI extends javax.swing.JFrame
 		setComboBoxFinStatus();
 		setComboBoxTopics();
 		setComboBoxCategory();
+		setComboMeetingType();
 	}
 
 	/** This method is called from within the constructor to
@@ -122,6 +124,9 @@ public class MainGUI extends javax.swing.JFrame
         CategoryListOutput = new javax.swing.JButton();
         TopicListOutput = new javax.swing.JButton();
         WvListOutput = new javax.swing.JButton();
+        jComboMeetingType = new javax.swing.JComboBox();
+        jButton1 = new javax.swing.JButton();
+        jCalendarComboBoxReDate1 = new de.wannawork.jcalendar.JCalendarComboBox();
         jLabelError = new javax.swing.JLabel();
         jLabelEmployee = new javax.swing.JLabel();
         jLabelFinStatus = new javax.swing.JLabel();
@@ -130,6 +135,8 @@ public class MainGUI extends javax.swing.JFrame
         jLabelReDate = new javax.swing.JLabel();
         jLabelOP_List1 = new javax.swing.JLabel();
         jLabelOP_List = new javax.swing.JLabel();
+        jLabelEmployee1 = new javax.swing.JLabel();
+        jLabelEmployee2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         Programm = new javax.swing.JMenu();
         jMenuItemNewMeeting = new javax.swing.JMenuItem();
@@ -149,8 +156,9 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11));
+        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         setMaximizedBounds(new java.awt.Rectangle(20, 20, 600, 800));
+        setMinimumSize(new java.awt.Dimension(600, 720));
         setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
@@ -160,12 +168,12 @@ public class MainGUI extends javax.swing.JFrame
             }
         });
 
-        jPanel1.setMaximumSize(new java.awt.Dimension(1024, 768));
-        jPanel1.setMinimumSize(new java.awt.Dimension(600, 500));
-        jPanel1.setPreferredSize(new java.awt.Dimension(600, 590));
+        jPanel1.setMaximumSize(new java.awt.Dimension(30, 30));
+        jPanel1.setMinimumSize(new java.awt.Dimension(30, 30));
+        jPanel1.setPreferredSize(new java.awt.Dimension(30, 30));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabelMeeting.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabelMeeting.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabelMeeting.setText("Aktuelle Sitzung:");
         jPanel1.add(jLabelMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 110, -1));
 
@@ -211,7 +219,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreatePersonalProtocolListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreatePersonalProtocolList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 250, 140, 20));
+        jPanel1.add(jButtonCreatePersonalProtocolList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 350, 140, 20));
 
         jTextField2.setBackground(new java.awt.Color(0, 0, 0));
         jTextField2.setEditable(false);
@@ -221,11 +229,11 @@ public class MainGUI extends javax.swing.JFrame
         jTextField2.setRequestFocusEnabled(false);
         jPanel1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 550, 5));
 
-        jLabelAnalysis1.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabelAnalysis1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabelAnalysis1.setText("Auswertungen");
         jPanel1.add(jLabelAnalysis1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 110, -1));
 
-        jPanel1.add(jComboBoxEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 200, -1));
+        jPanel1.add(jComboBoxEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 370, 200, -1));
 
         jComboBoxFinStatus.setToolTipText("Bitte den Bearbeitungsstatus für die Auswerrtung auswählen");
         jComboBoxFinStatus.addActionListener(new java.awt.event.ActionListener() {
@@ -233,18 +241,18 @@ public class MainGUI extends javax.swing.JFrame
                 jComboBoxFinStatusActionPerformed(evt);
             }
         });
-        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 400, 130, -1));
+        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 460, 130, -1));
 
-        jPanel1.add(jComboBoxTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 200, -1));
+        jPanel1.add(jComboBoxTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 520, 200, -1));
 
-        jPanel1.add(jComboBoxCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 360, 200, -1));
+        jPanel1.add(jComboBoxCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 200, -1));
 
         jCalendarComboBoxReDate.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jCalendarComboBoxReDateStateChanged(evt);
             }
         });
-        jPanel1.add(jCalendarComboBoxReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 520, 200, 20));
+        jPanel1.add(jCalendarComboBoxReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 270, 130, 20));
 
         jButtonCreatePersonalProtocol.setText("Druckvorschau");
         jButtonCreatePersonalProtocol.addActionListener(new java.awt.event.ActionListener() {
@@ -252,7 +260,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreatePersonalProtocolActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreatePersonalProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, 140, 20));
+        jPanel1.add(jButtonCreatePersonalProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 380, 140, 20));
 
         jButtonCreateTopicList.setText("Druckvorschau");
         jButtonCreateTopicList.addActionListener(new java.awt.event.ActionListener() {
@@ -260,7 +268,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateTopicListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateTopicList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 460, 140, -1));
+        jPanel1.add(jButtonCreateTopicList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 540, 140, -1));
 
         jButtonCreateCategoryList.setText("Druckvorschau");
         jButtonCreateCategoryList.addActionListener(new java.awt.event.ActionListener() {
@@ -268,7 +276,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateCategoryListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateCategoryList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 380, 140, -1));
+        jPanel1.add(jButtonCreateCategoryList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 460, 140, -1));
 
         jButtonCreateReDateList.setText("Druckvorschau");
         jButtonCreateReDateList.addActionListener(new java.awt.event.ActionListener() {
@@ -276,7 +284,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateReDateListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 530, 140, -1));
+        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 610, 140, -1));
 
         jButtonCreateListProtocol.setText("Protokoll (kurz)");
         jButtonCreateListProtocol.addActionListener(new java.awt.event.ActionListener() {
@@ -292,7 +300,7 @@ public class MainGUI extends javax.swing.JFrame
                 CategoryListOutputActionPerformed(evt);
             }
         });
-        jPanel1.add(CategoryListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 350, 140, -1));
+        jPanel1.add(CategoryListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, 140, -1));
 
         TopicListOutput.setText("Liste");
         TopicListOutput.addActionListener(new java.awt.event.ActionListener() {
@@ -300,7 +308,7 @@ public class MainGUI extends javax.swing.JFrame
                 TopicListOutputActionPerformed(evt);
             }
         });
-        jPanel1.add(TopicListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, 140, -1));
+        jPanel1.add(TopicListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 510, 140, -1));
 
         WvListOutput.setText("Liste");
         WvListOutput.setEnabled(false);
@@ -309,36 +317,61 @@ public class MainGUI extends javax.swing.JFrame
                 WvListOutputActionPerformed(evt);
             }
         });
-        jPanel1.add(WvListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 500, 140, -1));
+        jPanel1.add(WvListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 580, 140, -1));
+
+        jPanel1.add(jComboMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 200, -1));
+
+        jButton1.setText("Liste");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, 150, -1));
+
+        jCalendarComboBoxReDate1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jCalendarComboBoxReDate1StateChanged(evt);
+            }
+        });
+        jPanel1.add(jCalendarComboBoxReDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, 200, 20));
 
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 310, 40));
 
         jLabelEmployee.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelEmployee.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mitarbeiter", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, 220, 50));
+        jLabelEmployee.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "WV-Datum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
+        jPanel1.add(jLabelEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 250, 150, 50));
 
         jLabelFinStatus.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bearbeitungstatus", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
         jLabelFinStatus.setOpaque(true);
-        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 250, 150, 310));
+        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 320, 150, 320));
 
         jLabelCategory.setBackground(new java.awt.Color(255, 255, 255));
         jLabelCategory.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kategorie", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, 530, 80));
+        jPanel1.add(jLabelCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 530, 80));
 
         jLabelTopic.setBackground(new java.awt.Color(255, 255, 255));
         jLabelTopic.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thema", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 530, 80));
+        jPanel1.add(jLabelTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 490, 530, 80));
 
         jLabelReDate.setBackground(new java.awt.Color(255, 255, 255));
         jLabelReDate.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Wiedervorlagedatum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 490, 530, 70));
+        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 570, 530, 70));
 
         jLabelOP_List1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Auswertungen nach Kategorie", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
-        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 550, 260));
+        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 550, 330));
 
         jLabelOP_List.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "OP-Liste", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
         jPanel1.add(jLabelOP_List, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 550, 80));
+
+        jLabelEmployee1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelEmployee1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mitarbeiter", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
+        jPanel1.add(jLabelEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, 530, 70));
+
+        jLabelEmployee2.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelEmployee2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sitzungsart", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
+        jPanel1.add(jLabelEmployee2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, 220, 50));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -1001,6 +1034,24 @@ public class MainGUI extends javax.swing.JFrame
 		}
 	}//GEN-LAST:event_WvListOutputActionPerformed
 
+	private void jCalendarComboBoxReDate1StateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_jCalendarComboBoxReDate1StateChanged
+	{//GEN-HEADEREND:event_jCalendarComboBoxReDate1StateChanged
+		// TODO add your handling code here:
+	}//GEN-LAST:event_jCalendarComboBoxReDate1StateChanged
+
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+	{//GEN-HEADEREND:event_jButton1ActionPerformed
+		if (jComboMeetingType.getSelectedItem().toString().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Das Feld für die Auswahl der Sitzungsart ist leer bzw. wurde nicht gewählt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			TodoListGUI newPTDL = new TodoListGUI(new OpListTableModel(getMeetingTypeIDByName(jComboMeetingType.getSelectedItem().toString()), jCalendarComboBoxReDate.getCalendar().getTime()));
+			newPTDL.setVisible(true);
+		}
+	}//GEN-LAST:event_jButton1ActionPerformed
+
 	/**
 	 * @param args the command line arguments
 	 */
@@ -1009,7 +1060,7 @@ public class MainGUI extends javax.swing.JFrame
 
 		try
 		{
-			FileInputStream inputStream = new FileInputStream(new File("H:\\ToDo\\config\\ToDoAppSettings.xml"));
+			FileInputStream inputStream = new FileInputStream(new File("E:\\Konzept-e\\sven\\ToDoAppSettings.xml"));
 			applicationProperties.loadFromXML(inputStream);
 			inputStream.close();
 
@@ -2513,8 +2564,7 @@ public class MainGUI extends javax.swing.JFrame
 	public void getAllCategories()
 	{
 		DB_ToDo_Connect.openDB();
-		con =
-				DB_ToDo_Connect.getCon();
+		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -2815,6 +2865,17 @@ public class MainGUI extends javax.swing.JFrame
 
 	}
 
+	public void setComboMeetingType()
+	{
+		jComboMeetingType.removeAllItems();
+		Enumeration e = meetingTypes.elements();
+		while (e.hasMoreElements())
+		{
+			String ca = String.valueOf(e.nextElement());
+			jComboMeetingType.addItem(ca);
+		}
+	}
+
 	public void setComboBoxFinStatus()
 	{
 		jComboBoxFinStatus.removeAllItems();
@@ -2909,6 +2970,35 @@ public class MainGUI extends javax.swing.JFrame
 		return statID;
 	}
 
+	public int getCategoryIDByName(String categoryName)
+	{
+		int catID = -1;
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Kategorie WHERE Name='" + categoryName + "'";
+			ResultSet rst = stmt.executeQuery(sql);
+
+			while (rst.next())
+			{
+				catID = rst.getInt("KategorieID");
+			}
+
+			rst.close();
+			stmt.close();
+		} catch (Exception ex)
+		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+
+		DB_ToDo_Connect.closeDB(con);
+		return catID;
+	}
+
 	public int getTopicIDByName(String topicName)
 	{
 		int topID = 0;
@@ -2938,21 +3028,21 @@ public class MainGUI extends javax.swing.JFrame
 		return topID;
 	}
 
-	public int getCategoryIDByName(String categoryName)
+	public int getMeetingTypeIDByName(String meetingTypeName)
 	{
-		int catID = -1;
+		int meetingTypeId = -1;
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Kategorie WHERE Name='" + categoryName + "'";
+			String sql = "SELECT * FROM Sitzungsart WHERE Name='" + meetingTypeName + "'";
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
 			{
-				catID = rst.getInt("KategorieID");
+				meetingTypeId = rst.getInt("SitzungsartID");
 			}
 
 			rst.close();
@@ -2964,7 +3054,7 @@ public class MainGUI extends javax.swing.JFrame
 		}
 
 		DB_ToDo_Connect.closeDB(con);
-		return catID;
+		return meetingTypeId;
 	}
 
 	public int getAreaIDByName(String areaName)
@@ -3085,7 +3175,6 @@ public class MainGUI extends javax.swing.JFrame
 
 		}
 
-
 		return dayString;
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -3093,6 +3182,7 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JMenu Programm;
     private javax.swing.JButton TopicListOutput;
     private javax.swing.JButton WvListOutput;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonCreateCategoryList;
     private javax.swing.JButton jButtonCreateListProtocol;
     private javax.swing.JButton jButtonCreatePersonalProtocol;
@@ -3103,13 +3193,17 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JButton jButtonManageMeeting;
     private javax.swing.JButton jButtonManageTodo;
     private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxReDate;
+    private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxReDate1;
     private javax.swing.JComboBox jComboBoxCategory;
     private javax.swing.JComboBox jComboBoxEmployee;
     private javax.swing.JComboBox jComboBoxFinStatus;
     private javax.swing.JComboBox jComboBoxTopic;
+    private javax.swing.JComboBox jComboMeetingType;
     private javax.swing.JLabel jLabelAnalysis1;
     private javax.swing.JLabel jLabelCategory;
     private javax.swing.JLabel jLabelEmployee;
+    private javax.swing.JLabel jLabelEmployee1;
+    private javax.swing.JLabel jLabelEmployee2;
     private javax.swing.JLabel jLabelError;
     private javax.swing.JLabel jLabelFinStatus;
     private javax.swing.JLabel jLabelMeeting;
