@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<comment>ToDO Einstellungen</comment>
-<!-- H:\\ToDo\\report\\templates\\ -->
-<entry key="JasperReportsTemplatePath">E:\\Konzept-e\\Todo\\source\\ToDo\\report\\templates\\</entry>
-</properties>
