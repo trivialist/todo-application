@@ -127,6 +127,7 @@ public class MainGUI extends javax.swing.JFrame
         jComboMeetingType = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
         jCalendarComboBoxReDate1 = new de.wannawork.jcalendar.JCalendarComboBox();
+        jButton2 = new javax.swing.JButton();
         jLabelError = new javax.swing.JLabel();
         jLabelEmployee = new javax.swing.JLabel();
         jLabelFinStatus = new javax.swing.JLabel();
@@ -156,7 +157,7 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        setFont(new java.awt.Font("Tahoma", 0, 11));
         setMaximizedBounds(new java.awt.Rectangle(20, 20, 600, 800));
         setMinimumSize(new java.awt.Dimension(600, 720));
         setResizable(false);
@@ -173,7 +174,7 @@ public class MainGUI extends javax.swing.JFrame
         jPanel1.setPreferredSize(new java.awt.Dimension(30, 30));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabelMeeting.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabelMeeting.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabelMeeting.setText("Aktuelle Sitzung:");
         jPanel1.add(jLabelMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 110, -1));
 
@@ -229,7 +230,7 @@ public class MainGUI extends javax.swing.JFrame
         jTextField2.setRequestFocusEnabled(false);
         jPanel1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 550, 5));
 
-        jLabelAnalysis1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabelAnalysis1.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabelAnalysis1.setText("Auswertungen");
         jPanel1.add(jLabelAnalysis1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 110, -1));
 
@@ -327,7 +328,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, 150, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 240, 150, -1));
 
         jCalendarComboBoxReDate1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -335,6 +336,14 @@ public class MainGUI extends javax.swing.JFrame
             }
         });
         jPanel1.add(jCalendarComboBoxReDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, 200, 20));
+
+        jButton2.setText("Druckvorschau");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 270, 150, -1));
 
         jLabelError.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 310, 40));
@@ -1051,6 +1060,112 @@ public class MainGUI extends javax.swing.JFrame
 			newPTDL.setVisible(true);
 		}
 	}//GEN-LAST:event_jButton1ActionPerformed
+
+	private ArrayList<HashMap> loadMeetingTypeData(java.util.Date wvDate, int meetingTypeId)
+	{
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		ArrayList<HashMap> data = new ArrayList<HashMap>();
+
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT Verantwortliche, Beteiligte, SitzungsID, Überschrift, Protokollelement.InstitutionsID, TBZuordnung_ID, Sitzungsart.Name as Sitzungsart, Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Thema INNER JOIN (TBZ INNER JOIN (Sitzungsart INNER JOIN (Sitzungsdaten INNER JOIN (Status INNER JOIN (Kategorie INNER JOIN Protokollelement ON Kategorie.KategorieID = Protokollelement.KategorieID) ON Status.StatusID = Protokollelement.StatusID) ON Sitzungsdaten.SitzungsdatenID = Protokollelement.SitzungsID) ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID) ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID WHERE Sitzungsart.SitzungsartID = " + meetingTypeId + " AND Status.Name = 'Neu' AND WiedervorlageGesetzt = true AND WiedervorlageDatum <= #" + new SimpleDateFormat("dd/MM/yyyy").format(wvDate) + "#";
+			ResultSet rst = stmt.executeQuery(sql);
+			Statement stmt2 = con.createStatement();
+
+			while (rst.next())
+			{
+				HashMap<String, String> fields = new HashMap<String, String>();
+
+				int tbz_id = rst.getInt("TBZuordnung_ID");
+				fields.put("Kategorie", rst.getString("Kategorie"));
+				fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
+				fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
+				fields.put("Status", rst.getString("Status"));
+				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
+				fields.put("Inhalt", rst.getString("Inhalt"));
+				fields.put("Ueberschrift", rst.getString("Überschrift"));
+				fields.put("Verantwortliche", getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+				fields.put("Beteiligte", getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+
+				if (rst.getBoolean("WiedervorlageGesetzt"))
+				{
+					fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
+				}
+				else
+				{
+					fields.put("Wiedervorlagedatum", "kein");
+				}
+
+				String sql2 = "SELECT * FROM Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID WHERE SitzungsdatenID = " + rst.getInt("SitzungsID");
+				ResultSet rst2 = stmt2.executeQuery(sql2);
+				rst2.next();
+
+				fields.put("SitzOrt", rst2.getString("Ort"));
+				java.util.Date md = rst2.getDate("Datum");
+
+				if (md != null)
+				{
+					fields.put("SitzDatum", sdf.format(md));
+				}
+				else
+				{
+					fields.put("SitzDatum", "kein");
+				}
+
+				fields.put("SitzName", rst2.getString("Name"));
+				data.add(fields);
+				rst2.close();
+			}
+
+			rst.close();
+			stmt.close();
+			stmt2.close();
+			
+		} catch (Exception ex)
+		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		
+		DB_ToDo_Connect.closeDB(con);
+		return data;
+	}
+
+	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
+	{//GEN-HEADEREND:event_jButton2ActionPerformed
+		if (jComboMeetingType.getSelectedItem().toString().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Das Feld für die Auswahl der Sitzungsart ist leer bzw. wurde nicht gewählt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			ArrayList<HashMap> ptd;
+			String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "MeetingTypeTodos.jrxml";
+			Calendar cal = Calendar.getInstance();
+
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			String actDate = getDayString(cal.get(Calendar.DAY_OF_WEEK)) + ", " + cal.get(Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR);
+			params.put("Datum", actDate);
+			params.put("Sitzungsart", jComboMeetingType.getSelectedItem().toString());
+			params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
+
+			ptd = loadMeetingTypeData(jCalendarComboBoxReDate.getCalendar().getTime(), getMeetingTypeIDByName(jComboMeetingType.getSelectedItem().toString()));
+
+			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(ptd);
+
+			try
+			{
+				JasperReport jasperReport = JasperCompileManager.compileReport(reportSource);
+				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSet);
+				JasperViewer.viewReport(jasperPrint, false);
+			} catch (JRException ex)
+			{
+				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+	}//GEN-LAST:event_jButton2ActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -3183,6 +3298,7 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JButton TopicListOutput;
     private javax.swing.JButton WvListOutput;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonCreateCategoryList;
     private javax.swing.JButton jButtonCreateListProtocol;
     private javax.swing.JButton jButtonCreatePersonalProtocol;
