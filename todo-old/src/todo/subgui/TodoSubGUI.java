@@ -461,8 +461,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				{
 					if (jCheckBoxNoReDate.isSelected())
 					{
-						newTodo();
-						setVisible(false);
+                                            try {
+                                                newTodo();
+                                                setVisible(false);
+                                            } catch (Exception ex) {
+                                                Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
 					}
 					else
 					{
@@ -477,16 +481,24 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 						}
 						else
 						{
-							newTodo();
-							setVisible(false);
+                                                    try {
+                                                        newTodo();
+                                                        setVisible(false);
+                                                    } catch (Exception ex) {
+                                                        Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
 						}
 					}
 				}
 				break;
 			case 1:         // status=1, vorhandenes Protokollelement bearbeiten,
 				// nur Status darf geändert werden
-				editTodo();
-				setVisible(false);
+				try {
+                                    editTodo();
+                                    setVisible(false);
+                                } catch (Exception ex){
+                                    Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
 				break;
 			default:
 				JOptionPane.showMessageDialog(this, "Allgemeiner Fehler beim Speichern von Protokollelement.");
@@ -869,11 +881,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 * Bereich und Thema müssen angegeben werden
 	 *
 	 */
-	public void newTodo()
+	public void newTodo() throws Exception
 	{
 		StringBuffer dbStringOthers = new StringBuffer("");
 		StringBuffer dbStringResponsible = new StringBuffer("");
-		int tbz_id = -1;
+		PreparedStatement pStmt = null;
+                int tbz_id = -1;
 
 		if (!String.valueOf(jComboBoxCategory.getSelectedItem()).equals("Bitte wählen..."))
 		{
@@ -980,30 +993,36 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		Date dat = new Date(td.getReDate().getTime());
 		try
 		{
-			Statement stmt = con.createStatement();
-			String sql = "INSERT INTO Protokollelement (KategorieID, SitzungsID, " +
-					"StatusID, InstitutionsID, BereichID, Thema, Inhalt, Wiedervorlagedatum, " +
-					"Verantwortliche, Beteiligte, TBZuordnung_ID, WV_Sitzungsart, Überschrift," +
-					"WiedervorlageGesetzt, Geloescht) " +
-					"VALUES (" + td.getCategoryID() +
-					", " + meetingID + ", " + td.getStatusID() +
-					", " + td.getInstitutionID() + ", " + td.getAreaID() +
-					", '" + td.getTopic() + "', '" + td.getContent() +
-					"', '" + dat + "', '" + td.getRespons() +
-					"', '" + td.getOthers() + "', " + tbz_id +
-					", " + td.getReMeetType() + ",'" + td.getHeading() + "'," +
-					td.getReMeetingEnabled() + ", false)";
+                    //Statement stmt = con.createStatement();
+                    String sql = "INSERT INTO Protokollelement " +
+                                 "(KategorieID, SitzungsID, StatusID, InstitutionsID, BereichID, " +
+                                 "Inhalt, Wiedervorlagedatum, Verantwortliche, Beteiligte, " +
+                                 "TBZuordnung_ID, WV_Sitzungsart, Überschrift, WiedervorlageGesetzt, Geloescht) " +
+				 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, false)";
+                    pStmt = con.prepareStatement(sql);
+                    pStmt.setInt(1, td.getCategoryID());
+                    pStmt.setInt(2, meetingID);
+                    pStmt.setInt(3, td.getStatusID());
+                    pStmt.setInt(4, td.getInstitutionID());
+                    pStmt.setInt(5, td.getAreaID());
+                    pStmt.setString(6, td.getContent());
+                    pStmt.setDate(7, dat);
+                    pStmt.setString(8, td.getRespons());
+                    pStmt.setString(9, td.getOthers());
+                    pStmt.setInt(10, tbz_id);
+                    pStmt.setInt(11, td.getReMeetType());
+                    pStmt.setString(12, td.getHeading());
+                    pStmt.setBoolean(13, td.getReMeetingEnabled());
+                    pStmt.executeUpdate();
 
-			stmt.executeUpdate(sql);
-			stmt.close();
-
-		} catch (Exception ex)
+                } catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
-		}
-		DB_ToDo_Connect.closeDB(con);
-		//}
+		} finally {
+                    pStmt.close();
+                    DB_ToDo_Connect.closeDB(con);
+                }
 	}
 
 	/**
@@ -1011,11 +1030,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 * Speichern der Änderungen in der Datenbank;
 	 * Zulässige Änderungen sind Status und Wiedervorlage-Infos
 	 */
-	public void editTodo()
+	public void editTodo() throws Exception
 	{
 		StringBuffer dbStringOthers = new StringBuffer("");
 		StringBuffer dbStringResponsible = new StringBuffer("");
-		int tbz_id = -1;
+		PreparedStatement pStmt = null;
+                int tbz_id = -1;
 
 		if (!String.valueOf(jComboBoxCategory.getSelectedItem()).equals("Bitte wählen..."))
 		{
@@ -1148,26 +1168,39 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		try
 		{
-			Statement stmt = con.createStatement();
-			String sql = "UPDATE Protokollelement SET KategorieID = " + td.getCategoryID() +
-					", SitzungsID = " + meetingID + ", StatusID = " + td.getStatusID() +
-					", InstitutionsID = " + td.getInstitutionID() + ", BereichID = " + td.getAreaID() +
-					", Thema = '" + td.getTopic() + "', Inhalt = '" + td.getContent() +
-					"', Wiedervorlagedatum = '" + dat + "', Verantwortliche = '" + td.getRespons() +
-					"', Beteiligte ='" + td.getOthers() + "', TBZuordnung_ID = " + tbz_id +
-					", WV_Sitzungsart = " + td.getReMeetType() + ", Überschrift = '" + td.getHeading() +
-					"', WiedervorlageGesetzt = " + td.getReMeetingEnabled() +
-					", Geloescht = false WHERE ToDoID = " + todoID;
-			stmt.executeUpdate(sql);
-			stmt.close();
+			String sql = "UPDATE Protokollelement SET" +
+                                    " KategorieID = ?, SitzungsID = ?, StatusID = ?, InstitutionsID = ?, BereichID = ?" +
+                                    ", Inhalt = ?, Wiedervorlagedatum = ?, Verantwortliche = ?, Beteiligte = ?" +
+                                    ", TBZuordnung_ID = ?, WV_Sitzungsart = ?, Überschrift = ?, WiedervorlageGesetzt = ?" +
+                                    ", Geloescht = ? WHERE ToDoID = ?" + ";";
+			int i = 1;
+                        pStmt = con.prepareStatement(sql);
+                        pStmt.setInt(1, td.getCategoryID());
+                        pStmt.setInt(2, meetingID);
+                        pStmt.setInt(3, td.getStatusID());
+                        pStmt.setInt(4, td.getInstitutionID());
+                        pStmt.setInt(5, td.getAreaID());
+                        pStmt.setString(6, td.getContent());
+                        pStmt.setDate(7, dat);
+                        pStmt.setString(8, td.getRespons());
+                        pStmt.setString(9, td.getOthers());
+                        pStmt.setInt(10, tbz_id);
+                        pStmt.setInt(11, td.getReMeetType());
+                        pStmt.setString(12, td.getHeading());
+                        pStmt.setBoolean(13, td.getReMeetingEnabled());
+                        pStmt.setBoolean(14, false);
+                        pStmt.setInt(15, todoID);
+                        pStmt.executeUpdate();
 
 		} catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
-		}
-		DB_ToDo_Connect.closeDB(con);
-	}
+		} finally {
+                    pStmt.close();
+                    DB_ToDo_Connect.closeDB(con);
+                }
+        }
 
 	public ArrayList getAllCategories()
 	{

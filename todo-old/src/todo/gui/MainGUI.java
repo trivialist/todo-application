@@ -1178,7 +1178,7 @@ public class MainGUI extends javax.swing.JFrame
 			File file = new File("E:\\Konzept-e\\sven\\ToDoAppSettings.xml");
 			if(!file.exists())
 			{
-				file = new File("H:\\ToDo\\Todo-application\\ToDoAppSettings.xml");
+				file = new File("H:\\ToDo\\config\\ToDoAppSettings.xml");
 			}
 			
 			FileInputStream inputStream = new FileInputStream(file);
