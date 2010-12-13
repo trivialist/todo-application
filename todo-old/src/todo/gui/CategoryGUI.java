@@ -69,6 +69,7 @@ public class CategoryGUI extends javax.swing.JFrame
         jPanel1.add(jButtonEditInstitution, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, -1, -1));
 
         jButtonDeleteInstitution.setText("Löschen");
+        jButtonDeleteInstitution.setEnabled(false);
         jButtonDeleteInstitution.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDeleteInstitutionActionPerformed(evt);
@@ -94,7 +95,12 @@ public class CategoryGUI extends javax.swing.JFrame
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void jButtonDeleteInstitutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteInstitutionActionPerformed
-		if (jTable1.getSelectedRow() != -1)
+           /**
+            * @TODO
+            * Im falle eines Löschvorgangs muss ide aktuelle kategorie auf eine neu zu wählende umgeschrieben werden.
+            * Diser Dialog muss noch angelegt werden, solange ist die Schaltfläche löschen deaktiviert.
+            */
+            if (jTable1.getSelectedRow() != -1)
 		{
 			Object catID = jTable1.getValueAt(jTable1.getSelectedRow(), -1);
 			Object catName = jTable1.getValueAt(jTable1.getSelectedRow(), 0);

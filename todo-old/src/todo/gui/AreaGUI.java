@@ -71,6 +71,7 @@ public class AreaGUI extends javax.swing.JFrame
         jPanel1.add(jButtonEditArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 20, -1, -1));
 
         jButtonDeleteArea.setText("Löschen");
+        jButtonDeleteArea.setEnabled(false);
         jButtonDeleteArea.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDeleteAreaActionPerformed(evt);

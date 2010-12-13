@@ -69,6 +69,7 @@ public class InstitutionGUI extends javax.swing.JFrame
         jPanel1.add(jButtonEditInstitution, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, -1, -1));
 
         jButtonDeleteInstitution.setText("Löschen");
+        jButtonDeleteInstitution.setEnabled(false);
         jButtonDeleteInstitution.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDeleteInstitutionActionPerformed(evt);

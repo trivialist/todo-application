@@ -69,6 +69,7 @@ public class FinStatusGUI extends javax.swing.JFrame
         jPanel1.add(jButtonEditFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, -1, -1));
 
         jButtonDeleteFinStatus.setText("Löschen");
+        jButtonDeleteFinStatus.setEnabled(false);
         jButtonDeleteFinStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDeleteFinStatusActionPerformed(evt);

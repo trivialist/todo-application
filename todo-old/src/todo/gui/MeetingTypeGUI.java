@@ -68,6 +68,7 @@ public class MeetingTypeGUI extends javax.swing.JFrame
         jPanel1.add(jButtonEditMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, -1, -1));
 
         jButtonDeleteMeetingType.setText("Löschen");
+        jButtonDeleteMeetingType.setEnabled(false);
         jButtonDeleteMeetingType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonDeleteMeetingTypeActionPerformed(evt);
