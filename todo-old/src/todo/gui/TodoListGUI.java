@@ -15,7 +15,6 @@ import todo.dbcon.DB_ToDo_Connect;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.AbstractTableModel;
 
 /**
  *
@@ -24,17 +23,19 @@ import javax.swing.table.AbstractTableModel;
 public class TodoListGUI extends javax.swing.JFrame
 {
 	private static Connection con;
+	private UpdateDataMethod updateDataMethod;
 
 	/** Creates new form PersonalTodoListGUI */
-	public TodoListGUI(AbstractTableModel dataModel)
+	public TodoListGUI(UpdateDataMethod updateDataMethod)
 	{
 		initComponents();
-		jTable1.setModel(dataModel);
+		jTable1.setModel(updateDataMethod.dataModelHasChanged());
 		jTable1.setAutoCreateRowSorter(true);
 		jTable1.getColumnModel().getColumn(0).setMaxWidth(150);
 		jTable1.getColumnModel().getColumn(0).setPreferredWidth(150);
 		jTable1.getColumnModel().getColumn(1).setMaxWidth(100);
 		jTable1.getColumnModel().getColumn(1).setPreferredWidth(100);
+		this.updateDataMethod = updateDataMethod;
 	}
 
 	/** This method is called from within the constructor to
@@ -113,6 +114,7 @@ public class TodoListGUI extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+		jTable1.setModel(updateDataMethod.dataModelHasChanged());
     }//GEN-LAST:event_formWindowGainedFocus
 
 	/*
@@ -133,7 +135,7 @@ public class TodoListGUI extends javax.swing.JFrame
 				if (cat != null)
 				{
 					TodoSubGUI newTodo = new TodoSubGUI(1, getMeetingIdByTodoID(tID),
-							String.valueOf(cat), String.valueOf(top), tID, true);
+														String.valueOf(cat), String.valueOf(top), tID, true);
 					newTodo.setVisible(true);
 				}
 			}
@@ -151,7 +153,7 @@ public class TodoListGUI extends javax.swing.JFrame
 			if (cat != null)
 			{
 				TodoSubGUI newTodo = new TodoSubGUI(1, getMeetingIdByTodoID(tID),
-						String.valueOf(cat), String.valueOf(top), tID, true);
+													String.valueOf(cat), String.valueOf(top), tID, true);
 				newTodo.setVisible(true);
 			}
 		}
@@ -176,7 +178,8 @@ public class TodoListGUI extends javax.swing.JFrame
 			rst.close();
 			stmt.close();
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoListGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();

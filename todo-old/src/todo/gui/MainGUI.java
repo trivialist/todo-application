@@ -7,6 +7,7 @@ package todo.gui;
 
 import java.io.File;
 import java.io.FileInputStream;
+import javax.swing.table.AbstractTableModel;
 import todo.subgui.MeetingSubGUI;
 import todo.subgui.TodoSubGUI;
 import todo.core.Todo;
@@ -37,7 +38,6 @@ import todo.dbcon.DB_Mitarbeiter_Connect;
 import todo.tablemodel.CategoryTodoTableModel;
 import todo.tablemodel.OpListTableModel;
 import todo.tablemodel.PersonalTodoTableModel;
-import todo.tablemodel.TopicTodoTableModel;
 import todo.tablemodel.WvTodoTableModel;
 
 /**
@@ -87,7 +87,6 @@ public class MainGUI extends javax.swing.JFrame
 		getAllMeetingDates();
 		setComboBoxEmployees();
 		setComboBoxFinStatus();
-		setComboBoxTopics();
 		setComboBoxCategory();
 		setComboMeetingType();
 	}
@@ -113,16 +112,13 @@ public class MainGUI extends javax.swing.JFrame
         jLabelAnalysis1 = new javax.swing.JLabel();
         jComboBoxEmployee = new javax.swing.JComboBox();
         jComboBoxFinStatus = new javax.swing.JComboBox();
-        jComboBoxTopic = new javax.swing.JComboBox();
         jComboBoxCategory = new javax.swing.JComboBox();
         jCalendarComboBoxReDate = new de.wannawork.jcalendar.JCalendarComboBox();
         jButtonCreatePersonalProtocol = new javax.swing.JButton();
-        jButtonCreateTopicList = new javax.swing.JButton();
         jButtonCreateCategoryList = new javax.swing.JButton();
         jButtonCreateReDateList = new javax.swing.JButton();
         jButtonCreateListProtocol = new javax.swing.JButton();
         CategoryListOutput = new javax.swing.JButton();
-        TopicListOutput = new javax.swing.JButton();
         WvListOutput = new javax.swing.JButton();
         jComboMeetingType = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
@@ -132,7 +128,6 @@ public class MainGUI extends javax.swing.JFrame
         jLabelEmployee = new javax.swing.JLabel();
         jLabelFinStatus = new javax.swing.JLabel();
         jLabelCategory = new javax.swing.JLabel();
-        jLabelTopic = new javax.swing.JLabel();
         jLabelReDate = new javax.swing.JLabel();
         jLabelOP_List1 = new javax.swing.JLabel();
         jLabelOP_List = new javax.swing.JLabel();
@@ -157,9 +152,9 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11));
+        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         setMaximizedBounds(new java.awt.Rectangle(20, 20, 600, 800));
-        setMinimumSize(new java.awt.Dimension(600, 720));
+        setMinimumSize(new java.awt.Dimension(590, 630));
         setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
@@ -242,9 +237,7 @@ public class MainGUI extends javax.swing.JFrame
                 jComboBoxFinStatusActionPerformed(evt);
             }
         });
-        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 460, 130, -1));
-
-        jPanel1.add(jComboBoxTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 520, 200, -1));
+        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 430, 130, -1));
 
         jPanel1.add(jComboBoxCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 200, -1));
 
@@ -263,14 +256,6 @@ public class MainGUI extends javax.swing.JFrame
         });
         jPanel1.add(jButtonCreatePersonalProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 380, 140, 20));
 
-        jButtonCreateTopicList.setText("Druckvorschau");
-        jButtonCreateTopicList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCreateTopicListActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButtonCreateTopicList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 540, 140, -1));
-
         jButtonCreateCategoryList.setText("Druckvorschau");
         jButtonCreateCategoryList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -285,7 +270,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateReDateListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 610, 140, -1));
+        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 530, 140, -1));
 
         jButtonCreateListProtocol.setText("Protokoll (kurz)");
         jButtonCreateListProtocol.addActionListener(new java.awt.event.ActionListener() {
@@ -303,14 +288,6 @@ public class MainGUI extends javax.swing.JFrame
         });
         jPanel1.add(CategoryListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, 140, -1));
 
-        TopicListOutput.setText("Liste");
-        TopicListOutput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TopicListOutputActionPerformed(evt);
-            }
-        });
-        jPanel1.add(TopicListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 510, 140, -1));
-
         WvListOutput.setText("Liste");
         WvListOutput.setEnabled(false);
         WvListOutput.addActionListener(new java.awt.event.ActionListener() {
@@ -318,7 +295,7 @@ public class MainGUI extends javax.swing.JFrame
                 WvListOutputActionPerformed(evt);
             }
         });
-        jPanel1.add(WvListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 580, 140, -1));
+        jPanel1.add(WvListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 500, 140, -1));
 
         jPanel1.add(jComboMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 200, -1));
 
@@ -335,7 +312,7 @@ public class MainGUI extends javax.swing.JFrame
                 jCalendarComboBoxReDate1StateChanged(evt);
             }
         });
-        jPanel1.add(jCalendarComboBoxReDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 600, 200, 20));
+        jPanel1.add(jCalendarComboBoxReDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 520, 200, 20));
 
         jButton2.setText("Druckvorschau");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -354,22 +331,18 @@ public class MainGUI extends javax.swing.JFrame
 
         jLabelFinStatus.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bearbeitungstatus", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
         jLabelFinStatus.setOpaque(true);
-        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 320, 150, 320));
+        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 320, 150, 240));
 
         jLabelCategory.setBackground(new java.awt.Color(255, 255, 255));
         jLabelCategory.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kategorie", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
         jPanel1.add(jLabelCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 530, 80));
 
-        jLabelTopic.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelTopic.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thema", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelTopic, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 490, 530, 80));
-
         jLabelReDate.setBackground(new java.awt.Color(255, 255, 255));
         jLabelReDate.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Wiedervorlagedatum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 570, 530, 70));
+        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 490, 530, 70));
 
         jLabelOP_List1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Auswertungen nach Kategorie", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
-        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 550, 330));
+        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 550, 250));
 
         jLabelOP_List.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "OP-Liste", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
         jPanel1.add(jLabelOP_List, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 550, 80));
@@ -486,59 +459,6 @@ public class MainGUI extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonCreateTopicListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateTopicListActionPerformed
-		if (jComboBoxTopic.getSelectedItem().toString().equals(""))
-		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben kein Thema ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-		else if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
-		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-		else
-		{
-			String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "Themenliste.jrxml";
-			Calendar cal = Calendar.getInstance();
-
-			HashMap<String, Object> params = new HashMap<String, Object>();
-			String actDate = getDayString(cal.get(Calendar.DAY_OF_WEEK)) + ", " + cal.get(Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR);
-			params.put("Datum", actDate);
-			params.put("Thema", jComboBoxTopic.getSelectedItem().toString());
-			params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
-
-			/*
-			 * Laden aller mit dem ausgewählten Thema verknüpften Protokollelemente
-			 * in die HashMap tl
-			 */
-
-			ArrayList<HashMap> tl = loadTopicData(jComboBoxTopic.getSelectedItem().toString(), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
-			JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(tl);
-
-			if (!tl.isEmpty())
-			{
-				try
-				{
-					JasperReport jasperReport =
-							JasperCompileManager.compileReport(reportSource);
-
-					JasperPrint jasperPrint =
-							JasperFillManager.fillReport(jasperReport, params, dataSet);
-
-					JasperViewer.viewReport(jasperPrint, false);
-				} catch (JRException ex)
-				{
-					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(this, "Es wurden keine Elemente gefunden!");
-			}
-		}
-}//GEN-LAST:event_jButtonCreateTopicListActionPerformed
-
     private void jButtonCreateProtocolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateProtocolActionPerformed
 		String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "Protokoll.jrxml";
 		//String reportDest = "H:\\ToDo\\report\\results\\Protokoll_"
@@ -558,7 +478,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			Statement stmt = con.createStatement();
 			String sql = "SELECT Überschrift FROM Protokollelement WHERE Geloescht = false AND "
-					+ "SitzungsID = " + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
+						 + "SitzungsID = " + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
 
 			ResultSet rst = stmt.executeQuery(sql);
 
@@ -572,7 +492,8 @@ public class MainGUI extends javax.swing.JFrame
 			rst.close();
 			stmt.close();
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -604,10 +525,10 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			JasperReport jasperReport =
-					JasperCompileManager.compileReport(reportSource);
+						 JasperCompileManager.compileReport(reportSource);
 
 			JasperPrint jasperPrint =
-					JasperFillManager.fillReport(jasperReport, params, dataSet);
+						JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 			//++++++++++++++ HTML-Export  +++++++++++++++
 			//JasperExportManager.exportReportToHtmlFile(
@@ -617,7 +538,8 @@ public class MainGUI extends javax.swing.JFrame
 			//JasperExportManager.exportReportToPdfFile(jasperPrint, pdfDest);
 
 			JasperViewer.viewReport(jasperPrint, false);
-		} catch (JRException ex)
+		}
+		catch (JRException ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -708,14 +630,14 @@ public class MainGUI extends javax.swing.JFrame
 		if (jComboBoxEmployee.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+												+ "Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
 			if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 			{
 				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-						+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+													+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 			else
 			{
@@ -765,13 +687,14 @@ public class MainGUI extends javax.swing.JFrame
 					try
 					{
 						JasperReport jasperReport =
-								JasperCompileManager.compileReport(reportSource);
+									 JasperCompileManager.compileReport(reportSource);
 
 						JasperPrint jasperPrint =
-								JasperFillManager.fillReport(jasperReport, params, dataSet);
+									JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 						JasperViewer.viewReport(jasperPrint, false);
-					} catch (JRException ex)
+					}
+					catch (JRException ex)
 					{
 						Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 					}
@@ -790,12 +713,12 @@ public class MainGUI extends javax.swing.JFrame
 		if (jComboBoxCategory.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keine Kategorie ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+												+ "Sie haben keine Kategorie ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+												+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
@@ -819,13 +742,14 @@ public class MainGUI extends javax.swing.JFrame
 				try
 				{
 					JasperReport jasperReport =
-							JasperCompileManager.compileReport(reportSource);
+								 JasperCompileManager.compileReport(reportSource);
 
 					JasperPrint jasperPrint =
-							JasperFillManager.fillReport(jasperReport, params, dataSet);
+								JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 					JasperViewer.viewReport(jasperPrint, false);
-				} catch (JRException ex)
+				}
+				catch (JRException ex)
 				{
 					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				}
@@ -841,7 +765,7 @@ public class MainGUI extends javax.swing.JFrame
 		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+												+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
@@ -868,13 +792,14 @@ public class MainGUI extends javax.swing.JFrame
 				try
 				{
 					JasperReport jasperReport =
-							JasperCompileManager.compileReport(reportSource);
+								 JasperCompileManager.compileReport(reportSource);
 
 					JasperPrint jasperPrint =
-							JasperFillManager.fillReport(jasperReport, params, dataSet);
+								JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 					JasperViewer.viewReport(jasperPrint, false);
-				} catch (JRException ex)
+				}
+				catch (JRException ex)
 				{
 					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				}
@@ -914,8 +839,8 @@ public class MainGUI extends javax.swing.JFrame
 		if (evt.getSource() == jCalendarComboBoxReDate)
 		{
 			glCal.set(jCalendarComboBoxReDate.getCalendar().get(glCal.YEAR),
-					jCalendarComboBoxReDate.getCalendar().get(glCal.MONTH) + 1,
-					jCalendarComboBoxReDate.getCalendar().get(glCal.DAY_OF_MONTH));
+					  jCalendarComboBoxReDate.getCalendar().get(glCal.MONTH) + 1,
+					  jCalendarComboBoxReDate.getCalendar().get(glCal.DAY_OF_MONTH));
 		}
 }//GEN-LAST:event_jCalendarComboBoxReDateStateChanged
 
@@ -930,20 +855,31 @@ public class MainGUI extends javax.swing.JFrame
 		if (jComboBoxEmployee.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+												+ "Sie haben keinen Mitarbeiter ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
 			if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 			{
 				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-						+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+													+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 			else
 			{
 				int statID = getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString());
 				empID = getEmployeeIDByName(jComboBoxEmployee.getSelectedItem().toString());
-				TodoListGUI newPTDL = new TodoListGUI(new PersonalTodoTableModel(empID, statID));
+
+				final int finalEmpID = empID;
+				final int finalStatID = statID;
+
+				TodoListGUI newPTDL = new TodoListGUI(new UpdateDataMethod()
+				{
+					@Override
+					public AbstractTableModel dataModelHasChanged()
+					{
+						return new PersonalTodoTableModel(finalEmpID, finalStatID);
+					}
+				});
 				newPTDL.setVisible(true);
 			}
 		}
@@ -978,10 +914,10 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			JasperReport jasperReport =
-					JasperCompileManager.compileReport(reportSource);
+						 JasperCompileManager.compileReport(reportSource);
 
 			JasperPrint jasperPrint =
-					JasperFillManager.fillReport(jasperReport, params, dataSet);
+						JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 			//++++++++++++++ HTML-Export  +++++++++++++++
 			//JasperExportManager.exportReportToHtmlFile(
@@ -991,7 +927,8 @@ public class MainGUI extends javax.swing.JFrame
 			//JasperExportManager.exportReportToPdfFile(jasperPrint, pdfDest);
 
 			JasperViewer.viewReport(jasperPrint, false);
-		} catch (JRException ex)
+		}
+		catch (JRException ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -1006,39 +943,39 @@ public class MainGUI extends javax.swing.JFrame
 		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+												+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
-			TodoListGUI tmpGui = new TodoListGUI(new CategoryTodoTableModel(getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString())));
+			TodoListGUI tmpGui = new TodoListGUI(new UpdateDataMethod()
+			{
+				@Override
+				public AbstractTableModel dataModelHasChanged()
+				{
+					return new CategoryTodoTableModel(getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
+				}
+			});
 			tmpGui.setVisible(true);
 		}
 	}//GEN-LAST:event_CategoryListOutputActionPerformed
-
-	private void TopicListOutputActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_TopicListOutputActionPerformed
-	{//GEN-HEADEREND:event_TopicListOutputActionPerformed
-		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
-		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-		else
-		{
-			TodoListGUI tmpGui = new TodoListGUI(new TopicTodoTableModel(getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString())));
-			tmpGui.setVisible(true);
-		}
-	}//GEN-LAST:event_TopicListOutputActionPerformed
 
 	private void WvListOutputActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_WvListOutputActionPerformed
 	{//GEN-HEADEREND:event_WvListOutputActionPerformed
 		if (jComboBoxFinStatus.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-					+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
+												+ "Sie haben keinen Status ausgewählt", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 		else
 		{
-			TodoListGUI tmpGui = new TodoListGUI(new WvTodoTableModel(new java.sql.Date(jCalendarComboBoxReDate.getCalendar().getTime().getTime()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString())));
+			TodoListGUI tmpGui = new TodoListGUI(new UpdateDataMethod()
+			{
+				@Override
+				public AbstractTableModel dataModelHasChanged()
+				{
+					return new WvTodoTableModel(new java.sql.Date(jCalendarComboBoxReDate.getCalendar().getTime().getTime()), getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
+				}
+			});
 			tmpGui.setVisible(true);
 		}
 	}//GEN-LAST:event_WvListOutputActionPerformed
@@ -1056,7 +993,14 @@ public class MainGUI extends javax.swing.JFrame
 		}
 		else
 		{
-			TodoListGUI newPTDL = new TodoListGUI(new OpListTableModel(getMeetingTypeIDByName(jComboMeetingType.getSelectedItem().toString()), jCalendarComboBoxReDate.getCalendar().getTime()));
+			TodoListGUI newPTDL = new TodoListGUI(new UpdateDataMethod()
+			{
+				@Override
+				public AbstractTableModel dataModelHasChanged()
+				{
+					return new OpListTableModel(getMeetingTypeIDByName(jComboMeetingType.getSelectedItem().toString()), jCalendarComboBoxReDate.getCalendar().getTime());
+				}
+			});
 			newPTDL.setVisible(true);
 		}
 	}//GEN-LAST:event_jButton1ActionPerformed
@@ -1122,13 +1066,14 @@ public class MainGUI extends javax.swing.JFrame
 			rst.close();
 			stmt.close();
 			stmt2.close();
-			
-		} catch (Exception ex)
+
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		
+
 		DB_ToDo_Connect.closeDB(con);
 		return data;
 	}
@@ -1160,7 +1105,8 @@ public class MainGUI extends javax.swing.JFrame
 				JasperReport jasperReport = JasperCompileManager.compileReport(reportSource);
 				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSet);
 				JasperViewer.viewReport(jasperPrint, false);
-			} catch (JRException ex)
+			}
+			catch (JRException ex)
 			{
 				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -1176,26 +1122,27 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			File file = new File("E:\\Konzept-e\\OldCode\\ToDoAppSettings.xml");
-			if(!file.exists())
+			if (!file.exists())
 			{
-                            file = new File("H:\\ToDo\\config\\ToDoAppSettings2.xml");
-                            if(!file.exists())
-                            {
-                                    file = new File("H:\\ToDo\\config\\ToDoAppSettings.xml");
-                            }
+				file = new File("H:\\ToDo\\config\\ToDoAppSettings2.xml");
+				if (!file.exists())
+				{
+					file = new File("H:\\ToDo\\config\\ToDoAppSettings.xml");
+				}
 			}
-			
+
 			FileInputStream inputStream = new FileInputStream(file);
 			applicationProperties.loadFromXML(inputStream);
 			inputStream.close();
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(mainGUI, "Die Datei 'ToDoAppSettings.xml' konnte "
-					+ "nicht gefunden werden oder es trat ein Fehler beim Laden auf!\n"
-					+ "Bitte überprüfen Sie, ob die Datei vorhanden ist und starten Sie "
-					+ "die Anwendung dann erneut.", "Fehler", JOptionPane.ERROR_MESSAGE);
+												   + "nicht gefunden werden oder es trat ein Fehler beim Laden auf!\n"
+												   + "Bitte überprüfen Sie, ob die Datei vorhanden ist und starten Sie "
+												   + "die Anwendung dann erneut.", "Fehler", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
 
@@ -1211,12 +1158,13 @@ public class MainGUI extends javax.swing.JFrame
 
 			logger.log(Level.INFO, "ToDoApp erfolgreich gestartet und initialisiert.");
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(mainGUI, "Die Anwendung konnte die Datei zur "
-					+ "Ausgabe von Fehlermeldungen nicht öffnen.\n\nBitte informieren Sie Ihren "
-					+ "Administrator über diese Fehlermeldung oder starten Sie die Anwendung erneut.");
+												   + "Ausgabe von Fehlermeldungen nicht öffnen.\n\nBitte informieren Sie Ihren "
+												   + "Administrator über diese Fehlermeldung oder starten Sie die Anwendung erneut.");
 			System.exit(1);
 		}
 
@@ -1237,7 +1185,8 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			UIManager.setLookAndFeel(winClassName);
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1256,7 +1205,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			Statement stmt = con.createStatement();
 			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID="
-					+ actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
+						 + actMeeting.getMeetingID() + " ORDER BY ToDoID ASC";
 			ResultSet rst = stmt.executeQuery(sql);
 			int counter = 1;
 
@@ -1281,16 +1230,17 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				todoData.add(fields);
 				counter++;
 			}
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1311,7 +1261,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			Statement stmt = con.createStatement();
 			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID="
-					+ actMeeting.getMeetingID();
+						 + actMeeting.getMeetingID();
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -1330,13 +1280,14 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				shortTodoData.add(fields);
 			}
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1369,14 +1320,14 @@ public class MainGUI extends javax.swing.JFrame
 					if (statusId == -1)
 					{
 						sql = "SELECT * FROM Protokollelement WHERE "
-								+ "TBZuordnung_ID=" + tbz_id + " AND Geloescht = false ORDER BY ToDoID DESC";
+							  + "TBZuordnung_ID=" + tbz_id + " AND Geloescht = false ORDER BY ToDoID DESC";
 					}
 					else
 					{
 						sql = "SELECT * FROM Protokollelement WHERE "
-								+ "TBZuordnung_ID=" + tbz_id + " AND Geloescht = false "
-								+ "AND StatusID = " + statusId + " "
-								+ "ORDER BY ToDoID DESC";
+							  + "TBZuordnung_ID=" + tbz_id + " AND Geloescht = false "
+							  + "AND StatusID = " + statusId + " "
+							  + "ORDER BY ToDoID DESC";
 					}
 					ResultSet rst = stmt.executeQuery(sql);
 
@@ -1401,9 +1352,9 @@ public class MainGUI extends javax.swing.JFrame
 						}
 
 						fields.put("Verantwortliche",
-								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 						fields.put("Beteiligte",
-								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 						fields.put("SitzOrt", m.getPlace());
 						fields.put("SitzDatum", sdf.format(m.getDate()));
 						fields.put("SitzName", m.getMeetingType());
@@ -1415,7 +1366,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			}
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1482,9 +1434,9 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1494,7 +1446,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1507,7 +1460,7 @@ public class MainGUI extends javax.swing.JFrame
 		 */
 		DB_ToDo_Connect.openDB();
 		con =
-				DB_ToDo_Connect.getCon();
+		DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -1515,12 +1468,12 @@ public class MainGUI extends javax.swing.JFrame
 			if (status.equals("Alle"))
 			{
 				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
-						+ empID + "%'";
+					   + empID + "%'";
 			}
 			else
 			{
 				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
-						+ empID + "%' AND StatusID=" + getFinStatusIDByName(status);
+					   + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
 			}
 
 			ResultSet rst2 = stmt2.executeQuery(sql2);
@@ -1540,9 +1493,9 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Inhalt", rst2.getString("Inhalt"));
 				fields.put("Wiedervorlagedatum", rst2.getString("Wiedervorlagedatum"));
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst2.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst2.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst2.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst2.getString("Beteiligte"))));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1551,7 +1504,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst2.close();
 			stmt2.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1576,16 +1530,16 @@ public class MainGUI extends javax.swing.JFrame
 			if (statusId == -1)
 			{
 				pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN "
-						+ "(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) "
-						+ "ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht "
-						+ "= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ?");
+											 + "(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) "
+											 + "ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht "
+											 + "= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ?");
 			}
 			else
 			{
 				pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN "
-						+ "(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) "
-						+ "ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht "
-						+ "= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ? AND StatusID = ?");
+											 + "(Sitzungsdaten INNER JOIN Sitzungsart ON Sitzungsdaten.SitzungsartID = Sitzungsart.SitzungsartID) "
+											 + "ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID WHERE Protokollelement.Geloescht "
+											 + "= false AND Sitzungsdaten.Geloescht = false AND KategorieID = ? AND StatusID = ?");
 				pStmt.setInt(2, statusId);
 			}
 			pStmt.setInt(1, catID);
@@ -1611,9 +1565,9 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				fields.put("SitzOrt", rst.getString("Ort"));
 				java.util.Date md = rst.getDate("Datum");
 
@@ -1632,7 +1586,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			pStmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1662,7 +1617,7 @@ public class MainGUI extends javax.swing.JFrame
 				if (temp != -1)
 				{
 					String sql = "SELECT * FROM Protokollelement WHERE "
-							+ "TBZuordnung_ID=" + temp + " AND Geloescht = false ORDER BY ToDoID DESC";
+								 + "TBZuordnung_ID=" + temp + " AND Geloescht = false ORDER BY ToDoID DESC";
 					ResultSet rst = stmt.executeQuery(sql);
 
 					while (rst.next())
@@ -1686,9 +1641,9 @@ public class MainGUI extends javax.swing.JFrame
 						}
 
 						fields.put("Verantwortliche",
-								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 						fields.put("Beteiligte",
-								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 						fields.put("SitzOrt", m.getPlace());
 						fields.put("SitzDatum", sdf.format(m.getDate()));
 						fields.put("SitzName", m.getMeetingType());
@@ -1700,7 +1655,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			}
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1719,9 +1675,9 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement INNER JOIN "
-					+ "Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID "
-					+ "WHERE Datum = ? AND Protokollelement.Geloescht = false AND "
-					+ "Sitzungsdaten.Geloescht = false ORDER BY ToDoID DESC");
+														   + "Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID "
+														   + "WHERE Datum = ? AND Protokollelement.Geloescht = false AND "
+														   + "Sitzungsdaten.Geloescht = false ORDER BY ToDoID DESC");
 			pStmt.setDate(1, dat);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1746,9 +1702,9 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1757,7 +1713,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			pStmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1777,10 +1734,10 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Sitzungsart INNER JOIN (Protokollelement INNER JOIN "
-					+ "Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID) "
-					+ "ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID "
-					+ "WHERE Sitzungsart.Name = ? AND Protokollelement.Geloescht = false AND Sitzungsdaten.Geloescht = "
-					+ "false ORDER BY Protokollelement.ToDoID DESC");
+														   + "Sitzungsdaten ON Protokollelement.SitzungsID = Sitzungsdaten.SitzungsdatenID) "
+														   + "ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID "
+														   + "WHERE Sitzungsart.Name = ? AND Protokollelement.Geloescht = false AND Sitzungsdaten.Geloescht = "
+														   + "false ORDER BY Protokollelement.ToDoID DESC");
 			pStmt.setString(1, type);
 			ResultSet rst = pStmt.executeQuery();
 
@@ -1806,9 +1763,9 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1817,7 +1774,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			pStmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1840,15 +1798,15 @@ public class MainGUI extends javax.swing.JFrame
 			if (statusId == -1)
 			{
 				pStmt = con.prepareStatement("SELECT * FROM Protokollelement WHERE "
-						+ "Wiedervorlagedatum < ? AND Wiedervorlagedatum > ? AND WiedervorlageGesetzt = true AND Geloescht = false "
-						+ "ORDER BY Wiedervorlagedatum DESC");
+											 + "Wiedervorlagedatum < ? AND Wiedervorlagedatum > ? AND WiedervorlageGesetzt = true AND Geloescht = false "
+											 + "ORDER BY Wiedervorlagedatum DESC");
 			}
 			else
 			{
 				pStmt = con.prepareStatement("SELECT * FROM Protokollelement WHERE "
-						+ "Wiedervorlagedatum < ? AND Wiedervorlagedatum > ? AND WiedervorlageGesetzt = true AND Geloescht = false "
-						+ "AND StatusID = ? "
-						+ "ORDER BY Wiedervorlagedatum DESC");
+											 + "Wiedervorlagedatum < ? AND Wiedervorlagedatum > ? AND WiedervorlageGesetzt = true AND Geloescht = false "
+											 + "AND StatusID = ? "
+											 + "ORDER BY Wiedervorlagedatum DESC");
 				pStmt.setInt(3, statusId);
 			}
 			pStmt.setDate(1, date);
@@ -1876,9 +1834,9 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1887,7 +1845,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			pStmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1897,184 +1856,20 @@ public class MainGUI extends javax.swing.JFrame
 		return reDateData;
 	}
 
-	public ArrayList loadOpListData()
-	{
-		ArrayList<HashMap> opData = new ArrayList<HashMap>();
-		int tbz_id = -1;
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
-
-		if (!jComboBoxEmployee.getSelectedItem().toString().equals("")
-				&& !jComboBoxEmployee.getSelectedItem().toString().equals("Alle Mitarbeiter"))
-		{
-			// Es wurde ein Mitarbeiter ausgewählt
-			try
-			{
-				PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement "
-						+ "INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID "
-						+ "WHERE TBZ.BereichID = ?"
-						+ "AND TBZ.ThemaID = ? "
-						+ "AND Protokollelement.KategorieID = ? "
-						+ "AND Protokollelement.Verantwortliche LIKE '%?%' "
-						+ "ORDER BY Wiedervorlagedatum DESC");
-				//pStmt.setInt(1, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
-				pStmt.setInt(2, getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()));
-				pStmt.setInt(3, getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()));
-				pStmt.setString(4, String.valueOf(getEmployeeIDByName(jComboBoxEmployee.getSelectedItem().toString())));
-				ResultSet rst = pStmt.executeQuery();
-				/*pStmt.setInt(1, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
-				pStmt.setInt(2, getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()));
-				pStmt.setInt(3, getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()));
-				pStmt.setInt(4, empID);
-				ps.setInt(5, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
-				ps.setInt(6, getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()));
-				ps.setInt(7, getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()));
-				ps.setInt(8, empID);*/
-				//ResultSet rst = pStmt.executeQuery();
-
-				while (rst.next())
-				{
-					HashMap<String, String> fields = new HashMap<String, String>();
-					tbz_id = rst.getInt("TBZuordnung_ID");
-					fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
-					fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
-					fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
-					fields.put("Status", getStatByID(rst.getInt("StatusID")));
-					fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
-					fields.put("Inhalt", rst.getString("Inhalt"));
-					if (rst.getBoolean("WiedervorlageGesetzt"))
-					{
-						fields.put("Wiedervorlagedatum", sdf.format(rst.getDate("Wiedervorlagedatum")));
-					}
-					else
-					{
-						fields.put("Wiedervorlagedatum", "kein");
-					}
-
-					fields.put("Verantwortliche",
-							getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-					fields.put("Beteiligte",
-							getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
-					//fields.put("SitzOrt", rst.getString("Ort"));
-                    /*md = rst.getDate("Datum");
-					if(md != null) {
-					fields.put("SitzDatum", sdf.format(md));
-					} else {
-					fields.put("SitzDatum", "kein");
-					}
-					fields.put("SitzName", getMeetingTypeByID(rst.getInt("SitzungsartID")));
-					 */
-					opData.add(fields);
-				}
-
-				rst.close();
-				pStmt.close();
-			} catch (Exception ex)
-			{
-				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-				GlobalError.showErrorAndExit();
-			}
-
-			/*"OR (TBZ.BereichID = ? "
-			"AND TBZ.ThemaID = ? " +                                //p6=ThemaID
-			"AND Protokollelement.KategorieID = ? " +               //p7=KategorieID
-			"AND Protokollelement.Beteiligte LIKE '%?%') " +        //p8=empID
-			"");*/
-		}
-		else
-		{
-			// Es wurde "Alle Mitarbeiter" ausgewählt -> ergibt vollständige OP-Liste
-			if (!jComboBoxEmployee.getSelectedItem().toString().equals(""))
-			{
-				try
-				{
-					PreparedStatement pStmt = con.prepareStatement("SELECT * FROM (Protokollelement INNER JOIN "
-							+ "Sitzungsdaten ON Protokollelement.SitzungsID=Sitzungsdaten.SitzungsdatenID) "
-							+ "INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID "
-							+ "WHERE TBZ.BereichID = ? " + //p1=BereichID
-							"AND TBZ.ThemaID = ? " + //p2=ThemaID
-							"AND Protokollelement.KategorieID = ? " + //p3=KategorieID
-							"ORDER BY Wiedervorlagedatum DESC");
-					//pStmt.setInt(1, getAreaIDByName(jComboBoxArea.getSelectedItem().toString()));
-					pStmt.setInt(2, getTopicIDByName(jComboBoxTopic.getSelectedItem().toString()));
-					pStmt.setInt(3, getCategoryIDByName(jComboBoxCategory.getSelectedItem().toString()));
-					ResultSet rst = pStmt.executeQuery();
-
-					while (rst.next())
-					{
-						HashMap<String, String> fields = new HashMap<String, String>();
-						tbz_id = rst.getInt("TBZuordnung_ID");
-						fields.put("Kategorie", getCatByID(rst.getInt("KategorieID")));
-						fields.put("Bereich", getAreaByID(getAreaIDByTBZ_ID(tbz_id)));
-						fields.put("Institution", getInstByID(rst.getInt("InstitutionsID")));
-						fields.put("Status", getStatByID(rst.getInt("StatusID")));
-						fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
-						fields.put("Inhalt", rst.getString("Inhalt"));
-						java.util.Date rd = rst.getDate("Wiedervorlagedatum");
-						if (rd != null)
-						{
-							fields.put("Wiedervorlagedatum", sdf.format(rd));
-						}
-						else
-						{
-							fields.put("Wiedervorlagedatum", "kein");
-						}
-
-						fields.put("Verantwortliche",
-								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-						fields.put("Beteiligte",
-								getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
-						fields.put("SitzOrt", rst.getString("Ort"));
-						java.util.Date md = rst.getDate("Datum");
-						if (md != null)
-						{
-							fields.put("SitzDatum", sdf.format(md));
-						}
-						else
-						{
-							fields.put("SitzDatum", "kein");
-						}
-
-						fields.put("SitzName", getMeetingTypeByID(rst.getInt("SitzungsartID")));
-						opData.add(fields);
-					}
-
-					rst.close();
-					pStmt.close();
-				} catch (Exception ex)
-				{
-					Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-					GlobalError.showErrorAndExit();
-				}
-
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
-						+ "Sie haben keine Auswahl bei ! Mitarbeiter ! getroffen. Für diesen Report müssen Sie "
-						+ "Thema, Bereich, Kategorie und Wiedervorlagedatum angeben. "
-						+ "Außerdem müssen Sie einen oder \"Alle Mitarbeiter \" auswählen", "Fehler", JOptionPane.ERROR_MESSAGE);
-			}
-
-		}
-		DB_ToDo_Connect.closeDB(con);
-		return opData;
-	}
-
 	public ArrayList loadCompleteOpListData()
 	{
 		ArrayList<HashMap> opData = new ArrayList<HashMap>();
 		int tbz_id = -1;
 		DB_ToDo_Connect.openDB();
 		con =
-				DB_ToDo_Connect.getCon();
+		DB_ToDo_Connect.getCon();
 
 		try
 		{
 			PreparedStatement pStmt = con.prepareStatement("SELECT * FROM Protokollelement "
-					+ "INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID "
-					+ "WHERE Protokollelement.StatusID = ? AND Geloescht = false "
-					+ "ORDER BY Wiedervorlagedatum DESC");
+														   + "INNER JOIN TBZ ON Protokollelement.TBZuordnung_ID=TBZ.TBZ_ID "
+														   + "WHERE Protokollelement.StatusID = ? AND Geloescht = false "
+														   + "ORDER BY Wiedervorlagedatum DESC");
 			pStmt.setInt(1, getFinStatusIDByName(jComboBoxFinStatus.getSelectedItem().toString()));
 			ResultSet rst = pStmt.executeQuery();
 
@@ -2100,9 +1895,9 @@ public class MainGUI extends javax.swing.JFrame
 				}
 
 				fields.put("Verantwortliche",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
 				fields.put("Beteiligte",
-						getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
 				//fields.put("SitzOrt", rst.getString("Ort"));
                     /*md = rst.getDate("Datum");
 				if(md != null) {
@@ -2117,7 +1912,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			pStmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2144,7 +1940,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			Statement stmt = con.createStatement();
 			String sql = "SELECT * FROM Sitzungsdaten WHERE Geloescht = false "
-					+ "ORDER BY SitzungsdatenID DESC";
+						 + "ORDER BY SitzungsdatenID DESC";
 			ResultSet rst = stmt.executeQuery(sql);
 			rst.next();
 
@@ -2157,7 +1953,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2213,7 +2010,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2249,7 +2047,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			Statement stmt = con.createStatement();
 			String sql = "SELECT SitzungsartID, Name FROM Sitzungsart WHERE SitzungsartID="
-					+ actMeeting.getMeetingTypeID();
+						 + actMeeting.getMeetingTypeID();
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -2261,7 +2059,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2292,13 +2091,13 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			Integer temp = new Integer(String.valueOf(en.nextElement()));
 			id =
-					temp.intValue();
+			temp.intValue();
 
 			try
 			{
 				Statement stmt = con.createStatement();
 				String sql = "SELECT Nachname, Vorname FROM Stammdaten WHERE "
-						+ "Personalnummer=" + id;
+							 + "Personalnummer=" + id;
 				ResultSet rst = stmt.executeQuery(sql);
 
 				while (rst.next())
@@ -2309,7 +2108,8 @@ public class MainGUI extends javax.swing.JFrame
 
 				rst.close();
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -2359,7 +2159,7 @@ public class MainGUI extends javax.swing.JFrame
 		String name = "";
 		DB_ToDo_Connect.openDB();
 		con =
-				DB_ToDo_Connect.getCon();
+		DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -2374,7 +2174,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2393,7 +2194,7 @@ public class MainGUI extends javax.swing.JFrame
 			String name = "";
 			DB_ToDo_Connect.openDB();
 			con =
-					DB_ToDo_Connect.getCon();
+			DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -2408,7 +2209,8 @@ public class MainGUI extends javax.swing.JFrame
 
 				rst.close();
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -2432,7 +2234,7 @@ public class MainGUI extends javax.swing.JFrame
 			int id = 0;
 			DB_ToDo_Connect.openDB();
 			con =
-					DB_ToDo_Connect.getCon();
+			DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -2447,7 +2249,8 @@ public class MainGUI extends javax.swing.JFrame
 
 				rst.close();
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -2472,7 +2275,7 @@ public class MainGUI extends javax.swing.JFrame
 			String name = "";
 			DB_ToDo_Connect.openDB();
 			con =
-					DB_ToDo_Connect.getCon();
+			DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -2487,7 +2290,8 @@ public class MainGUI extends javax.swing.JFrame
 
 				rst.close();
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -2511,7 +2315,7 @@ public class MainGUI extends javax.swing.JFrame
 			int id = 0;
 			DB_ToDo_Connect.openDB();
 			con =
-					DB_ToDo_Connect.getCon();
+			DB_ToDo_Connect.getCon();
 
 			try
 			{
@@ -2526,7 +2330,8 @@ public class MainGUI extends javax.swing.JFrame
 
 				rst.close();
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -2548,7 +2353,7 @@ public class MainGUI extends javax.swing.JFrame
 		String name = "";
 		DB_ToDo_Connect.openDB();
 		con =
-				DB_ToDo_Connect.getCon();
+		DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -2563,7 +2368,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2579,7 +2385,7 @@ public class MainGUI extends javax.swing.JFrame
 		String name = "";
 		DB_ToDo_Connect.openDB();
 		con =
-				DB_ToDo_Connect.getCon();
+		DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -2594,7 +2400,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2626,13 +2433,14 @@ public class MainGUI extends javax.swing.JFrame
 			while (rst.next())
 			{
 				String em = rst.getString("Nachname") + ", "
-						+ rst.getString("Vorname");
+							+ rst.getString("Vorname");
 				employees.add(em);
 			}
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2653,7 +2461,7 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		DB_ToDo_Connect.openDB();
 		con =
-				DB_ToDo_Connect.getCon();
+		DB_ToDo_Connect.getCon();
 
 		try
 		{
@@ -2669,7 +2477,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2705,7 +2514,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2741,7 +2551,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2777,7 +2588,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2814,7 +2626,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2835,7 +2648,7 @@ public class MainGUI extends javax.swing.JFrame
 		{
 			Statement stmt = con.createStatement();
 			String sql = "SELECT Nachname, Vorname, Personalnummer FROM Stammdaten "
-					+ "WHERE Nachname LIKE '" + ln + "' AND Vorname LIKE '" + fn + "'";
+						 + "WHERE Nachname LIKE '" + ln + "' AND Vorname LIKE '" + fn + "'";
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -2845,7 +2658,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2879,7 +2693,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2909,7 +2724,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -2966,18 +2782,6 @@ public class MainGUI extends javax.swing.JFrame
 
 	}
 
-	public void setComboBoxTopics()
-	{
-		jComboBoxTopic.removeAllItems();
-		Enumeration e = topics.elements();
-		while (e.hasMoreElements())
-		{
-			String to = String.valueOf(e.nextElement());
-			jComboBoxTopic.addItem(to);
-		}
-
-	}
-
 	public void setComboBoxCategory()
 	{
 		jComboBoxCategory.removeAllItems();
@@ -3022,7 +2826,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3051,7 +2856,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3085,7 +2891,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3114,7 +2921,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3143,7 +2951,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3172,7 +2981,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3201,7 +3011,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3245,7 +3056,8 @@ public class MainGUI extends javax.swing.JFrame
 
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -3305,7 +3117,6 @@ public class MainGUI extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CategoryListOutput;
     private javax.swing.JMenu Programm;
-    private javax.swing.JButton TopicListOutput;
     private javax.swing.JButton WvListOutput;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -3315,7 +3126,6 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JButton jButtonCreatePersonalProtocolList;
     private javax.swing.JButton jButtonCreateProtocol;
     private javax.swing.JButton jButtonCreateReDateList;
-    private javax.swing.JButton jButtonCreateTopicList;
     private javax.swing.JButton jButtonManageMeeting;
     private javax.swing.JButton jButtonManageTodo;
     private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxReDate;
@@ -3323,7 +3133,6 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JComboBox jComboBoxCategory;
     private javax.swing.JComboBox jComboBoxEmployee;
     private javax.swing.JComboBox jComboBoxFinStatus;
-    private javax.swing.JComboBox jComboBoxTopic;
     private javax.swing.JComboBox jComboMeetingType;
     private javax.swing.JLabel jLabelAnalysis1;
     private javax.swing.JLabel jLabelCategory;
@@ -3339,7 +3148,6 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JLabel jLabelOP_List;
     private javax.swing.JLabel jLabelOP_List1;
     private javax.swing.JLabel jLabelReDate;
-    private javax.swing.JLabel jLabelTopic;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuEmloyer;
     private javax.swing.JMenuItem jMenuItemAnstellung;
