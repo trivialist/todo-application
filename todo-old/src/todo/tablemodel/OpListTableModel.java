@@ -17,6 +17,8 @@ import javax.swing.table.AbstractTableModel;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -37,7 +39,7 @@ public class OpListTableModel extends AbstractTableModel
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
 	{
-		if (columnIndex == 2)
+		if (columnIndex == 1)
 		{
 			return DateFormater.class;
 		}
@@ -54,20 +56,42 @@ public class OpListTableModel extends AbstractTableModel
 			case -1:
 				return this.ptdObjects.get(zeile).getTodoID();
 			case 0:
-				return this.ptdObjects.get(zeile).getTopic();
-			case 1:
 				return this.ptdObjects.get(zeile).getCategory();
-			case 2:
+			case 1:
 				return new DateFormater(this.ptdObjects.get(zeile).getReDate(), this.ptdObjects.get(zeile).getReMeetingEnabled());
-			case 3:
-				return this.ptdObjects.get(zeile).getReMeetingType();
-			case 4:
-				return this.ptdObjects.get(zeile).getStatus();
-			case 5:
+			case 2:
 				return this.ptdObjects.get(zeile).getHeading();
+			case 3:
+				return getTextByNumberOfCharacters(this.ptdObjects.get(zeile).getContent(), 100);
 			default:
 				return null;
 		}
+	}
+
+	private String getTextByNumberOfCharacters(String text, int numberOfCharacters)
+	{
+		Pattern p = Pattern.compile("([^ ]+)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+		Matcher m = p.matcher(text);
+		String returnText = "";
+
+		int characterCount = 0;
+		while(m.find())
+		{
+			String newWord = m.group(1);
+			newWord = newWord.replaceAll("\n|\r", "");
+
+			if(characterCount + newWord.length() < numberOfCharacters)
+			{
+				returnText += newWord + " ";
+				characterCount += newWord.length() + 1;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		return returnText + "...";
 	}
 
 	public int getRowCount()
@@ -105,7 +129,24 @@ public class OpListTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Sitzungsart.Name as Sitzungsart, Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Thema INNER JOIN (TBZ INNER JOIN (Sitzungsart INNER JOIN (Sitzungsdaten INNER JOIN (Status INNER JOIN (Kategorie INNER JOIN Protokollelement ON Kategorie.KategorieID = Protokollelement.KategorieID) ON Status.StatusID = Protokollelement.StatusID) ON Sitzungsdaten.SitzungsdatenID = Protokollelement.SitzungsID) ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID) ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID WHERE Sitzungsart.SitzungsartID = " + meetingTypeId + " AND Status.Name = 'Neu' AND WiedervorlageGesetzt = true AND WiedervorlageDatum <= #" + new SimpleDateFormat("dd/MM/yyyy").format(wvDate) + "#";
+			String sql = "SELECT Sitzungsart.Name as Sitzungsart, Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, "
+						  + "Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, "
+						  + "Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt "
+						  + "FROM Thema "
+						  + "INNER JOIN (TBZ "
+						  + "INNER JOIN (Sitzungsart "
+						  + "INNER JOIN (Sitzungsdaten "
+						  + "INNER JOIN (Status "
+						  + "INNER JOIN (Kategorie "
+						  + "INNER JOIN Protokollelement "
+						  + "ON Kategorie.KategorieID = Protokollelement.KategorieID) "
+						  + "ON Status.StatusID = Protokollelement.StatusID) "
+						  + "ON Sitzungsdaten.SitzungsdatenID = Protokollelement.SitzungsID) "
+						  + "ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID) "
+						  + "ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) "
+						  + "ON Thema.ThemaID = TBZ.ThemaID "
+						  + "WHERE Protokollelement.WV_Sitzungsart = " + meetingTypeId + " AND Status.Name = 'Neu' AND WiedervorlageGesetzt = true "
+						  + "AND WiedervorlageDatum <= #" + new SimpleDateFormat("dd/MM/yyyy").format(wvDate) + "#";
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -124,7 +165,7 @@ public class OpListTableModel extends AbstractTableModel
 				td.setStatus(rst.getString("Status"));
 				td.setHeading(rst.getString("Überschrift"));
 				int id = rst.getInt("WV_Sitzungsart");
-				if(td.getReMeetingEnabled() && id != -1)
+				if (td.getReMeetingEnabled() && id != -1)
 				{
 					Statement stmt2 = con.createStatement();
 					sql = "SELECT Name FROM Sitzungsart WHERE SitzungsartID = " + id;
@@ -140,7 +181,8 @@ public class OpListTableModel extends AbstractTableModel
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TopicTodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -150,11 +192,9 @@ public class OpListTableModel extends AbstractTableModel
 
 	public void setColumnNames()
 	{
-		columnNames.add("Thema");
 		columnNames.add("Kategorie");
 		columnNames.add("Wiedervorlage");
-		columnNames.add("WV-Sitzungsart");
-		columnNames.add("Status");
 		columnNames.add("Überschrift");
+		columnNames.add("Inhalt");
 	}
 }

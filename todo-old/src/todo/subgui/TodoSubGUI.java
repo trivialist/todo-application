@@ -675,6 +675,15 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			{
 				jButtonSendTask.setVisible(false);
 			}
+
+			if(((String)jComboBoxCategory.getSelectedItem()).equals("Beschluss") && jTextAreaContent.getText().equals(""))
+			{
+				jTextAreaContent.setText("Wer?\n\nWas?\n\nWann?\n");
+			}
+			else if(jTextAreaContent.getText().equals(""))
+			{
+				jTextAreaContent.setText("");
+			}
 		}
     }//GEN-LAST:event_jComboBoxCategoryItemStateChanged
 

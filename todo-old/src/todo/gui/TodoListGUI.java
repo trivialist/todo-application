@@ -31,6 +31,10 @@ public class TodoListGUI extends javax.swing.JFrame
 		initComponents();
 		jTable1.setModel(dataModel);
 		jTable1.setAutoCreateRowSorter(true);
+		jTable1.getColumnModel().getColumn(0).setMaxWidth(150);
+		jTable1.getColumnModel().getColumn(0).setPreferredWidth(150);
+		jTable1.getColumnModel().getColumn(1).setMaxWidth(100);
+		jTable1.getColumnModel().getColumn(1).setPreferredWidth(100);
 	}
 
 	/** This method is called from within the constructor to
@@ -48,7 +52,7 @@ public class TodoListGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("OP Liste");
-        setMinimumSize(new java.awt.Dimension(800, 600));
+        setMinimumSize(new java.awt.Dimension(1000, 346));
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -61,7 +65,7 @@ public class TodoListGUI extends javax.swing.JFrame
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane1.setAutoscrolls(true);
         jScrollPane1.setMinimumSize(new java.awt.Dimension(0, 0));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 0));
+        jScrollPane1.setPreferredSize(null);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
