@@ -31,7 +31,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
-import todo.dbcon.drivers.MsAccessDriver;
 import todo.tablemodel.EmployeeTreeModel.Group;
 import todo.tablemodel.EmployeeTreeModel.NameLeaf;
 
@@ -41,15 +40,14 @@ import todo.tablemodel.EmployeeTreeModel.NameLeaf;
  */
 public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 {
-
 	private int status = 0;
 	private int todoID;
 	private String cat;
 	private String topic;
 	private Todo td = new Todo();
 	private static Connection con;
-	private Vector responsible = new Vector();
-	private Vector involved = new Vector();
+	private Vector responsible = new Vector(); //@todo FIXME
+	private Vector involved = new Vector(); //@todo FIXME
 	private int meetingID;
 	private Calendar cal;
 	private boolean tbz_status = false;
@@ -438,22 +436,28 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
     private void jButtonSaveAndExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveAndExitActionPerformed
 
+		if(jComboBoxStatus.getSelectedItem().toString().equals("Bitte wählen..."))
+		{
+			JOptionPane.showMessageDialog(this, "Es wurde kein gültiger Wert für das Feld Status gewählt!");
+			return;
+		}
+
 		switch (status)
 		{
 			case 0:         // status=0, neues Protokollelement anlegen
 				// Bei Kategorie "Aufgabe" MUSS ein WV-Datum eingegebene werden -> sonst Fehlermeldung und break;
 				if (jTextAreaContent.getText().equals("") || jTextHeading.getText().equals(""))
-                                {
-                                    JOptionPane.showMessageDialog(jTextAreaContent, "Die beiden Eingaben für die Überschrift sowie für " +
-					"den Inhalt müssen ausgefüllt werden.");
-                                    return;
-                                }
-
-                                if (jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe") && jCheckBoxNoReDate.isSelected() == true)
 				{
-					JOptionPane.showMessageDialog(null, "Fehler beim Speichern. " +
-							"Für die Kategorie 'Aufgabe' muss ein Wiedervorlagedatum angegeben werden",
-							"Fehler", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(jTextAreaContent, "Die beiden Eingaben für die Überschrift sowie für "
+																	+ "den Inhalt müssen ausgefüllt werden.");
+					return;
+				}
+
+				if (jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe") && jCheckBoxNoReDate.isSelected() == true)
+				{
+					JOptionPane.showMessageDialog(null, "Fehler beim Speichern. "
+														+ "Für die Kategorie 'Aufgabe' muss ein Wiedervorlagedatum angegeben werden",
+												  "Fehler", JOptionPane.ERROR_MESSAGE);
 					reDateChange = true;
 
 				}
@@ -461,44 +465,53 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				{
 					if (jCheckBoxNoReDate.isSelected())
 					{
-                                            try {
-                                                newTodo();
-                                                setVisible(false);
-                                            } catch (Exception ex) {
-                                                Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-                                            }
+						try
+						{
+							newTodo();
+							setVisible(false);
+						}
+						catch (Exception ex)
+						{
+							Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+						}
 					}
 					else
 					{
 						// Überprüfen ob Wiedervorlagedatum nach aktuellem Datum -> sonst Fehlermeldung und break;
 						if (jCalendarComboBoxReDate.getCalendar().getTime().before(new java.util.Date()))
 						{
-							JOptionPane.showMessageDialog(null, "Fehler beim Speichern. " +
-									"Das angegebene Wiedervorlagedatum liegt zeitlich vor dem aktuellen Datum.\n" +
-									"Wählen Sie ein Datum das in der Zukunft liegt.",
-									"Fehler", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Fehler beim Speichern. "
+																+ "Das angegebene Wiedervorlagedatum liegt zeitlich vor dem aktuellen Datum.\n"
+																+ "Wählen Sie ein Datum das in der Zukunft liegt.",
+														  "Fehler", JOptionPane.ERROR_MESSAGE);
 							reDateChange = true;
 						}
 						else
 						{
-                                                    try {
-                                                        newTodo();
-                                                        setVisible(false);
-                                                    } catch (Exception ex) {
-                                                        Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-                                                    }
+							try
+							{
+								newTodo();
+								setVisible(false);
+							}
+							catch (Exception ex)
+							{
+								Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+							}
 						}
 					}
 				}
 				break;
 			case 1:         // status=1, vorhandenes Protokollelement bearbeiten,
 				// nur Status darf geändert werden
-				try {
-                                    editTodo();
-                                    setVisible(false);
-                                } catch (Exception ex){
-                                    Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+				try
+				{
+					editTodo();
+					setVisible(false);
+				}
+				catch (Exception ex)
+				{
+					Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+				}
 				break;
 			default:
 				JOptionPane.showMessageDialog(this, "Allgemeiner Fehler beim Speichern von Protokollelement.");
@@ -633,24 +646,25 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				{
 					int empID = Integer.valueOf(e.nextElement().toString()).intValue();
 					respMailVec.addElement(getMailAddressByEmpID(empID));
-				} catch (Exception ex)
+				}
+				catch (Exception ex)
 				{
 					Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen.",
-							"Fehler", JOptionPane.ERROR_MESSAGE);
+												  "Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen." +
-						"Es wurden keine Verantwortlichen festgelegt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen."
+													+ "Es wurden keine Verantwortlichen festgelegt!", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 
-		TaskRequest task = new TaskRequest("TOP x: " + jComboBoxArea.getSelectedItem().toString() + " - " +
-				jComboBoxTopic.getSelectedItem().toString(), jComboBoxArea.getSelectedItem().toString(),
-				jComboBoxTopic.getSelectedItem().toString(), jTextHeading.getText(),
-				jCalendarComboBoxReDate.getCalendar().getTime(), respMailVec);
+		TaskRequest task = new TaskRequest("TOP x: " + jComboBoxArea.getSelectedItem().toString() + " - "
+										   + jComboBoxTopic.getSelectedItem().toString(), jComboBoxArea.getSelectedItem().toString(),
+										   jComboBoxTopic.getSelectedItem().toString(), jTextHeading.getText(),
+										   jCalendarComboBoxReDate.getCalendar().getTime(), respMailVec);
 		if (task.isSet())
 		{
 			task.create();
@@ -659,8 +673,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-					"Outlook-Aufgabe konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+												+ "Outlook-Aufgabe konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
     }//GEN-LAST:event_jButtonSendTaskActionPerformed
 
@@ -676,11 +690,11 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				jButtonSendTask.setVisible(false);
 			}
 
-			if(((String)jComboBoxCategory.getSelectedItem()).equals("Beschluss") && jTextAreaContent.getText().equals(""))
+			if (((String) jComboBoxCategory.getSelectedItem()).equals("Beschluss") && jTextAreaContent.getText().equals(""))
 			{
 				jTextAreaContent.setText("Wer?\n\nWas?\n\nWann?\n");
 			}
-			else if(jTextAreaContent.getText().equals(""))
+			else if (jTextAreaContent.getText().equals(""))
 			{
 				jTextAreaContent.setText("");
 			}
@@ -691,7 +705,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     }//GEN-LAST:event_jButtonMemoActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        jTableInvolved.setModel(new InvolvedTableModel(involved, meetingID));
+		jTableInvolved.setModel(new InvolvedTableModel(involved, meetingID));
 		jTableResponsibles.setModel(new ResponsibleTableModel(responsible, meetingID));
 		//Comboboxen neu initialisieren, weil evtl. neue
 		//Kategorie,Status,Institution oder Bereich erstellt wurde
@@ -823,8 +837,14 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					jCalendarComboBoxReDate.setEnabled(false);
 					jCheckBoxNoReDate.setSelected(true);
 				}
-				td.setResponse(rst.getString("Verantwortliche"));
-				td.setOthers(rst.getString("Beteiligte"));
+
+				//@todo FIXME
+				//td.setResponse(rst.getString("Verantwortliche"));
+
+				//@todo FIXME
+				//td.setOthers(rst.getString("Beteiligte"));
+
+				//@todo FIXME
 				getAllResponsibles();
 				getAllInvolved();
 
@@ -837,7 +857,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			rst.close();
 			stmt.close();
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -895,7 +916,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		StringBuffer dbStringOthers = new StringBuffer("");
 		StringBuffer dbStringResponsible = new StringBuffer("");
 		PreparedStatement pStmt = null;
-                int tbz_id = -1;
+		int tbz_id = -1;
 
 		if (!String.valueOf(jComboBoxCategory.getSelectedItem()).equals("Bitte wählen..."))
 		{
@@ -980,6 +1001,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		td.setHeading(jTextHeading.getText());
 		td.setContent(jTextAreaContent.getText());
 
+		//@todo FIXME
 		//Beteiligte
 		Enumeration othersEnum = involved.elements();
 		while (othersEnum.hasMoreElements())
@@ -987,7 +1009,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			int employeeID = Integer.valueOf(othersEnum.nextElement().toString()).intValue();
 			dbStringOthers.append("," + employeeID);
 		}
-		td.setOthers(String.valueOf(dbStringOthers));
+		//td.setOthers(String.valueOf(dbStringOthers));
+
+		//@todo FIXME
 		//Verantwortliche
 		Enumeration respEnum = responsible.elements();
 		while (respEnum.hasMoreElements())
@@ -995,43 +1019,44 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			int employeeID = Integer.valueOf(respEnum.nextElement().toString()).intValue();
 			dbStringResponsible.append("," + employeeID);
 		}
-		td.setResponse(String.valueOf(dbStringResponsible));
+		//td.setResponse(String.valueOf(dbStringResponsible));
 		//if(tbz_ok) {
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 		Date dat = new Date(td.getReDate().getTime());
 		try
 		{
-                    //Statement stmt = con.createStatement();
-                    String sql = "INSERT INTO Protokollelement " +
-                                 "(KategorieID, SitzungsID, StatusID, InstitutionsID, BereichID, " +
-                                 "Inhalt, Wiedervorlagedatum, Verantwortliche, Beteiligte, " +
-                                 "TBZuordnung_ID, WV_Sitzungsart, Überschrift, WiedervorlageGesetzt, Geloescht) " +
-				 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, false)";
-                    pStmt = con.prepareStatement(sql);
-                    pStmt.setInt(1, td.getCategoryID());
-                    pStmt.setInt(2, meetingID);
-                    pStmt.setInt(3, td.getStatusID());
-                    pStmt.setInt(4, td.getInstitutionID());
-                    pStmt.setInt(5, td.getAreaID());
-                    pStmt.setString(6, td.getContent());
-                    pStmt.setDate(7, dat);
-                    pStmt.setString(8, td.getRespons());
-                    pStmt.setString(9, td.getOthers());
-                    pStmt.setInt(10, tbz_id);
-                    pStmt.setInt(11, td.getReMeetType());
-                    pStmt.setString(12, td.getHeading());
-                    pStmt.setBoolean(13, td.getReMeetingEnabled());
-                    pStmt.executeUpdate();
+			//@todo FIXME
+			String sql = "INSERT INTO Protokollelement "
+						 + "(KategorieID, SitzungsID, StatusID, InstitutionsID, BereichID, "
+						 + "Inhalt, Wiedervorlagedatum, Verantwortliche, Beteiligte, "
+						 + "TBZuordnung_ID, WV_Sitzungsart, Überschrift, WiedervorlageGesetzt, Geloescht) "
+						 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, false)";
+			pStmt = con.prepareStatement(sql);
+			pStmt.setInt(1, td.getCategoryID());
+			pStmt.setInt(2, meetingID);
+			pStmt.setInt(3, td.getStatusID());
+			pStmt.setInt(4, td.getInstitutionID());
+			pStmt.setInt(5, td.getAreaID());
+			pStmt.setString(6, td.getContent());
+			pStmt.setDate(7, dat);
+			pStmt.setInt(8, tbz_id);
+			pStmt.setInt(9, td.getReMeetType());
+			pStmt.setString(10, td.getHeading());
+			pStmt.setBoolean(11, td.getReMeetingEnabled());
+			pStmt.executeUpdate();
 
-                } catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
-		} finally {
-                    pStmt.close();
-                    DB_ToDo_Connect.closeDB(con);
-                }
+		}
+		finally
+		{
+			pStmt.close();
+			DB_ToDo_Connect.closeDB(con);
+		}
 	}
 
 	/**
@@ -1044,7 +1069,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		StringBuffer dbStringOthers = new StringBuffer("");
 		StringBuffer dbStringResponsible = new StringBuffer("");
 		PreparedStatement pStmt = null;
-                int tbz_id = -1;
+		int tbz_id = -1;
 
 		if (!String.valueOf(jComboBoxCategory.getSelectedItem()).equals("Bitte wählen..."))
 		{
@@ -1120,6 +1145,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		td.setHeading(jTextHeading.getText());
 		td.setContent(jTextAreaContent.getText());
 
+		//@todo FIXME
 		//Beteiligte
 		Enumeration othersEnum = involved.elements();
 		while (othersEnum.hasMoreElements())
@@ -1127,8 +1153,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			int employeeID = Integer.valueOf(othersEnum.nextElement().toString()).intValue();
 			dbStringOthers.append("," + employeeID);
 		}
-		td.setOthers(String.valueOf(dbStringOthers));
+		//td.setOthers(String.valueOf(dbStringOthers));
 
+		//@todo FIXME
 		//Verantwortliche
 		Enumeration respEnum = responsible.elements();
 		while (respEnum.hasMoreElements())
@@ -1136,12 +1163,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			int employeeID = Integer.valueOf(respEnum.nextElement().toString()).intValue();
 			dbStringResponsible.append("," + employeeID);
 		}
-		td.setResponse(String.valueOf(dbStringResponsible));
+		//td.setResponse(String.valueOf(dbStringResponsible));
 
 		TodoNoteDialog subgui = null;
 
-		if (jComboBoxStatus.getSelectedItem().toString().equals("erledigt") &&
-				jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe"))
+		if (jComboBoxStatus.getSelectedItem().toString().equals("erledigt")
+			&& jComboBoxCategory.getSelectedItem().toString().equals("Aufgabe"))
 		{
 			subgui = new TodoNoteDialog(this, true);
 			subgui.setVisible(true);
@@ -1149,24 +1176,15 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		if (subgui != null)
 		{
-			Memo newMemo = new Memo();
-			newMemo.setComment(subgui.getNote());
-			newMemo.setDate(subgui.getDate());
-			newMemo.setTodoID(todoID);
-			newMemo.setUser(subgui.getUser());
-
-			DbStorage dbs = new DbStorage();
-			dbs.setDbDriver(new MsAccessDriver());
+			//@todo FIXME -> test that
 			DB_ToDo_Connect.openDB();
 			con = DB_ToDo_Connect.getCon();
-			dbs.setDatabaseConnection(con);
-			try
-			{
-				dbs.insert(newMemo);
-			} catch (DbStorageException ex)
-			{
-				Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-			}
+
+			String sql = "INSERT INTO Memo (TodoID, Inhalt, erstellt, Benutzer) VALUES (" + todoID + ", '" + subgui.getNote() + "', " + new java.sql.Date(subgui.getDate().getTime()) + ", '" + subgui.getUser() + "')";
+
+			Statement stmt = con.createStatement();
+			stmt.execute(sql);
+
 			DB_ToDo_Connect.closeDB(con);
 		}
 
@@ -1177,39 +1195,40 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		try
 		{
-			String sql = "UPDATE Protokollelement SET" +
-                                    " KategorieID = ?, SitzungsID = ?, StatusID = ?, InstitutionsID = ?, BereichID = ?" +
-                                    ", Inhalt = ?, Wiedervorlagedatum = ?, Verantwortliche = ?, Beteiligte = ?" +
-                                    ", TBZuordnung_ID = ?, WV_Sitzungsart = ?, Überschrift = ?, WiedervorlageGesetzt = ?" +
-                                    ", Geloescht = ? WHERE ToDoID = ?" + ";";
+			//@todo FIXME
+			String sql = "UPDATE Protokollelement SET"
+						 + " KategorieID = ?, SitzungsID = ?, StatusID = ?, InstitutionsID = ?, BereichID = ?"
+						 + ", Inhalt = ?, Wiedervorlagedatum = ?, TBZuordnung_ID = ?, WV_Sitzungsart = ?, "
+						 + "Überschrift = ?, WiedervorlageGesetzt = ? , Geloescht = ? WHERE ToDoID = ? ;";
 			int i = 1;
-                        pStmt = con.prepareStatement(sql);
-                        pStmt.setInt(1, td.getCategoryID());
-                        pStmt.setInt(2, meetingID);
-                        pStmt.setInt(3, td.getStatusID());
-                        pStmt.setInt(4, td.getInstitutionID());
-                        pStmt.setInt(5, td.getAreaID());
-                        pStmt.setString(6, td.getContent());
-                        pStmt.setDate(7, dat);
-                        pStmt.setString(8, td.getRespons());
-                        pStmt.setString(9, td.getOthers());
-                        pStmt.setInt(10, tbz_id);
-                        pStmt.setInt(11, td.getReMeetType());
-                        pStmt.setString(12, td.getHeading());
-                        pStmt.setBoolean(13, td.getReMeetingEnabled());
-                        pStmt.setBoolean(14, false);
-                        pStmt.setInt(15, todoID);
-                        pStmt.executeUpdate();
+			pStmt = con.prepareStatement(sql);
+			pStmt.setInt(1, td.getCategoryID());
+			pStmt.setInt(2, meetingID);
+			pStmt.setInt(3, td.getStatusID());
+			pStmt.setInt(4, td.getInstitutionID());
+			pStmt.setInt(5, td.getAreaID());
+			pStmt.setString(6, td.getContent());
+			pStmt.setDate(7, dat);
+			pStmt.setInt(8, tbz_id);
+			pStmt.setInt(9, td.getReMeetType());
+			pStmt.setString(10, td.getHeading());
+			pStmt.setBoolean(11, td.getReMeetingEnabled());
+			pStmt.setBoolean(12, false);
+			pStmt.setInt(13, todoID);
+			pStmt.executeUpdate();
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
-		} finally {
-                    pStmt.close();
-                    DB_ToDo_Connect.closeDB(con);
-                }
-        }
+		}
+		finally
+		{
+			pStmt.close();
+			DB_ToDo_Connect.closeDB(con);
+		}
+	}
 
 	public ArrayList getAllCategories()
 	{
@@ -1226,11 +1245,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			while (rst.next())
 			{
 				catObjects.add(new Category(rst.getString("Name"),
-						rst.getString("Beschreibung")));
+											rst.getString("Beschreibung")));
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1257,7 +1277,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1284,7 +1305,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1308,11 +1330,12 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			while (rst.next())
 			{
 				areaObjects.add(new Area(rst.getString("Name"),
-						rst.getString("Beschreibung")));
+										 rst.getString("Beschreibung")));
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1339,7 +1362,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1366,7 +1390,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1400,7 +1425,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1440,7 +1466,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1478,7 +1505,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1510,7 +1538,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1542,7 +1571,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1574,7 +1604,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1606,7 +1637,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1633,7 +1665,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1657,8 +1690,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM TBZ WHERE BereichID=" + td.getAreaID() +
-					" AND ThemaID=" + td.getTopicID();
+			String sql = "SELECT * FROM TBZ WHERE BereichID=" + td.getAreaID()
+						 + " AND ThemaID=" + td.getTopicID();
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -1668,7 +1701,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			rst.close();
 			stmt.close();
 
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1700,7 +1734,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1732,7 +1767,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1764,7 +1800,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1805,7 +1842,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1846,7 +1884,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1878,7 +1917,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1910,7 +1950,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -1950,7 +1991,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				}
 				rst.close();
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -1960,11 +2002,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		return name;
 	}
 
-	/**
-	 *
-	 */
 	public void getAllInvolved()
 	{
+		//@todo FIXME
+		/*
 		if (td.getOthers() != null)
 		{
 			StringTokenizer tokenizer = new StringTokenizer(td.getOthers(), ", ");
@@ -1983,14 +2024,13 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 				}
 			}
 		}
+		 */
 	}
 
-	/**
-	 *
-	 */
 	public void getAllResponsibles()
 	{
-		if (td.getRespons() != null)
+		//@todo FIXME
+		/*if (td.getRespons() != null)
 		{
 			StringTokenizer tokenizer = new StringTokenizer(td.getRespons(), ", ");
 			while (tokenizer.hasMoreTokens())
@@ -2006,7 +2046,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					continue;
 				}
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -2037,7 +2077,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();

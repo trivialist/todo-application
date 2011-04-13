@@ -222,6 +222,7 @@ public class MeetingGUI extends javax.swing.JFrame
 				insertId = rst.getInt(1) + 1;
 				id.close();
 
+				//@todo FIXME
 				Statement stmt = con.createStatement();
 				String sql = "INSERT INTO Sitzungsdaten (SitzungsdatenID, Datum, Ort, Tagesordnung, " +
 						"SitzungsartID, Protokollant, Teilnehmer, Sonstige) SELECT " + insertId +

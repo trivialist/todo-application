@@ -90,7 +90,6 @@ public class InvolvedTableModel extends AbstractTableModel
 
 	protected void loadData()
 	{
-		loadPartFromDB();
 		DB_Mitarbeiter_Connect.openDB();
 		con = DB_Mitarbeiter_Connect.getCon();
 
@@ -120,16 +119,6 @@ public class InvolvedTableModel extends AbstractTableModel
 			}
 		}
 		DB_Mitarbeiter_Connect.closeDB(con);
-	}
-
-	public void loadPartFromDB()
-	{
-		/*
-		 * es fehlt: wenn schon Teilnehmer eingegeben wurden, welche also in
-		 * der DB als String aus ID's stehen, müssen diese noch mittels StringTokenizer
-		 * zerlegt werden und mittels DB in Namen gewandelt werden.
-		 *
-		 */
 	}
 
 	public void setColumnNames()

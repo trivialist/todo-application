@@ -9,21 +9,13 @@
  */
 package todo.core;
 
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
-
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Institution")
 public class Institution
 {
-
-	@DbColumn(name = "Name")
 	private String institution;
-	@DbId(name = "InstitutionID")
 	private int institutionID;
 
 	/** Creates a new instance of Institution */

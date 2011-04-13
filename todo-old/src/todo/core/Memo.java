@@ -5,27 +5,17 @@
 package todo.core;
 
 import java.util.Date;
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
 
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Memo")
 public class Memo
 {
-
-	@DbId(name = "MemoID")
 	private int memoID;
-	@DbColumn(name = "TodoID")
 	private int todoID;
-	@DbColumn(name = "Inhalt")
 	private String comment;
-	@DbColumn(name = "erstellt")
 	private Date memoDate;
-	@DbColumn(name = "Benutzer")
 	private String memoUser;
 
 	public Memo()

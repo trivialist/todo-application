@@ -8,23 +8,14 @@
  */
 package todo.core;
 
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
-
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Bereich")
 public class Area
 {
-
-	@DbId(name = "BereichID")
 	private int areaID;
-	@DbColumn(name = "Name")
 	private String areaName;
-	@DbColumn(name = "Beschreibung")
 	private String areaDescription;
 
 	/** Creates a new instance of Area */

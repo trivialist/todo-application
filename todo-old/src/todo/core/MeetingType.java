@@ -9,21 +9,13 @@
  */
 package todo.core;
 
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
-
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Sitzungsart")
 public class MeetingType
 {
-
-	@DbColumn(name = "Name")
 	private String meetingType;
-	@DbId(name = "SitzungsartID")
 	private int meetingTypeID;
 
 	/** Creates a new instance of MeetingType */

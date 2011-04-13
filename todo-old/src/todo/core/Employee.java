@@ -15,7 +15,6 @@ package todo.core;
  */
 public class Employee
 {
-
 	private int employeeID;
 	private String name;
 	private String lastName;

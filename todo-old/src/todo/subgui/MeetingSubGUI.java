@@ -447,7 +447,6 @@ public class MeetingSubGUI extends javax.swing.JFrame
 				meet.setDate(rst.getDate("Datum"));
 				meet.setPlace(rst.getString("Ort"));
 				meet.setProt(rst.getInt("Protokollant"));
-				meet.setPartic(rst.getString("Teilnehmer"));
 				meet.setOtherParticipants(rst.getString("Sonstige"));
 				int meetingTypeID = rst.getInt("SitzungsartID");
 				meet.setMeetingTypeID(meetingTypeID);
@@ -510,22 +509,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 
 		String name = "";
 		String lastName = "";
-		StringTokenizer tokenizer = new StringTokenizer(protName, ", ");
-		while (tokenizer.hasMoreTokens())
-		{
-			if (tokenizer.countTokens() > 1)
-			{
-				lastName = String.valueOf(tokenizer.nextToken());
-			}
-			else if (tokenizer.countTokens() > 0)
-			{
-				name = String.valueOf(tokenizer.nextToken());
-			}
-			else
-			{
-				continue;
-			}
-		}
+		
 		try
 		{
 			Statement stmt = con.createStatement();
@@ -547,6 +531,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		return prID;
 	}
 
+	/*
 	public void getAllParticipants()
 	{
 		// Vektor participants komplett leeren
@@ -568,7 +553,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 				}
 			}
 		}
-	}
+	}*/
 
 	public void getMeetingID()
 	{
@@ -607,7 +592,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	{
 		getMeetingData();
 		otherPart = meet.getOtherPaticipants();
-		getAllParticipants();
+
+		//@todo FIXME -> get/load all participiants
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

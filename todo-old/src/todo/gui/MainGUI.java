@@ -66,6 +66,9 @@ public class MainGUI extends javax.swing.JFrame
 	public MainGUI()
 	{
 		initComponents();
+
+		setLocationRelativeTo(null);
+
 		actMeeting = new Meeting();
 		jLabelError.setText("");
 		if (actMeeting.getMeetingID() == 0)
@@ -466,7 +469,7 @@ public class MainGUI extends javax.swing.JFrame
 		//                    + actMeeting.getMeetingType() + ".html";
 		//String pdfDest = "R:\\Protokoll_" + actMeeting.getDate()
 		//                + "_" + actMeeting.getMeetingType() + ".pdf";
-		Vector prot = new Vector();
+		ArrayList<Integer> prot = new ArrayList<Integer>();
 		prot.add(actMeeting.getProt());
 
 		//erzeuge Tagesordnung
@@ -505,7 +508,7 @@ public class MainGUI extends javax.swing.JFrame
 		params.put("Datum", sdf.format(actMeeting.getDate()));
 		params.put("Ort", actMeeting.getPlace());
 		params.put("Protokollant", getNameAndLastNameByID(prot));
-		params.put("Teilnehmer", getNameAndLastNameByID(getIdsFromIdString(actMeeting.getPartic())));
+		params.put("Teilnehmer", getNameAndLastNameByID(getPersonnelIdsFromItemId("meeting_attendee_personnel", "meetingID", actMeeting.getMeetingID())));
 		params.put("Sonstige", actMeeting.getOtherPaticipants());
 		params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
 		params.put("Agenda", agenda);//.toString());
@@ -1014,7 +1017,7 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Verantwortliche, Beteiligte, SitzungsID, Überschrift, Protokollelement.InstitutionsID, TBZuordnung_ID, Sitzungsart.Name as Sitzungsart, Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Thema INNER JOIN (TBZ INNER JOIN (Sitzungsart INNER JOIN (Sitzungsdaten INNER JOIN (Status INNER JOIN (Kategorie INNER JOIN Protokollelement ON Kategorie.KategorieID = Protokollelement.KategorieID) ON Status.StatusID = Protokollelement.StatusID) ON Sitzungsdaten.SitzungsdatenID = Protokollelement.SitzungsID) ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID) ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID WHERE Sitzungsart.SitzungsartID = " + meetingTypeId + " AND Status.Name = 'Neu' AND WiedervorlageGesetzt = true AND WiedervorlageDatum <= #" + new SimpleDateFormat("dd/MM/yyyy").format(wvDate) + "#";
+			String sql = "SELECT SitzungsID, Überschrift, Protokollelement.InstitutionsID, TBZuordnung_ID, Sitzungsart.Name as Sitzungsart, Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Status.Name as Status, Kategorie.Name as Kategorie, Thema.Name as Thema, Protokollelement.Wiedervorlagedatum, Protokollelement.Inhalt, Protokollelement.ToDoID, Protokollelement.WiedervorlageGesetzt FROM Thema INNER JOIN (TBZ INNER JOIN (Sitzungsart INNER JOIN (Sitzungsdaten INNER JOIN (Status INNER JOIN (Kategorie INNER JOIN Protokollelement ON Kategorie.KategorieID = Protokollelement.KategorieID) ON Status.StatusID = Protokollelement.StatusID) ON Sitzungsdaten.SitzungsdatenID = Protokollelement.SitzungsID) ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID) ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Thema.ThemaID = TBZ.ThemaID WHERE Sitzungsart.SitzungsartID = " + meetingTypeId + " AND Status.Name = 'Neu' AND WiedervorlageGesetzt = true AND WiedervorlageDatum <= #" + new SimpleDateFormat("dd/MM/yyyy").format(wvDate) + "#";
 			ResultSet rst = stmt.executeQuery(sql);
 			Statement stmt2 = con.createStatement();
 
@@ -1030,8 +1033,9 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
 				fields.put("Inhalt", rst.getString("Inhalt"));
 				fields.put("Ueberschrift", rst.getString("Überschrift"));
-				fields.put("Verantwortliche", getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte", getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 
 				if (rst.getBoolean("WiedervorlageGesetzt"))
 				{
@@ -1229,10 +1233,9 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 				todoData.add(fields);
 				counter++;
 			}
@@ -1279,8 +1282,7 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", rst.getInt("ToDoID"))));
 				shortTodoData.add(fields);
 			}
 
@@ -1351,10 +1353,9 @@ public class MainGUI extends javax.swing.JFrame
 							fields.put("Wiedervorlagedatum", "kein");
 						}
 
-						fields.put("Verantwortliche",
-								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-						fields.put("Beteiligte",
-								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						int todoId = rst.getInt("ToDoID");
+						fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+						fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 						fields.put("SitzOrt", m.getPlace());
 						fields.put("SitzDatum", sdf.format(m.getDate()));
 						fields.put("SitzName", m.getMeetingType());
@@ -1401,10 +1402,12 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt = con.createStatement();
 			if (status.equals("Alle"))
 			{
+				//@todo FIXME
 				sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND Verantwortliche LIKE '%" + empID + "%'";
 			}
 			else
 			{
+				//@todo FIXME
 				sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND Verantwortliche LIKE '%" + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
 			}
 
@@ -1433,10 +1436,9 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1467,11 +1469,13 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt2 = con.createStatement();
 			if (status.equals("Alle"))
 			{
+				//@todo FIXME
 				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
 					   + empID + "%'";
 			}
 			else
 			{
+				//@todo FIXME
 				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
 					   + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
 			}
@@ -1492,10 +1496,9 @@ public class MainGUI extends javax.swing.JFrame
 				fields.put("Thema", rst2.getString("Thema"));
 				fields.put("Inhalt", rst2.getString("Inhalt"));
 				fields.put("Wiedervorlagedatum", rst2.getString("Wiedervorlagedatum"));
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst2.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst2.getString("Beteiligte"))));
+				int todoId = rst2.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1564,10 +1567,9 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 				fields.put("SitzOrt", rst.getString("Ort"));
 				java.util.Date md = rst.getDate("Datum");
 
@@ -1640,10 +1642,9 @@ public class MainGUI extends javax.swing.JFrame
 							fields.put("Wiedervorlagedatum", "kein");
 						}
 
-						fields.put("Verantwortliche",
-								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-						fields.put("Beteiligte",
-								   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+						int todoId = rst.getInt("ToDoID");
+						fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+						fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 						fields.put("SitzOrt", m.getPlace());
 						fields.put("SitzDatum", sdf.format(m.getDate()));
 						fields.put("SitzName", m.getMeetingType());
@@ -1701,10 +1702,9 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1762,10 +1762,9 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1833,10 +1832,9 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
 				fields.put("SitzOrt", m.getPlace());
 				fields.put("SitzDatum", sdf.format(m.getDate()));
 				fields.put("SitzName", m.getMeetingType());
@@ -1894,10 +1892,10 @@ public class MainGUI extends javax.swing.JFrame
 					fields.put("Wiedervorlagedatum", "kein");
 				}
 
-				fields.put("Verantwortliche",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Verantwortliche"))));
-				fields.put("Beteiligte",
-						   getNameAndLastNameByID(getIdsFromIdString(rst.getString("Beteiligte"))));
+				int todoId = rst.getInt("ToDoID");
+				fields.put("Verantwortliche", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_responsible_personnel", "todoID", todoId)));
+				fields.put("Beteiligte", getNameAndLastNameByID(getPersonnelIdsFromItemId("todo_involved_personnel", "todoID", todoId)));
+
 				//fields.put("SitzOrt", rst.getString("Ort"));
                     /*md = rst.getDate("Datum");
 				if(md != null) {
@@ -1921,6 +1919,34 @@ public class MainGUI extends javax.swing.JFrame
 
 		DB_ToDo_Connect.closeDB(con);
 		return opData;
+	}
+
+	private ArrayList<Integer> getPersonnelIdsFromItemId(String dbTable, String dbColumn, int searchId)
+	{
+		ArrayList<Integer> extractedIds = new ArrayList<Integer>();
+
+		try
+		{
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
+
+			Statement stmt = con.createStatement();
+			ResultSet resultSet = stmt.executeQuery("SELECT personnelID FROM " + dbTable + " WHERE " + dbColumn + " = " + searchId);
+
+			while (resultSet.next())
+			{
+				extractedIds.add(resultSet.getInt("personnelID"));
+			}
+
+			DB_ToDo_Connect.closeDB(con);
+		}
+		catch (SQLException ex)
+		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+
+		return extractedIds;
 	}
 
 	public void getLatestMeeting()
@@ -1949,7 +1975,6 @@ public class MainGUI extends javax.swing.JFrame
 			actMeeting.setMeetingTypeID(rst.getInt("SitzungsartID"));
 			actMeeting.setPlace(rst.getString("Ort"));
 			actMeeting.setProt(rst.getInt("Protokollant"));
-			actMeeting.setPartic(rst.getString("Teilnehmer"));
 
 			rst.close();
 			stmt.close();
@@ -2004,7 +2029,6 @@ public class MainGUI extends javax.swing.JFrame
 				actMeeting.setMeetingTypeID(rst.getInt("SitzungsartID"));
 				actMeeting.setPlace(rst.getString("Ort"));
 				actMeeting.setProt(rst.getInt("Protokollant"));
-				actMeeting.setPartic(rst.getString("Teilnehmer"));
 				actMeeting.setOtherParticipants(rst.getString("Sonstige"));
 			}
 
@@ -2077,27 +2101,20 @@ public class MainGUI extends javax.swing.JFrame
 		actMeeting.setMeetingType(meetingType);
 	}
 
-	public String getNameAndLastNameByID(Vector ids)
+	public String getNameAndLastNameByID(ArrayList<Integer> ids)
 	{
 		StringBuffer participantsBuffer = new StringBuffer();
-		int id = 0;
 		DB_Mitarbeiter_Connect.openDB();
 		con = DB_Mitarbeiter_Connect.getCon();
 
 		// Vector mit einzelnen Mitarbeiter ID's einzeln auslesen und
 		// Vorname_Nachname in Strinbuffer schreiben
-		Enumeration en = ids.elements();
-		while (en.hasMoreElements())
+		for (int id : ids)
 		{
-			Integer temp = new Integer(String.valueOf(en.nextElement()));
-			id =
-			temp.intValue();
-
 			try
 			{
 				Statement stmt = con.createStatement();
-				String sql = "SELECT Nachname, Vorname FROM Stammdaten WHERE "
-							 + "Personalnummer=" + id;
+				String sql = "SELECT Nachname, Vorname FROM Stammdaten WHERE Personalnummer = " + id;
 				ResultSet rst = stmt.executeQuery(sql);
 
 				while (rst.next())
@@ -2117,37 +2134,8 @@ public class MainGUI extends javax.swing.JFrame
 
 		}
 		DB_ToDo_Connect.closeDB(con);
-		String participantsString = participantsBuffer.toString();
+		String participantsString = participantsBuffer.length() > 0 ? participantsBuffer.substring(0, participantsBuffer.length() - 2).toString() : "";
 		return participantsString;
-	}
-
-	/*
-	 *  StringTokenizer zerlegt Mitarbeiter-String aus Id's
-	 *  @param String
-	 */
-	public Vector getIdsFromIdString(
-			String id)
-	{
-		Vector ids = new Vector();
-		if (id != null)
-		{
-			StringTokenizer tokenizer = new StringTokenizer(id, ", ");
-			while (tokenizer.hasMoreTokens())
-			{
-				if (tokenizer.countTokens() > 0)
-				{
-					String temp = String.valueOf(tokenizer.nextToken());
-					int partID = Integer.valueOf(temp);
-					ids.add(partID);
-				}
-				else
-				{
-					continue;
-				}
-
-			}
-		}
-		return ids;
 	}
 
 	/*
@@ -3026,8 +3014,7 @@ public class MainGUI extends javax.swing.JFrame
 	 * ermittelt eine Liste aller TBZ_ID's bei denen ThemaID = topID(stat=1)
 	 * oder BereichID = arID(stat2)
 	 */
-	public Vector getTBZ_ListByAreaOrTopicID(
-			int id, int stat)
+	public Vector getTBZ_ListByAreaOrTopicID(int id, int stat)
 	{
 		Vector tbz_list = new Vector();
 		String s = "";
@@ -3067,12 +3054,109 @@ public class MainGUI extends javax.swing.JFrame
 		return tbz_list;
 	}
 
+	public static boolean relationItemExists(String destinationTable, String destinationColumn, int destinationId, int personnelId)
+	{
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+
+		try
+		{
+			Statement statement = con.createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT " + destinationColumn + " FROM " + destinationTable + " WHERE " + destinationColumn + " = " + destinationId + " AND personnelID = " + personnelId);
+
+			//try to access item -> if this throws an exception it doesnt exist
+			resultSet.next();
+			resultSet.getInt("destinationColumn");
+
+			return true;
+		}
+		catch (Exception ex)
+		{
+			//do nothing just return
+			return false;
+		}
+	}
+
+	public static void insertRelation(String destinationTable, String destinationColumn, int personnelId, int destinationId)
+	{
+		try
+		{
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
+
+			Statement statement = con.createStatement();
+			statement.execute("INSERT INTO " + destinationTable + " (personnelID, " + destinationColumn + ") VALUES (" + personnelId + ", " + destinationId + ")");
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+	}
+
+	public static void removeRelation(String destinationTable, String destinationColumn, int personnelId, int destinationId)
+	{
+		try
+		{
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
+
+			Statement statement = con.createStatement();
+			statement.execute("DELETE FROM " + destinationTable + " WHERE " + destinationColumn + " = " + destinationId + ", personnelID = " + personnelId);
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+	}
+
+	public static void updateRelations(String destinationTable, String destinationColumn, ArrayList<Integer> personnelIds, int destinationId)
+	{
+		try
+		{
+			DB_ToDo_Connect.openDB();
+			con = DB_ToDo_Connect.getCon();
+
+			Statement statement = con.createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT personnelID FROM " + destinationTable + " WHERE " + destinationColumn + " = " + destinationId);
+
+			//get all existing relations
+			ArrayList<Integer> existingPersonnelIds = new ArrayList<Integer>();
+			while(resultSet.next())
+			{
+				existingPersonnelIds.add(resultSet.getInt("personnelID"));
+			}
+
+			//find new relations
+			for(int currentRelation : personnelIds)
+			{
+				if(!existingPersonnelIds.contains(currentRelation))
+				{
+					insertRelation(destinationTable, destinationColumn, currentRelation, destinationId);
+				}
+			}
+
+			//find removed relations
+			for(int currentRelation : existingPersonnelIds)
+			{
+				if(!personnelIds.contains(currentRelation))
+				{
+					removeRelation(destinationTable, destinationColumn, currentRelation, destinationId);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+	}
 
 	/*
 	 * ermittelt den Wochentag anhand des Integerwerts von DAY_OF_WEEK
 	 */
-	public String getDayString(
-			int weekDayID)
+	public String getDayString(int weekDayID)
 	{
 		String dayString = "";
 		switch (weekDayID)
@@ -3106,10 +3190,8 @@ public class MainGUI extends javax.swing.JFrame
 				break;
 
 			default:
-
 				dayString = "";
 				break;
-
 		}
 
 		return dayString;

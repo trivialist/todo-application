@@ -11,37 +11,21 @@ package todo.core;
 
 import java.util.Date;
 import java.util.Calendar;
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
 
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Sitzungsdaten")
 public class Meeting
 {
-
-	@DbId(name = "SitzungsdatenID")
 	private int meetingID;
-	@DbColumn(name = "Datum")
 	private Date date;
-	@DbColumn(name = "Ort")
 	private String place;
-	@DbColumn(name = "Tagesordnung")
 	private int prot;
-	@DbColumn(name = "Teilnehmer")
-	private String partic;
-	@DbColumn(name = "SitzungsartID")
 	private int meetingTypeID;
-	@DbColumn(name = "Sonstige")
 	private String otherPart;
-	@DbColumn(name = "Protokollant")
 	private int recorder;
-	@DbColumn(name = "Geloescht")
 	private boolean deleted;
-	//unknown
 	private String meetingType;
 
 	/** Creates a new instance of Meeting */
@@ -77,11 +61,6 @@ public class Meeting
 		return place;
 	}
 
-	public String getPartic()
-	{
-		return partic;
-	}
-
 	public int getMeetingTypeID()
 	{
 		return meetingTypeID;
@@ -115,11 +94,6 @@ public class Meeting
 	public void setProt(int prot)
 	{
 		this.prot = prot;
-	}
-
-	public void setPartic(String partic)
-	{
-		this.partic = partic;
 	}
 
 	public void setMeetingTypeID(int meetingTypeID)

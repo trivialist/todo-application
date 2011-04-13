@@ -10,55 +10,29 @@
 package todo.core;
 
 import java.util.Date;
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
 
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Protokollelement")
 public class Todo
 {
-
-	@DbId(name = "ToDoID")
 	private int todoID;
-	@DbColumn(name = "KategorieID")
 	private int categoryID;
-	@DbColumn(name = "SitzungsID")
 	private int meetingID;
-	@DbColumn(name = "StatusID")
 	private int statusID;
-	@DbColumn(name = "InstitutionID")
 	private int institutionID;
-	@DbColumn(name = "TBZuordnung_ID")
 	private int tbz_id;
-	@DbColumn(name = "BereichID")
 	private int areaID;
-	@DbColumn(name = "Bereich")
 	private String area;
-	@DbColumn(name = "Thema")
 	private String topic;
-	@DbColumn(name = "Inhalt")
 	private String content;
-	@DbColumn(name = "Wiedervorlagedatum")
 	private Date reDate;
-	@DbColumn(name = "WV_Sitzungsart")
 	private int reMeetType;
-	@DbColumn(name = "Verantwortliche")
-	private String responsible;
-	@DbColumn(name = "Beteiligte")
-	private String involved;
-	@DbColumn(name = "Überschrift")
 	private String heading;
-	@DbColumn(name = "WiedervorlageGesetzt")
 	private boolean reMeetingEnabled;
-	@DbColumn(name = "updated")
 	private boolean updated;
-	@DbColumn(name = "Geloescht")
 	private boolean deleted;
-	@DbColumn(name = "Kopiergrund")
 	private String copyReason;
 	//unknown
 	public String category;
@@ -163,16 +137,6 @@ public class Todo
 		return reMeetType;
 	}
 
-	public String getRespons()
-	{
-		return responsible;
-	}
-
-	public String getOthers()
-	{
-		return involved;
-	}
-
 	public String getCategory()
 	{
 		return category;
@@ -258,16 +222,6 @@ public class Todo
 		this.reMeetType = reMeetType;
 	}
 
-	public void setResponse(String responsible)
-	{
-		this.responsible = responsible;
-	}
-
-	public void setOthers(String involved)
-	{
-		this.involved = involved;
-	}
-
 	public void setCategory(String category)
 	{
 		this.category = category;
@@ -295,8 +249,6 @@ public class Todo
 		topic = "";
 		content = "";
 		reDate = new Date();
-		responsible = "";
-		involved = "";
 		category = "";
 		status = "";
 		heading = "";

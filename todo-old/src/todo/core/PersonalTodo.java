@@ -9,39 +9,24 @@
 
 package todo.core;
 
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
-
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Protokollelement")
 public class PersonalTodo
 {
-
-	@DbId(name = "ToDoID")
 	private int todoID;
-	@DbColumn(name = "KategorieID")
 	private int categoryID;
-	@DbColumn(name = "BereichID")
 	private int areaID;
-	@DbColumn(name = "InstitutionsID")
 	private int institutionID;
-	@DbColumn(name = "StatusID")
 	private int statusID;
-	@DbColumn(name = "Thema")
 	private String topic;
-	@DbColumn(name = "Inhalt")
 	private String content;
-	@DbColumn(name = "Wiedervorlagedatum")
 	private String reDate;
-	@DbColumn(name = "Verantwortliche")
+	//@todo FIXME
 	private String responsible;
-	@DbColumn(name = "Beteiligte")
+	//@todo FIXME
 	private String involved;
-	@DbColumn(name = "SitzungsID")
 	private int meetingID;
 
 	/** Creates a new instance of PersonalTodo */

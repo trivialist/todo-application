@@ -239,6 +239,7 @@ public class ParticipantsGUI extends javax.swing.JFrame
 
 		try
 		{
+			//@todo FIXME
 			Statement stmt = con.createStatement();
 			String sql = "UPDATE Sitzungsdaten SET Teilnehmer='" + part + "', Sonstige='" + othPart + "' WHERE SitzungsdatenID=" + meetingID;
 			stmt.executeUpdate(sql);

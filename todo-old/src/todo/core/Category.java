@@ -9,23 +9,14 @@
  */
 package todo.core;
 
-import todo.dbcon.annotations.DbColumn;
-import todo.dbcon.annotations.DbId;
-import todo.dbcon.annotations.DbTable;
-
 /**
  *
  * @author Marcus Hertel
  */
-@DbTable(name = "Kategorie")
 public class Category
 {
-
-	@DbId(name = "KategorieID")
 	private int catID;
-	@DbColumn(name = "Name")
 	private String catName;
-	@DbColumn(name = "Beschreibung")
 	private String catDescription;
 
 	/** Creates a new instance of Category */

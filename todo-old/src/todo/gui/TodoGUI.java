@@ -194,6 +194,7 @@ public class TodoGUI extends javax.swing.JFrame
 				id.close();
 
 				Statement stmt = con.createStatement();
+				//@todo FIXME
 				String sql = "INSERT INTO Protokollelement (ToDoID, KategorieID, SitzungsID, StatusID, " +
 						"InstitutionsID, BereichID, TBZuordnung_ID, Thema, Inhalt, Bereich, " +
 						"Wiedervorlagedatum, WV_Sitzungsart, Verantwortliche, Beteiligte, updated, " +

@@ -137,6 +137,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
+			//@todo FIXME
 			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
 					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
 					"FROM Kategorie INNER JOIN " +
@@ -144,7 +145,8 @@ public class PersonalTodoTableModel extends AbstractTableModel
 					"INNER JOIN (Status INNER JOIN Protokollelement ON Status.StatusID = Protokollelement.StatusID) " +
 					"ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Kategorie.KategorieID = Protokollelement.KategorieID " +
 					"WHERE (Protokollelement.Verantwortliche LIKE '%," + emp.getEmployeeID() + ",%' " +
-					" OR Protokollelement.Verantwortliche LIKE '%," + emp.getEmployeeID() + "%')" + sStat;
+					" OR Protokollelement.Verantwortliche LIKE '%," + emp.getEmployeeID() + "%' OR " +
+					"Protokollelement.Verantwortliche = '," + emp.getEmployeeID() + "')" + sStat;
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
