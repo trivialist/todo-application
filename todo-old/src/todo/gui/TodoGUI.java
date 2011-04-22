@@ -193,18 +193,32 @@ public class TodoGUI extends javax.swing.JFrame
 				insertId = rst.getInt(1) + 1;
 				id.close();
 
+				//copy element itself
 				Statement stmt = con.createStatement();
-				//@todo FIXME
 				String sql = "INSERT INTO Protokollelement (ToDoID, KategorieID, SitzungsID, StatusID, " +
 						"InstitutionsID, BereichID, TBZuordnung_ID, Thema, Inhalt, Bereich, " +
-						"Wiedervorlagedatum, WV_Sitzungsart, Verantwortliche, Beteiligte, updated, " +
+						"Wiedervorlagedatum, WV_Sitzungsart, updated, " +
 						"Überschrift, WiedervorlageGesetzt, Kopiergrund) SELECT " + insertId + " AS ToDoID, KategorieID, " +
 						"SitzungsID, 3 AS StatusID, InstitutionsID, BereichID, TBZuordnung_ID, Thema, " +
-						"Inhalt, Bereich, Wiedervorlagedatum, WV_Sitzungsart, Verantwortliche, Beteiligte, " +
+						"Inhalt, Bereich, Wiedervorlagedatum, WV_Sitzungsart, " +
 						"updated, Überschrift, WiedervorlageGesetzt, '" + copyReason +
 						"' AS Kopiergrund FROM Protokollelement WHERE ToDoID = " + todoID;
 				stmt.executeUpdate(sql);
 				stmt.close();
+
+				//then copy first relations to it
+				Statement relations = con.createStatement();
+				String newsql = "INSERT INTO todo_responsible_personnel (todoID, personnelID) SELECT " + insertId +
+								" AS todoID, personnelID FROM todo_responsible_personnel WHERE todoID = " + todoID;
+				relations.executeUpdate(newsql);
+				relations.close();
+
+				//and copy second relations to it (of course)
+				relations = con.createStatement();
+				newsql = "INSERT INTO todo_involved_personnel (todoID, personnelID) SELECT " + insertId +
+								" AS todoID, personnelID FROM todo_involved_personnel WHERE todoID = " + todoID;
+				relations.executeUpdate(newsql);
+				relations.close();
 
 				con.commit();
 				con.setAutoCommit(true);

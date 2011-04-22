@@ -9,6 +9,7 @@
  */
 package todo.core;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -33,8 +34,9 @@ public class Todo
 	private boolean reMeetingEnabled;
 	private boolean updated;
 	private boolean deleted;
+	private ArrayList<Integer> responsible;
+	private ArrayList<Integer> involved;
 	private String copyReason;
-	//unknown
 	public String category;
 	public String status;
 	public int topicID;
@@ -292,5 +294,25 @@ public class Todo
 	public void setReMeetingType(String reMeetingType)
 	{
 		this.reMeetingType = reMeetingType;
+	}
+
+	public ArrayList<Integer> getResponsible()
+	{
+		return responsible;
+	}
+
+	public void setResponsible(ArrayList<Integer> responsible)
+	{
+		this.responsible = responsible;
+	}
+
+	public ArrayList<Integer> getInvolved()
+	{
+		return involved;
+	}
+
+	public void setInvolved(ArrayList<Integer> involved)
+	{
+		this.involved = involved;
 	}
 }

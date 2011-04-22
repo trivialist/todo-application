@@ -9,6 +9,8 @@
 
 package todo.core;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Marcus Hertel
@@ -23,10 +25,8 @@ public class PersonalTodo
 	private String topic;
 	private String content;
 	private String reDate;
-	//@todo FIXME
-	private String responsible;
-	//@todo FIXME
-	private String involved;
+	private ArrayList<Integer> responsible;
+	private ArrayList<Integer> involved;
 	private int meetingID;
 
 	/** Creates a new instance of PersonalTodo */
@@ -75,12 +75,12 @@ public class PersonalTodo
 		return reDate;
 	}
 
-	public String getResponsible()
+	public ArrayList<Integer> getResponsible()
 	{
 		return responsible;
 	}
 
-	public String getInvolved()
+	public ArrayList<Integer> getInvolved()
 	{
 		return involved;
 	}
@@ -131,12 +131,12 @@ public class PersonalTodo
 		this.reDate = reDate;
 	}
 
-	public void setResponsible(String responsible)
+	public void setResponsible(ArrayList<Integer> responsible)
 	{
 		this.responsible = responsible;
 	}
 
-	public void setInvolved(String involved)
+	public void setInvolved(ArrayList<Integer> involved)
 	{
 		this.involved = involved;
 	}

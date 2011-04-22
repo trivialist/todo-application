@@ -26,7 +26,6 @@ import javax.swing.JOptionPane;
  */
 public class MeetingSubGUI extends javax.swing.JFrame
 {
-
 	private int status = 0;
 	private int meetingID;
 	private String meetingType;
@@ -35,7 +34,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	private Meeting meet = new Meeting();
 	private static Connection con;
 	private static Connection con2;
-	private Vector participants = new Vector();
+	private ArrayList<Integer> participants = new ArrayList<Integer>();
 	private Calendar cal = Calendar.getInstance();
 	private boolean reDateChange = false;
 	private boolean flagParticipants = false;  //true, falls Teilnehmer hinzugefügt wurden
@@ -50,7 +49,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	}
 
 	public MeetingSubGUI(int status, int meetingID, String meetingType,
-			String date, String otherPart)
+						 String date, String otherPart)
 	{
 		this.status = status;
 		this.meetingID = meetingID;
@@ -267,6 +266,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		{
 			meet.setProt(1);
 		}
+		
 		if (!meet.getMeetingType().equals(""))
 		{
 			DB_ToDo_Connect.openDB();
@@ -276,13 +276,14 @@ public class MeetingSubGUI extends javax.swing.JFrame
 				Statement stmt = con.createStatement();
 				//Verantwortliche
 				java.sql.Date dat = new java.sql.Date(meet.getDate().getTime());
-				String sql = "INSERT INTO Sitzungsdaten (Datum, SitzungsartID, " +
-						"Ort, Protokollant, Geloescht) VALUES ('" + dat + "', " +
-						meet.getMeetingTypeID() + ", '" + meet.getPlace() + "', '" +
-						meet.getProt() + "', false)";
+				String sql = "INSERT INTO Sitzungsdaten (Datum, SitzungsartID, "
+							 + "Ort, Protokollant, Geloescht) VALUES ('" + dat + "', "
+							 + meet.getMeetingTypeID() + ", '" + meet.getPlace() + "', '"
+							 + meet.getProt() + "', false)";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -314,6 +315,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		{
 			meet.setProt(1);
 		}
+		
 		if (!meet.getMeetingType().equals(""))
 		{
 			DB_ToDo_Connect.openDB();
@@ -326,7 +328,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 				String sql = "UPDATE Sitzungsdaten SET Datum = '" + dat + "', SitzungsartID = " + meet.getMeetingTypeID() + ", Ort = '" + meet.getPlace() + "', Protokollant = " + meet.getProt() + " WHERE SitzungsdatenID = " + meetingID;
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -360,7 +363,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -387,11 +391,12 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			while (rst.next())
 			{
 				employeeObjects.add(new Employee((rst.getInt("Personalnummer")),
-						rst.getString("Vorname"), rst.getString("Nachname")));
+												 rst.getString("Vorname"), rst.getString("Nachname")));
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -418,11 +423,12 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			while (rst.next())
 			{
 				meetingTypeObjects.add(new MeetingType(rst.getInt("SitzungsartID"),
-						rst.getString("Name")));
+													   rst.getString("Name")));
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -452,8 +458,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 				meet.setMeetingTypeID(meetingTypeID);
 				String meetingType = "";
 				Statement stmt2 = con.createStatement();
-				String sql2 = "SELECT * FROM Sitzungsart WHERE SitzungsartID = " +
-						meetingTypeID;
+				String sql2 = "SELECT * FROM Sitzungsart WHERE SitzungsartID = "
+							  + meetingTypeID;
 				ResultSet rst2 = stmt2.executeQuery(sql2);
 
 				while (rst2.next())
@@ -466,7 +472,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -492,7 +499,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -509,7 +517,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 
 		String name = "";
 		String lastName = "";
-		
+
 		try
 		{
 			Statement stmt = con.createStatement();
@@ -522,7 +530,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -531,29 +540,36 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		return prID;
 	}
 
-	/*
 	public void getAllParticipants()
 	{
 		// Vektor participants komplett leeren
 		participants.clear();
-		if (meet.getPartic() != null)
+
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+
+		try
 		{
-			StringTokenizer tokenizer = new StringTokenizer(meet.getPartic(), ", ");
-			while (tokenizer.hasMoreTokens())
+			Statement stmt = con.createStatement();
+			String sql = "SELECT personnelID FROM meeting_attendee_personnel WHERE meetingID = " + meetingID;
+			ResultSet rst = stmt.executeQuery(sql);
+
+			while (rst.next())
 			{
-				if (tokenizer.countTokens() > 0)
-				{
-					String temp = String.valueOf(tokenizer.nextToken());
-					int partID = Integer.valueOf(temp);
-					participants.add(partID);
-				}
-				else
-				{
-					continue;
-				}
+				participants.add(rst.getInt("personnelID"));
 			}
+
+			rst.close();
+			stmt.close();
 		}
-	}*/
+		catch (Exception ex)
+		{
+			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		
+		DB_ToDo_Connect.closeDB(con);
+	}
 
 	public void getMeetingID()
 	{
@@ -573,7 +589,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
@@ -592,8 +609,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	{
 		getMeetingData();
 		otherPart = meet.getOtherPaticipants();
-
-		//@todo FIXME -> get/load all participiants
+		getAllParticipants();
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

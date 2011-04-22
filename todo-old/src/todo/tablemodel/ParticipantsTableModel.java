@@ -31,11 +31,11 @@ public class ParticipantsTableModel extends AbstractTableModel
 	protected ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
 	private Vector<String> columnNames = new Vector<String>();
 	private static Connection con;
-	private Vector participants = new Vector();
+	private ArrayList<Integer> participants = new ArrayList<Integer>();
 	private int meetingID;
 
 	/** Creates a new instance of ParticipantsTableModel */
-	public ParticipantsTableModel(Vector participants, int meetingID)
+	public ParticipantsTableModel(ArrayList<Integer> participants, int meetingID)
 	{
 		this.participants = participants;
 		this.meetingID = meetingID;
@@ -93,11 +93,8 @@ public class ParticipantsTableModel extends AbstractTableModel
 		DB_Mitarbeiter_Connect.openDB();
 		con = DB_Mitarbeiter_Connect.getCon();
 
-		Enumeration partEnum = participants.elements();
-		while (partEnum.hasMoreElements())
+		for(int employeeID : participants)
 		{
-			int employeeID = Integer.valueOf(partEnum.nextElement().toString()).intValue();
-
 			try
 			{
 				Statement stmt = con.createStatement();

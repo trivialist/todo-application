@@ -45,7 +45,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			{
 				if (status != 0)
 				{
-					sStat = " AND Geloescht = false AND Protokollelement.StatusID=" + status;
+					sStat = " AND Geloescht = false AND Protokollelement.StatusID = " + status;
 				}
 			}
 			this.loadOpData();
@@ -56,7 +56,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			{
 				if (status != 0)
 				{
-					sStat = " AND Geloescht = false AND Protokollelement.StatusID=" + status;
+					sStat = " AND Geloescht = false AND Protokollelement.StatusID = " + status;
 				}
 			}
 			this.loadData();
@@ -137,16 +137,15 @@ public class PersonalTodoTableModel extends AbstractTableModel
 		try
 		{
 			Statement stmt = con.createStatement();
-			//@todo FIXME
-			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
-					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
-					"FROM Kategorie INNER JOIN " +
-					"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) " +
-					"INNER JOIN (Status INNER JOIN Protokollelement ON Status.StatusID = Protokollelement.StatusID) " +
-					"ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Kategorie.KategorieID = Protokollelement.KategorieID " +
-					"WHERE (Protokollelement.Verantwortliche LIKE '%," + emp.getEmployeeID() + ",%' " +
-					" OR Protokollelement.Verantwortliche LIKE '%," + emp.getEmployeeID() + "%' OR " +
-					"Protokollelement.Verantwortliche = '," + emp.getEmployeeID() + "')" + sStat;
+			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID AS ToDoID, " +
+						"Thema.Name AS Thema, Kategorie.Name AS Kategorie, Protokollelement.Wiedervorlagedatum AS WV, " +
+						"Protokollelement.WiedervorlageGesetzt AS WiedervorlageGesetzt, Protokollelement.Inhalt AS Inhalt, " +
+						"Status.Name AS Status, todo_responsible_personnel.personnelID FROM (Kategorie INNER JOIN " +
+						"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) INNER JOIN (Status INNER JOIN Protokollelement " +
+						"ON Status.StatusID = Protokollelement.StatusID) ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON " +
+						"Kategorie.KategorieID = Protokollelement.KategorieID) INNER JOIN todo_responsible_personnel ON " +
+						"Protokollelement.ToDoID = todo_responsible_personnel.todoID " +
+						"WHERE (todo_responsible_personnel.personnelID = " + emp.getEmployeeID() + ")" + sStat;
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())

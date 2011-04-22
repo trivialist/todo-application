@@ -96,7 +96,6 @@ public class CategoryGUI extends javax.swing.JFrame
 
     private void jButtonDeleteInstitutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteInstitutionActionPerformed
            /**
-            * @TODO
             * Im falle eines Löschvorgangs muss ide aktuelle kategorie auf eine neu zu wählende umgeschrieben werden.
             * Diser Dialog muss noch angelegt werden, solange ist die Schaltfläche löschen deaktiviert.
             */

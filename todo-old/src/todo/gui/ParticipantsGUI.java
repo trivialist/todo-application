@@ -26,14 +26,13 @@ import todo.tablemodel.EmployeeTreeModel.NameLeaf;
  */
 public class ParticipantsGUI extends javax.swing.JFrame
 {
-
-	private Vector participants = new Vector();
+	private ArrayList<Integer> participants = new ArrayList<Integer>();
 	private String others;
 	private int meetingID;
 	private static Connection con;
 
 	/** Creates new form ParticipantsGUI */
-	public ParticipantsGUI(Vector participants, String others, int meetingID)
+	public ParticipantsGUI(ArrayList<Integer> participants, String others, int meetingID)
 	{
 		this.meetingID = meetingID;
 		this.participants = participants;
@@ -163,22 +162,9 @@ public class ParticipantsGUI extends javax.swing.JFrame
 	 * @param evt
 	 */
     private void jButtonSaveAndExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveAndExitActionPerformed
-		StringBuffer dbStringParticipants = new StringBuffer("");
-		Enumeration partEnum = participants.elements();
-		while (partEnum.hasMoreElements())
-		{
-			int employeeID = Integer.valueOf(partEnum.nextElement().toString()).intValue();
-			dbStringParticipants.append("," + employeeID);
-		}
-		if (jTextAreaOtherParticipants.getText().equals(""))
-		{
-			others = "";
-		}
-		else
-		{
-			others = jTextAreaOtherParticipants.getText();
-		}
-		saveParticipants(meetingID, dbStringParticipants.toString(), others);
+		
+		others = jTextAreaOtherParticipants.getText();
+		saveParticipants(meetingID, participants, others);
 		dispose();
     }//GEN-LAST:event_jButtonSaveAndExitActionPerformed
 
@@ -190,9 +176,10 @@ public class ParticipantsGUI extends javax.swing.JFrame
 			int ID = temp.intValue();
 			if (participants.contains(ID))
 			{
-				participants.removeElement(ID);
+				participants.remove((Integer)ID);
 			}
 		}
+		
 		jTable2.setModel(new ParticipantsTableModel(participants, meetingID));
     }//GEN-LAST:event_jButtonRemoveParticipantActionPerformed
 
@@ -232,19 +219,21 @@ public class ParticipantsGUI extends javax.swing.JFrame
 	 * @param part
 	 * @param othPart
 	 */
-	public void saveParticipants(int meetingID, String part, String othPart)
+	public void saveParticipants(int meetingID, ArrayList<Integer> part, String othPart)
 	{
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
 		try
 		{
-			//@todo FIXME
 			Statement stmt = con.createStatement();
-			String sql = "UPDATE Sitzungsdaten SET Teilnehmer='" + part + "', Sonstige='" + othPart + "' WHERE SitzungsdatenID=" + meetingID;
+			String sql = "UPDATE Sitzungsdaten SET Sonstige = '" + othPart + "' WHERE SitzungsdatenID=" + meetingID;
 			stmt.executeUpdate(sql);
 			stmt.close();
-		} catch (Exception ex)
+
+			MainGUI.updateRelations(con, "meeting_attendee_personnel", "meetingID", participants, meetingID);
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(ParticipantsGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();

@@ -6,7 +6,6 @@
 package todo.subgui;
 
 import todo.gui.GlobalError;
-import todo.core.Memo;
 import todo.core.Topic;
 import todo.core.FinStatus;
 import todo.core.MeetingType;
@@ -24,13 +23,13 @@ import todo.gui.TopicGUI;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.StringTokenizer;
 import java.util.Enumeration;
 import java.util.Calendar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
+import todo.gui.MainGUI;
 import todo.tablemodel.EmployeeTreeModel.Group;
 import todo.tablemodel.EmployeeTreeModel.NameLeaf;
 
@@ -46,8 +45,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	private String topic;
 	private Todo td = new Todo();
 	private static Connection con;
-	private Vector responsible = new Vector(); //@todo FIXME
-	private Vector involved = new Vector(); //@todo FIXME
+	private ArrayList<Integer> responsible = new ArrayList<Integer>();
+	private ArrayList<Integer> involved = new ArrayList<Integer>();
 	private int meetingID;
 	private Calendar cal;
 	private boolean tbz_status = false;
@@ -527,7 +526,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			int iID = temp.intValue();
 			if (involved.contains(iID))
 			{
-				involved.removeElement(iID);
+				involved.remove((Integer)iID);
 			}
 		}
 		jTableInvolved.setModel(new InvolvedTableModel(involved, meetingID));
@@ -560,7 +559,7 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			int rID = temp.intValue();
 			if (responsible.contains(rID))
 			{
-				responsible.removeElement(rID);
+				responsible.remove((Integer)rID);
 			}
 		}
 		jTableResponsibles.setModel(new ResponsibleTableModel(responsible, meetingID));
@@ -637,28 +636,26 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
     private void jButtonSendTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendTaskActionPerformed
 
 		Vector respMailVec = new Vector();  //enthält Mail-Adressen der unter Verantwortliche eingtragenen MA
-		Enumeration e = responsible.elements();
-		while (e.hasMoreElements())
+		
+		if (!responsible.isEmpty())
 		{
-			if (!responsible.isEmpty())
+			try
 			{
-				try
+				for(int empID : responsible)
 				{
-					int empID = Integer.valueOf(e.nextElement().toString()).intValue();
 					respMailVec.addElement(getMailAddressByEmpID(empID));
 				}
-				catch (Exception ex)
-				{
-					Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-					JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen.",
-												  "Fehler", JOptionPane.ERROR_MESSAGE);
-				}
 			}
-			else
+			catch (Exception ex)
 			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen."
-													+ "Es wurden keine Verantwortlichen festgelegt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+				Logger.getLogger(TodoSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+				JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen.", "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Ermitteln von E-Mail Adressen."
+												+ "Es wurden keine Verantwortlichen festgelegt!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 
 		TaskRequest task = new TaskRequest("TOP x: " + jComboBoxArea.getSelectedItem().toString() + " - "
@@ -838,15 +835,34 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 					jCheckBoxNoReDate.setSelected(true);
 				}
 
-				//@todo FIXME
-				//td.setResponse(rst.getString("Verantwortliche"));
+				DB_ToDo_Connect.openDB();
+				con = DB_ToDo_Connect.getCon();
 
-				//@todo FIXME
-				//td.setOthers(rst.getString("Beteiligte"));
+				//load responsible personnel
+				Statement responsibleStatement = con.createStatement();
+				sql = "SELECT personnelID FROM todo_responsible_personnel WHERE todoID = " + todoID;
+				ResultSet rst2 = responsibleStatement.executeQuery(sql);
 
-				//@todo FIXME
-				getAllResponsibles();
-				getAllInvolved();
+				while (rst2.next())
+				{
+					responsible.add(rst2.getInt("personnelID"));
+				}
+				td.setResponsible(responsible);
+				rst2.close();
+				responsibleStatement.close();
+
+				//load involved personnel
+				Statement involvedStatement = con.createStatement();
+				sql = "SELECT personnelID FROM todo_involved_personnel WHERE todoID = " + todoID;
+				ResultSet rst3 = involvedStatement.executeQuery(sql);
+
+				while (rst3.next())
+				{
+					involved.add(rst3.getInt("personnelID"));
+				}
+				td.setInvolved(involved);
+				rst3.close();
+				involvedStatement.close();
 
 				String copyReason = rst.getString("Kopiergrund");
 				if (copyReason != null)
@@ -913,8 +929,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 	 */
 	public void newTodo() throws Exception
 	{
-		StringBuffer dbStringOthers = new StringBuffer("");
-		StringBuffer dbStringResponsible = new StringBuffer("");
 		PreparedStatement pStmt = null;
 		int tbz_id = -1;
 
@@ -1000,38 +1014,28 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		td.setHeading(jTextHeading.getText());
 		td.setContent(jTextAreaContent.getText());
+		td.setResponsible(responsible);
+		td.setInvolved(involved);
 
-		//@todo FIXME
-		//Beteiligte
-		Enumeration othersEnum = involved.elements();
-		while (othersEnum.hasMoreElements())
-		{
-			int employeeID = Integer.valueOf(othersEnum.nextElement().toString()).intValue();
-			dbStringOthers.append("," + employeeID);
-		}
-		//td.setOthers(String.valueOf(dbStringOthers));
-
-		//@todo FIXME
-		//Verantwortliche
-		Enumeration respEnum = responsible.elements();
-		while (respEnum.hasMoreElements())
-		{
-			int employeeID = Integer.valueOf(respEnum.nextElement().toString()).intValue();
-			dbStringResponsible.append("," + employeeID);
-		}
-		//td.setResponse(String.valueOf(dbStringResponsible));
-		//if(tbz_ok) {
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 		Date dat = new Date(td.getReDate().getTime());
 		try
 		{
-			//@todo FIXME
+			con.setAutoCommit(false);
+
+			Statement id = con.createStatement();
+			ResultSet rst = id.executeQuery("SELECT MAX(ToDoID) FROM Protokollelement");
+			rst.next();
+			int insertId = rst.getInt(1) + 1;
+			rst.close();
+			id.close();
+
 			String sql = "INSERT INTO Protokollelement "
 						 + "(KategorieID, SitzungsID, StatusID, InstitutionsID, BereichID, "
-						 + "Inhalt, Wiedervorlagedatum, Verantwortliche, Beteiligte, "
-						 + "TBZuordnung_ID, WV_Sitzungsart, Überschrift, WiedervorlageGesetzt, Geloescht) "
-						 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, false)";
+						 + "Inhalt, Wiedervorlagedatum, "
+						 + "TBZuordnung_ID, WV_Sitzungsart, Überschrift, WiedervorlageGesetzt, Geloescht, ToDoID) "
+						 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, false, ?)";
 			pStmt = con.prepareStatement(sql);
 			pStmt.setInt(1, td.getCategoryID());
 			pStmt.setInt(2, meetingID);
@@ -1044,8 +1048,15 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			pStmt.setInt(9, td.getReMeetType());
 			pStmt.setString(10, td.getHeading());
 			pStmt.setBoolean(11, td.getReMeetingEnabled());
+			pStmt.setInt(12, insertId);
 			pStmt.executeUpdate();
 
+			//set new relations
+			MainGUI.updateRelations(con, "todo_responsible_personnel", "todoID", responsible, insertId);
+			MainGUI.updateRelations(con, "todo_involved_personnel", "todoID", involved, insertId);
+
+			con.commit();
+			con.setAutoCommit(true);
 		}
 		catch (Exception ex)
 		{
@@ -1144,26 +1155,8 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		td.setHeading(jTextHeading.getText());
 		td.setContent(jTextAreaContent.getText());
-
-		//@todo FIXME
-		//Beteiligte
-		Enumeration othersEnum = involved.elements();
-		while (othersEnum.hasMoreElements())
-		{
-			int employeeID = Integer.valueOf(othersEnum.nextElement().toString()).intValue();
-			dbStringOthers.append("," + employeeID);
-		}
-		//td.setOthers(String.valueOf(dbStringOthers));
-
-		//@todo FIXME
-		//Verantwortliche
-		Enumeration respEnum = responsible.elements();
-		while (respEnum.hasMoreElements())
-		{
-			int employeeID = Integer.valueOf(respEnum.nextElement().toString()).intValue();
-			dbStringResponsible.append("," + employeeID);
-		}
-		//td.setResponse(String.valueOf(dbStringResponsible));
+		td.setResponsible(responsible);
+		td.setInvolved(involved);
 
 		TodoNoteDialog subgui = null;
 
@@ -1176,7 +1169,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		if (subgui != null)
 		{
-			//@todo FIXME -> test that
 			DB_ToDo_Connect.openDB();
 			con = DB_ToDo_Connect.getCon();
 
@@ -1195,12 +1187,10 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 
 		try
 		{
-			//@todo FIXME
 			String sql = "UPDATE Protokollelement SET"
 						 + " KategorieID = ?, SitzungsID = ?, StatusID = ?, InstitutionsID = ?, BereichID = ?"
 						 + ", Inhalt = ?, Wiedervorlagedatum = ?, TBZuordnung_ID = ?, WV_Sitzungsart = ?, "
 						 + "Überschrift = ?, WiedervorlageGesetzt = ? , Geloescht = ? WHERE ToDoID = ? ;";
-			int i = 1;
 			pStmt = con.prepareStatement(sql);
 			pStmt.setInt(1, td.getCategoryID());
 			pStmt.setInt(2, meetingID);
@@ -1217,6 +1207,9 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 			pStmt.setInt(13, todoID);
 			pStmt.executeUpdate();
 
+			//update relations
+			MainGUI.updateRelations(con, "todo_responsible_personnel", "todoID", responsible, todoID);
+			MainGUI.updateRelations(con, "todo_involved_personnel", "todoID", involved, todoID);
 		}
 		catch (Exception ex)
 		{
@@ -2000,53 +1993,6 @@ public class TodoSubGUI extends javax.swing.JFrame implements ChangeListener
 		}
 		DB_ToDo_Connect.closeDB(con);
 		return name;
-	}
-
-	public void getAllInvolved()
-	{
-		//@todo FIXME
-		/*
-		if (td.getOthers() != null)
-		{
-			StringTokenizer tokenizer = new StringTokenizer(td.getOthers(), ", ");
-			while (tokenizer.hasMoreTokens())
-			{
-				if (tokenizer.countTokens() > 0)
-				{
-					String temp = String.valueOf(tokenizer.nextToken());
-					int partID = Integer.valueOf(temp);
-					//System.out.println("ID:" + partID);
-					involved.add(partID);
-				}
-				else
-				{
-					continue;
-				}
-			}
-		}
-		 */
-	}
-
-	public void getAllResponsibles()
-	{
-		//@todo FIXME
-		/*if (td.getRespons() != null)
-		{
-			StringTokenizer tokenizer = new StringTokenizer(td.getRespons(), ", ");
-			while (tokenizer.hasMoreTokens())
-			{
-				if (tokenizer.countTokens() > 0)
-				{
-					String temp = String.valueOf(tokenizer.nextToken());
-					int partID = Integer.valueOf(temp);
-					responsible.add(partID);
-				}
-				else
-				{
-					continue;
-				}
-			}
-		}*/
 	}
 
 	/**

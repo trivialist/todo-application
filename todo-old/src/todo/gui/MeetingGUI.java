@@ -220,16 +220,24 @@ public class MeetingGUI extends javax.swing.JFrame
 				ResultSet rst = id.executeQuery("SELECT MAX(SitzungsdatenID) FROM Sitzungsdaten");
 				rst.next();
 				insertId = rst.getInt(1) + 1;
-				id.close();
+				rst.close();
+				id.close();				
 
-				//@todo FIXME
+				//copy element itself
 				Statement stmt = con.createStatement();
 				String sql = "INSERT INTO Sitzungsdaten (SitzungsdatenID, Datum, Ort, Tagesordnung, " +
-						"SitzungsartID, Protokollant, Teilnehmer, Sonstige) SELECT " + insertId +
+						"SitzungsartID, Protokollant, Sonstige) SELECT " + insertId +
 						" AS SitzungsdatenID, Datum, Ort, Tagesordnung, SitzungsartID, Protokollant, " +
-						"Teilnehmer, Sonstige FROM Sitzungsdaten WHERE SitzungsdatenID = " + meetingID;
+						"Sonstige FROM Sitzungsdaten WHERE SitzungsdatenID = " + meetingID;
 				stmt.executeUpdate(sql);
 				stmt.close();
+
+				//copy relations to it
+				Statement relations = con.createStatement();
+				String newsql = "INSERT INTO meeting_attendee_personnel (meetingID, personnelID) SELECT " + insertId +
+								" AS meetingID, personnelID FROM meeting_attendee_personnel WHERE meetingID = " + meetingID;
+				relations.executeUpdate(newsql);
+				relations.close();
 
 				con.commit();
 				con.setAutoCommit(true);
@@ -237,9 +245,10 @@ public class MeetingGUI extends javax.swing.JFrame
 				Statement data = con.createStatement();
 				results = data.executeQuery("SELECT * FROM Sitzungsart INNER JOIN " +
 						"Sitzungsdaten ON Sitzungsart.SitzungsartID = Sitzungsdaten.SitzungsartID " +
-						"WHERE Sitzungsdaten.SitzungsdatenID=" + insertId);
+						"WHERE Sitzungsdaten.SitzungsdatenID = " + insertId);
 				results.next();
 				MainGUI.setActMeeting(insertId, results.getString("Ort"), results.getDate("Datum"), results.getString("Name"));
+				results.close();
 				data.close();
 			} catch (Exception ex)
 			{

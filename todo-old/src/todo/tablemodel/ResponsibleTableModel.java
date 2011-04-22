@@ -31,11 +31,11 @@ public class ResponsibleTableModel extends AbstractTableModel
 	protected ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
 	private Vector<String> columnNames = new Vector<String>();
 	private static Connection con;
-	private Vector responsible = new Vector();
+	private ArrayList<Integer> responsible = new ArrayList<Integer>();
 	private int meetingID;
 
 	/** Creates a new instance of ResponsibleTableModel */
-	public ResponsibleTableModel(Vector responsible, int meetingID)
+	public ResponsibleTableModel(ArrayList<Integer> responsible, int meetingID)
 	{
 		this.responsible = responsible;
 		this.meetingID = meetingID;
@@ -93,11 +93,8 @@ public class ResponsibleTableModel extends AbstractTableModel
 		DB_Mitarbeiter_Connect.openDB();
 		con = DB_Mitarbeiter_Connect.getCon();
 
-		Enumeration partEnum = responsible.elements();
-		while (partEnum.hasMoreElements())
+		for(int employeeID : responsible)
 		{
-			int employeeID = Integer.valueOf(partEnum.nextElement().toString()).intValue();
-
 			try
 			{
 				Statement stmt = con.createStatement();

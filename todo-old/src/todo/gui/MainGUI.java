@@ -1402,13 +1402,16 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt = con.createStatement();
 			if (status.equals("Alle"))
 			{
-				//@todo FIXME
-				sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND Verantwortliche LIKE '%" + empID + "%'";
+				sql =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_responsible_personnel ON "+
+						"Protokollelement.ToDoID = todo_responsible_personnel.todoID " +
+						"WHERE todo_responsible_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false";
 			}
 			else
 			{
-				//@todo FIXME
-				sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND Verantwortliche LIKE '%" + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
+				sql =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_responsible_personnel ON "+
+						"Protokollelement.ToDoID = todo_responsible_personnel.todoID " +
+						"WHERE todo_responsible_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false " +
+						"AND Protokollelement.StatusID = " + getFinStatusIDByName(status);
 			}
 
 			ResultSet rst = stmt.executeQuery(sql);
@@ -1469,15 +1472,16 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt2 = con.createStatement();
 			if (status.equals("Alle"))
 			{
-				//@todo FIXME
-				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
-					   + empID + "%'";
+				sql2 =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_involved_personnel ON " +
+						"Protokollelement.ToDoID = todo_involved_personnel.todoID " +
+						"WHERE todo_involved_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false";
 			}
 			else
 			{
-				//@todo FIXME
-				sql2 = "SELECT * FROM Protokollelement WHERE Beteiligte LIKE '%"
-					   + empID + "%' AND StatusID=" + getFinStatusIDByName(status);
+				sql2 =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_involved_personnel ON " +
+						"Protokollelement.ToDoID = todo_involved_personnel.todoID " +
+						"WHERE todo_involved_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false " +
+						"AND StatusID = " + getFinStatusIDByName(status);
 			}
 
 			ResultSet rst2 = stmt2.executeQuery(sql2);
@@ -2657,8 +2661,7 @@ public class MainGUI extends javax.swing.JFrame
 		return empID;
 	}
 
-	public Meeting getMeetingDataByID(
-			int meetingID)
+	public Meeting getMeetingDataByID(int meetingID)
 	{
 		Meeting m = new Meeting();
 		m.setMeetingID(meetingID);
@@ -2668,7 +2671,7 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Sitzungsdaten WHERE SitzungsdatenID=" + m.getMeetingID();
+			String sql = "SELECT * FROM Sitzungsdaten WHERE SitzungsdatenID = " + m.getMeetingID();
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -3054,19 +3057,19 @@ public class MainGUI extends javax.swing.JFrame
 		return tbz_list;
 	}
 
-	public static boolean relationItemExists(String destinationTable, String destinationColumn, int destinationId, int personnelId)
+	public static boolean relationItemExists(Connection openConnection, String destinationTable, String destinationColumn, int destinationId, int personnelId)
 	{
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
-
 		try
 		{
-			Statement statement = con.createStatement();
+			Statement statement = openConnection.createStatement();
 			ResultSet resultSet = statement.executeQuery("SELECT " + destinationColumn + " FROM " + destinationTable + " WHERE " + destinationColumn + " = " + destinationId + " AND personnelID = " + personnelId);
 
 			//try to access item -> if this throws an exception it doesnt exist
 			resultSet.next();
 			resultSet.getInt("destinationColumn");
+
+			resultSet.close();
+			statement.close();
 
 			return true;
 		}
@@ -3077,15 +3080,13 @@ public class MainGUI extends javax.swing.JFrame
 		}
 	}
 
-	public static void insertRelation(String destinationTable, String destinationColumn, int personnelId, int destinationId)
+	public static void insertRelation(Connection openConnection, String destinationTable, String destinationColumn, int personnelId, int destinationId)
 	{
 		try
 		{
-			DB_ToDo_Connect.openDB();
-			con = DB_ToDo_Connect.getCon();
-
-			Statement statement = con.createStatement();
+			Statement statement = openConnection.createStatement();
 			statement.execute("INSERT INTO " + destinationTable + " (personnelID, " + destinationColumn + ") VALUES (" + personnelId + ", " + destinationId + ")");
+			statement.close();
 		}
 		catch (Exception ex)
 		{
@@ -3094,15 +3095,13 @@ public class MainGUI extends javax.swing.JFrame
 		}
 	}
 
-	public static void removeRelation(String destinationTable, String destinationColumn, int personnelId, int destinationId)
+	public static void removeRelation(Connection openConnection, String destinationTable, String destinationColumn, int personnelId, int destinationId)
 	{
 		try
 		{
-			DB_ToDo_Connect.openDB();
-			con = DB_ToDo_Connect.getCon();
-
-			Statement statement = con.createStatement();
-			statement.execute("DELETE FROM " + destinationTable + " WHERE " + destinationColumn + " = " + destinationId + ", personnelID = " + personnelId);
+			Statement statement = openConnection.createStatement();
+			statement.execute("DELETE FROM " + destinationTable + " WHERE " + destinationColumn + " = " + destinationId + " AND personnelID = " + personnelId);
+			statement.close();
 		}
 		catch (Exception ex)
 		{
@@ -3111,14 +3110,11 @@ public class MainGUI extends javax.swing.JFrame
 		}
 	}
 
-	public static void updateRelations(String destinationTable, String destinationColumn, ArrayList<Integer> personnelIds, int destinationId)
+	public static void updateRelations(Connection openConnection, String destinationTable, String destinationColumn, ArrayList<Integer> personnelIds, int destinationId)
 	{
 		try
 		{
-			DB_ToDo_Connect.openDB();
-			con = DB_ToDo_Connect.getCon();
-
-			Statement statement = con.createStatement();
+			Statement statement = openConnection.createStatement();
 			ResultSet resultSet = statement.executeQuery("SELECT personnelID FROM " + destinationTable + " WHERE " + destinationColumn + " = " + destinationId);
 
 			//get all existing relations
@@ -3128,12 +3124,15 @@ public class MainGUI extends javax.swing.JFrame
 				existingPersonnelIds.add(resultSet.getInt("personnelID"));
 			}
 
+			resultSet.close();
+			statement.close();
+
 			//find new relations
 			for(int currentRelation : personnelIds)
 			{
 				if(!existingPersonnelIds.contains(currentRelation))
 				{
-					insertRelation(destinationTable, destinationColumn, currentRelation, destinationId);
+					insertRelation(openConnection, destinationTable, destinationColumn, currentRelation, destinationId);
 				}
 			}
 
@@ -3142,7 +3141,7 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				if(!personnelIds.contains(currentRelation))
 				{
-					removeRelation(destinationTable, destinationColumn, currentRelation, destinationId);
+					removeRelation(openConnection, destinationTable, destinationColumn, currentRelation, destinationId);
 				}
 			}
 		}

@@ -31,11 +31,11 @@ public class InvolvedTableModel extends AbstractTableModel
 	protected ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
 	private Vector<String> columnNames = new Vector<String>();
 	private static Connection con;
-	private Vector involved = new Vector();
+	private ArrayList<Integer> involved = new ArrayList<Integer>();
 	private int meetingID;
 
 	/** Creates a new instance of InvolvedTableModel */
-	public InvolvedTableModel(Vector involved, int meetingID)
+	public InvolvedTableModel(ArrayList<Integer> involved, int meetingID)
 	{
 		this.involved = involved;
 		this.meetingID = meetingID;
@@ -93,11 +93,8 @@ public class InvolvedTableModel extends AbstractTableModel
 		DB_Mitarbeiter_Connect.openDB();
 		con = DB_Mitarbeiter_Connect.getCon();
 
-		Enumeration partEnum = involved.elements();
-		while (partEnum.hasMoreElements())
+		for(int employeeID : involved)
 		{
-			int employeeID = Integer.valueOf(partEnum.nextElement().toString()).intValue();
-
 			try
 			{
 				Statement stmt = con.createStatement();
