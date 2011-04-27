@@ -5,6 +5,7 @@
  */
 package todo.gui;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import javax.swing.table.AbstractTableModel;
@@ -35,9 +36,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import todo.dbcon.DB_Mitarbeiter_Connect;
+import todo.subgui.SearchResultSubGUI;
 import todo.tablemodel.CategoryTodoTableModel;
 import todo.tablemodel.OpListTableModel;
 import todo.tablemodel.PersonalTodoTableModel;
+import todo.tablemodel.SearchResultTableModel;
 import todo.tablemodel.WvTodoTableModel;
 
 /**
@@ -127,7 +130,6 @@ public class MainGUI extends javax.swing.JFrame
         jButton1 = new javax.swing.JButton();
         jCalendarComboBoxReDate1 = new de.wannawork.jcalendar.JCalendarComboBox();
         jButton2 = new javax.swing.JButton();
-        jLabelError = new javax.swing.JLabel();
         jLabelEmployee = new javax.swing.JLabel();
         jLabelFinStatus = new javax.swing.JLabel();
         jLabelCategory = new javax.swing.JLabel();
@@ -136,6 +138,9 @@ public class MainGUI extends javax.swing.JFrame
         jLabelOP_List = new javax.swing.JLabel();
         jLabelEmployee1 = new javax.swing.JLabel();
         jLabelEmployee2 = new javax.swing.JLabel();
+        jSearchTerm = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jLabelError = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         Programm = new javax.swing.JMenu();
         jMenuItemNewMeeting = new javax.swing.JMenuItem();
@@ -155,7 +160,7 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        setFont(new java.awt.Font("Tahoma", 0, 11));
         setMaximizedBounds(new java.awt.Rectangle(20, 20, 600, 800));
         setMinimumSize(new java.awt.Dimension(590, 630));
         setResizable(false);
@@ -325,9 +330,6 @@ public class MainGUI extends javax.swing.JFrame
         });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 270, 150, -1));
 
-        jLabelError.setForeground(new java.awt.Color(255, 0, 0));
-        jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 310, 40));
-
         jLabelEmployee.setBackground(new java.awt.Color(255, 255, 255));
         jLabelEmployee.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "WV-Datum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
         jPanel1.add(jLabelEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 250, 150, 50));
@@ -357,6 +359,25 @@ public class MainGUI extends javax.swing.JFrame
         jLabelEmployee2.setBackground(new java.awt.Color(255, 255, 255));
         jLabelEmployee2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sitzungsart", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
         jPanel1.add(jLabelEmployee2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, 220, 50));
+
+        jSearchTerm.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jSearchTermKeyPressed(evt);
+            }
+        });
+        jPanel1.add(jSearchTerm, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 120, -1));
+
+        jButton3.setText("Suchen");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, -1, -1));
+
+        jLabelError.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabelError.setForeground(new java.awt.Color(255, 51, 51));
+        jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 190, 30));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -1117,6 +1138,33 @@ public class MainGUI extends javax.swing.JFrame
 		}
 	}//GEN-LAST:event_jButton2ActionPerformed
 
+	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
+	{//GEN-HEADEREND:event_jButton3ActionPerformed
+		if(jSearchTerm.getText().equals(""))
+		{
+			JOptionPane.showMessageDialog(this, "Die Suche kann ohne Suchbegriff nicht gestartet werden.", "Fehler", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		DB_ToDo_Connect.openDB();
+		Connection tmpCon = DB_ToDo_Connect.getCon();
+
+		GlobalDatabaseSearch search = new GlobalDatabaseSearch();
+		SearchResultTableModel resultModel = new SearchResultTableModel(search.doSearch(tmpCon, jSearchTerm.getText()));
+
+		new SearchResultSubGUI(resultModel).setVisible(true);
+
+		DB_ToDo_Connect.closeDB(tmpCon);
+	}//GEN-LAST:event_jButton3ActionPerformed
+
+	private void jSearchTermKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_jSearchTermKeyPressed
+	{//GEN-HEADEREND:event_jSearchTermKeyPressed
+		if(evt.getKeyCode() == KeyEvent.VK_ENTER)
+		{
+			jButton3ActionPerformed(null);
+		}
+	}//GEN-LAST:event_jSearchTermKeyPressed
+
 	/**
 	 * @param args the command line arguments
 	 */
@@ -1181,7 +1229,6 @@ public class MainGUI extends javax.swing.JFrame
 				mainGUI.setVisible(true);
 			}
 		});
-
 	}
 
 	public static void setLookAndFeel()
@@ -3201,6 +3248,7 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JButton WvListOutput;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButtonCreateCategoryList;
     private javax.swing.JButton jButtonCreateListProtocol;
     private javax.swing.JButton jButtonCreatePersonalProtocol;
@@ -3245,6 +3293,7 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JMenuItem jMenuItemTopic;
     private javax.swing.JMenu jMenuStammdaten;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jSearchTerm;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }
