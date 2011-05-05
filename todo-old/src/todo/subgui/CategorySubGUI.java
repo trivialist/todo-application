@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class CategorySubGUI extends javax.swing.JFrame
 {
-
 	private int status;              //0=Neu; 1=Bearbeiten
 	private int catID;
 	private String catName;
@@ -117,8 +116,28 @@ public class CategorySubGUI extends javax.swing.JFrame
 
 	public void editCategoryInit()
 	{
-		jTextFieldCatName.setText(catName);
-		jTextFieldCatDescription.setText(catDescription);
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Kategorie WHERE KategorieID = " + catID;
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			resultSet.next();
+
+			jTextFieldCatName.setText(resultSet.getString("Name"));
+			jTextFieldCatDescription.setText(resultSet.getString("Beschreibung"));
+
+			resultSet.close();
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
 	}
 
 	public void newCategory()
@@ -132,11 +151,12 @@ public class CategorySubGUI extends javax.swing.JFrame
 			try
 			{
 				Statement stmt = con.createStatement();
-				String sql = "INSERT INTO Kategorie (Name, Beschreibung) VALUES " +
-						"('" + catName + "', '" + catDescription + "')";
+				String sql = "INSERT INTO Kategorie (Name, Beschreibung) VALUES "
+							 + "('" + catName + "', '" + catDescription + "')";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(CategorySubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -166,7 +186,8 @@ public class CategorySubGUI extends javax.swing.JFrame
 				String sql2 = "UPDATE Kategorie SET Beschreibung='" + catDescription + "' WHERE KategorieID=" + catID;
 				stmt.executeUpdate(sql2);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(CategorySubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();

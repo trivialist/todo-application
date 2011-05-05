@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class FinStatusSubGUI extends javax.swing.JFrame
 {
-
 	private int status;              //0=Neu; 1=Bearbeiten
 	private String statusName;
 	private int statusID;
@@ -111,7 +110,27 @@ public class FinStatusSubGUI extends javax.swing.JFrame
 
 	public void editFinStatusInit()
 	{
-		jTextFieldStatusName.setText(statusName);
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Status WHERE StatusID = " + statusID;
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			resultSet.next();
+
+			jTextFieldStatusName.setText(resultSet.getString("Name"));
+
+			resultSet.close();
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
 	}
 
 	public void newFinStatus()
@@ -127,7 +146,8 @@ public class FinStatusSubGUI extends javax.swing.JFrame
 				String sql = "INSERT INTO Status (Name) VALUES ('" + statusName + "')";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(FinStatusSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -154,7 +174,8 @@ public class FinStatusSubGUI extends javax.swing.JFrame
 				String sql = "UPDATE Status SET Name='" + statusName + "' WHERE StatusID=" + statusID;
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(FinStatusSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();

@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class MeetingTypeSubGUI extends javax.swing.JFrame
 {
-
 	private int status;              //0=Neu; 1=Bearbeiten
 	private String meetingType;
 	private int meetingTypeID;
@@ -109,7 +108,27 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame
 
 	public void editMeetingTypeInit()
 	{
-		jTextFieldMeetingType.setText(meetingType);
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Sitzungsart WHERE SitzungsartID = " + meetingTypeID;
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			resultSet.next();
+
+			jTextFieldMeetingType.setText(resultSet.getString("Name"));
+
+			resultSet.close();
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
 	}
 
 	public void newMeetingType()
@@ -125,7 +144,8 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame
 				String sql = "INSERT INTO Sitzungsart (Name) VALUES ('" + meetingType + "')";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MeetingTypeSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -152,7 +172,8 @@ public class MeetingTypeSubGUI extends javax.swing.JFrame
 				String sql = "UPDATE Sitzungsart SET Name='" + meetingType + "' WHERE SitzungsartID=" + meetingTypeID;
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(MeetingSearchSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();

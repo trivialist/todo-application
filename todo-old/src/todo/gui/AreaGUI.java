@@ -128,8 +128,7 @@ public class AreaGUI extends javax.swing.JFrame
 			int aID = temp.intValue();
 			if (areaName != null)
 			{
-				AreaSubGUI newArea = new AreaSubGUI(1, aID,
-						String.valueOf(areaName), String.valueOf(areaDescription));
+				AreaSubGUI newArea = new AreaSubGUI(1, aID, String.valueOf(areaName), String.valueOf(areaDescription));
 				newArea.setVisible(true);
 			}
 		}

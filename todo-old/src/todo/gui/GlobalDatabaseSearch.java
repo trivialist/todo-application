@@ -41,6 +41,7 @@ public class GlobalDatabaseSearch
 		public String primaryKeyColumn = "";
 		public ArrayList<String> textColumns = new ArrayList<String>();
 		public Class itemType = null;
+		public int rankingFactor = 0;
 	}
 
 	public class SearchHit
@@ -48,6 +49,7 @@ public class GlobalDatabaseSearch
 		public HashMap<String, String> matchingTexts = new HashMap<String, String>();
 		public Class itemType = null;
 		public int itemId = 0;
+		public int rankingFactor = 1;
 	}
 
 	public GlobalDatabaseSearch()
@@ -57,12 +59,14 @@ public class GlobalDatabaseSearch
 		tmpItem.textColumns.add("Beschreibung");
 		tmpItem.primaryKeyColumn = "BereichID";
 		tmpItem.itemType = Area.class;
+		tmpItem.rankingFactor = 1;
 		textColumns.put("Bereich", tmpItem);
 
 		tmpItem = new TableDescription();
 		tmpItem.textColumns.add("Name");
 		tmpItem.primaryKeyColumn = "InstitutionID";
 		tmpItem.itemType = Institution.class;
+		tmpItem.rankingFactor = 1;
 		textColumns.put("Institution", tmpItem);
 
 		tmpItem = new TableDescription();
@@ -70,6 +74,7 @@ public class GlobalDatabaseSearch
 		tmpItem.textColumns.add("Beschreibung");
 		tmpItem.primaryKeyColumn = "KategorieID";
 		tmpItem.itemType = Category.class;
+		tmpItem.rankingFactor = 1;
 		textColumns.put("Kategorie", tmpItem);
 
 		tmpItem = new TableDescription();
@@ -77,6 +82,7 @@ public class GlobalDatabaseSearch
 		tmpItem.textColumns.add("Benutzer");
 		tmpItem.primaryKeyColumn = "MemoID";
 		tmpItem.itemType = Memo.class;
+		tmpItem.rankingFactor = 4;
 		textColumns.put("Memo", tmpItem);
 
 		tmpItem = new TableDescription();
@@ -86,12 +92,14 @@ public class GlobalDatabaseSearch
 		tmpItem.textColumns.add("Kopiergrund");
 		tmpItem.primaryKeyColumn = "ToDoID";
 		tmpItem.itemType = Todo.class;
+		tmpItem.rankingFactor = 12;
 		textColumns.put("Protokollelement", tmpItem);
 
 		tmpItem = new TableDescription();
 		tmpItem.textColumns.add("Name");
 		tmpItem.primaryKeyColumn = "SitzungsartID";
 		tmpItem.itemType = MeetingType.class;
+		tmpItem.rankingFactor = 1;
 		textColumns.put("Sitzungsart", tmpItem);
 
 		tmpItem = new TableDescription();
@@ -100,12 +108,14 @@ public class GlobalDatabaseSearch
 		tmpItem.textColumns.add("Sonstige");
 		tmpItem.primaryKeyColumn = "SitzungsdatenID";
 		tmpItem.itemType = Meeting.class;
+		tmpItem.rankingFactor = 6;
 		textColumns.put("Sitzungsdaten", tmpItem);
 
 		tmpItem = new TableDescription();
 		tmpItem.textColumns.add("Name");
 		tmpItem.primaryKeyColumn = "StatusID";
 		tmpItem.itemType = FinStatus.class;
+		tmpItem.rankingFactor = 1;
 		textColumns.put("Status", tmpItem);
 
 		tmpItem = new TableDescription();
@@ -113,6 +123,7 @@ public class GlobalDatabaseSearch
 		tmpItem.textColumns.add("Beschreibung");
 		tmpItem.primaryKeyColumn = "ThemaID";
 		tmpItem.itemType = Topic.class;
+		tmpItem.rankingFactor = 1;
 		textColumns.put("Thema", tmpItem);
 	}
 
@@ -186,6 +197,7 @@ public class GlobalDatabaseSearch
 							newHit = new SearchHit();
 							newHit.itemId = itemId;
 							newHit.itemType = textColumns.get(tableName).itemType;
+							newHit.rankingFactor = textColumns.get(tableName).rankingFactor;
 						}
 
 						newHit.matchingTexts.put(currentColumn, columnTextContent);

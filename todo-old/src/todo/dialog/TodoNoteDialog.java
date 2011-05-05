@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import todo.core.Employee;
 import todo.dbcon.DB_Mitarbeiter_Connect;
+import todo.dbcon.DB_ToDo_Connect;
+import todo.subgui.MeetingSubGUI;
 
 /**
  * @author Sven Skrabal
@@ -183,6 +185,38 @@ public class TodoNoteDialog extends javax.swing.JDialog
 		DB_Mitarbeiter_Connect.closeDB(con);
 		return employeeObjects;
 	}
+
+	public static void showMemoPopup(int memoId)
+	{
+		DB_ToDo_Connect.openDB();
+		Connection con = DB_ToDo_Connect.getCon();
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Memo WHERE MemoID = " + memoId;
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			resultSet.next();
+
+			String message = "Memo-Elemente dürfen per Definition nicht geändert werden und erscheinen daher lediglich als Nachricht!\n\n";
+			message += "Für Nummer: " + resultSet.getInt("TodoID") + "\n";
+			message += "Erstellt am: " + resultSet.getString("erstellt") + "\n";
+			message += "Erstellt von: " + resultSet.getString("Benutzer") + "\n\n";
+			message += "Inhalt:\n" + resultSet.getString("Inhalt");
+
+			JOptionPane.showMessageDialog(null, message, "Memo-Inhalt", JOptionPane.INFORMATION_MESSAGE);
+
+			resultSet.close();
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
+	}
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxDate;

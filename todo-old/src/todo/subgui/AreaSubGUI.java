@@ -19,7 +19,6 @@ import javax.swing.*;
  */
 public class AreaSubGUI extends javax.swing.JFrame
 {
-
 	private int status;              //0=Neu; 1=Bearbeiten
 	private int areaID;
 	private String areaName;
@@ -118,8 +117,28 @@ public class AreaSubGUI extends javax.swing.JFrame
 
 	public void editAreaInit()
 	{
-		jTextFieldAreaName.setText(areaName);
-		jTextFieldAreaDescription.setText(areaDescription);
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Bereich WHERE BereichID = " + areaID;
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			resultSet.next();
+
+			jTextFieldAreaName.setText(resultSet.getString("Name"));
+			jTextFieldAreaDescription.setText(resultSet.getString("Beschreibung"));
+
+			resultSet.close();
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
 	}
 
 	public void newArea()
@@ -133,15 +152,16 @@ public class AreaSubGUI extends javax.swing.JFrame
 			try
 			{
 				Statement stmt = con.createStatement();
-				String sql = "INSERT INTO Bereich (Name, Beschreibung) VALUES " +
-						"('" + areaName + "', '" + areaDescription + "')";
+				String sql = "INSERT INTO Bereich (Name, Beschreibung) VALUES "
+							 + "('" + areaName + "', '" + areaDescription + "')";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
-				JOptionPane.showMessageDialog(null, "Abfragefehler in Prozedur: newArea(), class AreaSubGUI" +
-						ex.toString(), "Fehler", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Abfragefehler in Prozedur: newArea(), class AreaSubGUI"
+													+ ex.toString(), "Fehler", JOptionPane.ERROR_MESSAGE);
 			}
 			DB_ToDo_Connect.closeDB(con);
 		}
@@ -168,7 +188,8 @@ public class AreaSubGUI extends javax.swing.JFrame
 				String sql2 = "UPDATE Bereich SET Beschreibung='" + areaDescription + "' WHERE BereichID=" + areaID;
 				stmt.executeUpdate(sql2);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();

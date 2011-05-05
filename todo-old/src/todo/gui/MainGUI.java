@@ -95,6 +95,8 @@ public class MainGUI extends javax.swing.JFrame
 		setComboBoxFinStatus();
 		setComboBoxCategory();
 		setComboMeetingType();
+
+		jSearchTerm.requestFocus();
 	}
 
 	/** This method is called from within the constructor to
@@ -1150,7 +1152,7 @@ public class MainGUI extends javax.swing.JFrame
 		Connection tmpCon = DB_ToDo_Connect.getCon();
 
 		GlobalDatabaseSearch search = new GlobalDatabaseSearch();
-		SearchResultTableModel resultModel = new SearchResultTableModel(search.doSearch(tmpCon, jSearchTerm.getText()));
+		SearchResultTableModel resultModel = new SearchResultTableModel(search.doSearch(tmpCon, jSearchTerm.getText()), jSearchTerm.getText());
 
 		new SearchResultSubGUI(resultModel).setVisible(true);
 
@@ -1170,7 +1172,6 @@ public class MainGUI extends javax.swing.JFrame
 	 */
 	public static void main(String args[])
 	{
-
 		try
 		{
 			File file = new File("E:\\Konzept-e\\OldCode\\ToDoAppSettings.xml");

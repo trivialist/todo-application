@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class InstitutionSubGUI extends javax.swing.JFrame
 {
-
 	private int status;              //0=Neu; 1=Bearbeiten
 	private String institution;
 	private int institutionID;
@@ -111,7 +110,27 @@ public class InstitutionSubGUI extends javax.swing.JFrame
 
 	public void editInstitutionInit()
 	{
-		jTextFieldInstitution.setText(institution);
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Institution WHERE InstitutionID = " + institutionID;
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			resultSet.next();
+
+			jTextFieldInstitution.setText(resultSet.getString("Name"));
+
+			resultSet.close();
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
 	}
 
 	public void newInstitution()
@@ -127,7 +146,8 @@ public class InstitutionSubGUI extends javax.swing.JFrame
 				String sql = "INSERT INTO Institution (Name) VALUES ('" + institution + "')";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(InstitutionSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -154,7 +174,8 @@ public class InstitutionSubGUI extends javax.swing.JFrame
 				String sql = "UPDATE Institution SET Name='" + institution + "' WHERE InstitutionID=" + institutionID;
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(InstitutionSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();

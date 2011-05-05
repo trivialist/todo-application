@@ -518,6 +518,10 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		String name = "";
 		String lastName = "";
 
+		String splitName[] = protName.split(",");
+		lastName = splitName[0].trim();
+		name = splitName[1].trim();
+
 		try
 		{
 			Statement stmt = con.createStatement();

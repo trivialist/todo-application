@@ -23,7 +23,6 @@ import java.util.logging.Logger;
  */
 public class TopicSubGUI extends javax.swing.JFrame
 {
-
 	private int status;              //0=Neu; 1=Bearbeiten
 	private int topicID;
 	private String name;
@@ -141,8 +140,28 @@ public class TopicSubGUI extends javax.swing.JFrame
 
 	public void editTopicInit()
 	{
-		jTextFieldTopicName.setText(name);
-		jTextFieldTopicDescription.setText(description);
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT * FROM Thema WHERE ThemaID = " + topicID;
+			ResultSet resultSet = stmt.executeQuery(sql);
+
+			resultSet.next();
+
+			jTextFieldTopicName.setText(resultSet.getString("Name"));
+			jTextFieldTopicDescription.setText(resultSet.getString("Beschreibung"));
+
+			resultSet.close();
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(AreaSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
 	}
 
 	public void newTopic()
@@ -156,11 +175,12 @@ public class TopicSubGUI extends javax.swing.JFrame
 			try
 			{
 				Statement stmt = con.createStatement();
-				String sql = "INSERT INTO Thema (Name, Beschreibung) VALUES " +
-						"('" + name + "', '" + description + "')";
+				String sql = "INSERT INTO Thema (Name, Beschreibung) VALUES "
+							 + "('" + name + "', '" + description + "')";
 				stmt.executeUpdate(sql);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(TopicSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
@@ -190,7 +210,8 @@ public class TopicSubGUI extends javax.swing.JFrame
 				String sql2 = "UPDATE Thema SET Beschreibung='" + description + "' WHERE ThemaID=" + topicID;
 				stmt.executeUpdate(sql2);
 				stmt.close();
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Logger.getLogger(TopicSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 				GlobalError.showErrorAndExit();
