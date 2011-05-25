@@ -73,7 +73,6 @@ public class MainGUI extends javax.swing.JFrame
 		setLocationRelativeTo(null);
 
 		actMeeting = new Meeting();
-		jLabelError.setText("");
 		if (actMeeting.getMeetingID() == 0)
 		{
 			getLatestMeeting();
@@ -108,7 +107,6 @@ public class MainGUI extends javax.swing.JFrame
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabelMeeting = new javax.swing.JLabel();
         jLabelMeetingDate = new javax.swing.JLabel();
         jLabelMeetingType = new javax.swing.JLabel();
         jLabelMeetingPlace = new javax.swing.JLabel();
@@ -142,7 +140,7 @@ public class MainGUI extends javax.swing.JFrame
         jLabelEmployee2 = new javax.swing.JLabel();
         jSearchTerm = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
-        jLabelError = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         Programm = new javax.swing.JMenu();
         jMenuItemNewMeeting = new javax.swing.JMenuItem();
@@ -179,21 +177,17 @@ public class MainGUI extends javax.swing.JFrame
         jPanel1.setPreferredSize(new java.awt.Dimension(30, 30));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabelMeeting.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabelMeeting.setText("Aktuelle Sitzung:");
-        jPanel1.add(jLabelMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 110, -1));
-
         jLabelMeetingDate.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelMeetingDate.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datum", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelMeetingDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 20, 90, 30));
+        jLabelMeetingDate.setText("00.00.0000");
+        jPanel1.add(jLabelMeetingDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 60, -1));
 
         jLabelMeetingType.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelMeetingType.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sitzungsart", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, 320, 30));
+        jLabelMeetingType.setText("- keine Sitzungsart -");
+        jPanel1.add(jLabelMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 220, -1));
 
         jLabelMeetingPlace.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelMeetingPlace.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ort", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelMeetingPlace, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, 190, 30));
+        jLabelMeetingPlace.setText("- kein Ort -");
+        jPanel1.add(jLabelMeetingPlace, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 30, 150, -1));
 
         jButtonManageMeeting.setText("Sitzungen bearbeiten");
         jButtonManageMeeting.addActionListener(new java.awt.event.ActionListener() {
@@ -201,23 +195,23 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonManageMeetingActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonManageMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 160, -1));
+        jPanel1.add(jButtonManageMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 180, -1));
 
-        jButtonManageTodo.setText("Protokollelement");
+        jButtonManageTodo.setText("Protokollelemente verwalten");
         jButtonManageTodo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonManageTodoActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonManageTodo, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 110, 160, -1));
+        jPanel1.add(jButtonManageTodo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 180, -1));
 
-        jButtonCreateProtocol.setText("Protokoll erstellen");
+        jButtonCreateProtocol.setText("Langes Protokoll erstellen");
         jButtonCreateProtocol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCreateProtocolActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 150, 160, -1));
+        jPanel1.add(jButtonCreateProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 180, -1));
 
         jButtonCreatePersonalProtocolList.setText("Liste");
         jButtonCreatePersonalProtocolList.addActionListener(new java.awt.event.ActionListener() {
@@ -282,13 +276,13 @@ public class MainGUI extends javax.swing.JFrame
         });
         jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 530, 140, -1));
 
-        jButtonCreateListProtocol.setText("Protokoll (kurz)");
+        jButtonCreateListProtocol.setText("Kurzes Protokoll erstellen");
         jButtonCreateListProtocol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCreateListProtocolActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateListProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 160, -1));
+        jPanel1.add(jButtonCreateListProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 80, 180, -1));
 
         CategoryListOutput.setText("Liste");
         CategoryListOutput.addActionListener(new java.awt.event.ActionListener() {
@@ -367,7 +361,7 @@ public class MainGUI extends javax.swing.JFrame
                 jSearchTermKeyPressed(evt);
             }
         });
-        jPanel1.add(jSearchTerm, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 120, -1));
+        jPanel1.add(jSearchTerm, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 10, 130, -1));
 
         jButton3.setText("Suchen");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -375,11 +369,11 @@ public class MainGUI extends javax.swing.JFrame
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 10, -1, -1));
 
-        jLabelError.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabelError.setForeground(new java.awt.Color(255, 51, 51));
-        jPanel1.add(jLabelError, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 190, 30));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel1.setText("Gewählte Sitzung:");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -601,7 +595,7 @@ public class MainGUI extends javax.swing.JFrame
 		}
 		else
 		{
-			jLabelError.setText("Bitte Sitzung wählen");
+			JOptionPane.showMessageDialog(this, "Bitte als ersten Schritt eine Sitzung auswählen.", "Fehler beim Lande", JOptionPane.ERROR_MESSAGE);
 		}
     }//GEN-LAST:event_jButtonManageTodoActionPerformed
 
@@ -712,11 +706,8 @@ public class MainGUI extends javax.swing.JFrame
 					 */
 					try
 					{
-						JasperReport jasperReport =
-									 JasperCompileManager.compileReport(reportSource);
-
-						JasperPrint jasperPrint =
-									JasperFillManager.fillReport(jasperReport, params, dataSet);
+						JasperReport jasperReport = JasperCompileManager.compileReport(reportSource);
+						JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 						JasperViewer.viewReport(jasperPrint, false);
 					}
@@ -767,11 +758,8 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				try
 				{
-					JasperReport jasperReport =
-								 JasperCompileManager.compileReport(reportSource);
-
-					JasperPrint jasperPrint =
-								JasperFillManager.fillReport(jasperReport, params, dataSet);
+					JasperReport jasperReport = JasperCompileManager.compileReport(reportSource);
+					JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 					JasperViewer.viewReport(jasperPrint, false);
 				}
@@ -817,11 +805,8 @@ public class MainGUI extends javax.swing.JFrame
 			{
 				try
 				{
-					JasperReport jasperReport =
-								 JasperCompileManager.compileReport(reportSource);
-
-					JasperPrint jasperPrint =
-								JasperFillManager.fillReport(jasperReport, params, dataSet);
+					JasperReport jasperReport = JasperCompileManager.compileReport(reportSource);
+					JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 					JasperViewer.viewReport(jasperPrint, false);
 				}
@@ -855,7 +840,7 @@ public class MainGUI extends javax.swing.JFrame
 		}
 		else
 		{
-			jLabelError.setText("Bitte Sitzung wählen");
+			JOptionPane.showMessageDialog(this, "Bitte als ersten Schritt eine Sitzung auswählen.", "Fehler beim Lande", JOptionPane.ERROR_MESSAGE);
 		}
 		TodoSubGUI newTodo = new TodoSubGUI(0, actMeeting.getMeetingID(), "", "", 0, true);
 		newTodo.setVisible(true);
@@ -874,10 +859,9 @@ public class MainGUI extends javax.swing.JFrame
 		int empID = 0;
 		if (jComboBoxEmployee.getSelectedItem().toString().equals("Alle Mitarbeiter"))
 		{
-			//JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. " +
-			//        "Die Auswahl 'Alle Mitarbeiter' ist für diesen Report unzulässig.", "Fehler", JOptionPane.ERROR_MESSAGE);
 			empID = -1;
-		} /*else {*/
+		}
+
 		if (jComboBoxEmployee.getSelectedItem().toString().equals(""))
 		{
 			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des Reports. "
@@ -909,48 +893,69 @@ public class MainGUI extends javax.swing.JFrame
 				newPTDL.setVisible(true);
 			}
 		}
-		// }
     }//GEN-LAST:event_jButtonCreatePersonalProtocolListActionPerformed
+
+	private String getParticipiants(int meetingId)
+	{
+		DB_ToDo_Connect.openDB();
+		DB_Mitarbeiter_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+		Connection con2 = DB_Mitarbeiter_Connect.getCon();
+		String returnString = "";
+
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "SELECT meeting_attendee_personnel.personnelID FROM meeting_attendee_personnel " +
+					"INNER JOIN Sitzungsdaten ON meeting_attendee_personnel.meetingID = Sitzungsdaten.SitzungsdatenID " +
+					"WHERE Sitzungsdaten.SitzungsdatenID = " + meetingId;
+			ResultSet rst = stmt.executeQuery(sql);
+
+			while (rst.next())
+			{
+				Statement stmt2 = con2.createStatement();
+				String sql2 = "SELECT * FROM Stammdaten WHERE Personalnummer = " + rst.getInt("personnelID");
+				ResultSet rst2 = stmt2.executeQuery(sql2);
+				rst2.next();
+
+				returnString += rst2.getString("Vorname") + " " + rst2.getString("Nachname") + ", ";
+
+				rst2.close();
+				stmt2.close();
+			}
+
+			rst.close();
+			stmt.close();
+
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+
+		DB_ToDo_Connect.closeDB(con);
+		DB_Mitarbeiter_Connect.closeDB(con2);
+
+		return (returnString.length() > 2 ) ? returnString.substring(0, returnString.length() - 2) : "";
+	}
 
     private void jButtonCreateListProtocolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateListProtocolActionPerformed
 		String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "ProtokollKurz.jrxml";
-		//String reportDest = "H:\\ToDo\\report\\results\\Protokoll_"
-		//                       + actMeeting.getDate() + "_"
-		//                    + actMeeting.getMeetingType() + ".html";
-		//String pdfDest = "R:\\Protokoll_" + actMeeting.getDate()
-		//                + "_" + actMeeting.getMeetingType() + ".pdf";
 
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("SitzDatum", sdf.format(actMeeting.getDate()));
 		params.put("SitzName", actMeeting.getMeetingType());
 		params.put("SitzOrt", actMeeting.getPlace());
+		params.put("SitzParticipiants", getParticipiants(actMeeting.getMeetingID()));
 		ArrayList<HashMap> std = loadShortTodoData();
 
 		JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(std);
 
-		/*if(data.isEmpty()) {
-		HashMap<String,String> fields= new HashMap<String,String>();
-		fields.put("Kategorie", "! FEHLER !");
-		fields.put("Inhalt", "!!! Für diese Sitzung wurden noch keine Daten eingegeben !!!");
-		fields.put("Verantwortliche", "Aktueller Benutzer");
-		data.add(fields);
-
-		}
-		 */
 		try
 		{
-			JasperReport jasperReport =
-						 JasperCompileManager.compileReport(reportSource);
-
-			JasperPrint jasperPrint =
-						JasperFillManager.fillReport(jasperReport, params, dataSet);
-
-			//++++++++++++++ HTML-Export  +++++++++++++++
-			//JasperExportManager.exportReportToHtmlFile(
-			//jasperPrint, reportDest);
-
-			//++++++++++++++  PDF-Export  ++++++++++++++++
-			//JasperExportManager.exportReportToPdfFile(jasperPrint, pdfDest);
+			JasperReport jasperReport = JasperCompileManager.compileReport(reportSource);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSet);
 
 			JasperViewer.viewReport(jasperPrint, false);
 		}
@@ -1142,7 +1147,7 @@ public class MainGUI extends javax.swing.JFrame
 
 	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
 	{//GEN-HEADEREND:event_jButton3ActionPerformed
-		if(jSearchTerm.getText().equals(""))
+		if (jSearchTerm.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(this, "Die Suche kann ohne Suchbegriff nicht gestartet werden.", "Fehler", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -1161,7 +1166,7 @@ public class MainGUI extends javax.swing.JFrame
 
 	private void jSearchTermKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_jSearchTermKeyPressed
 	{//GEN-HEADEREND:event_jSearchTermKeyPressed
-		if(evt.getKeyCode() == KeyEvent.VK_ENTER)
+		if (evt.getKeyCode() == KeyEvent.VK_ENTER)
 		{
 			jButton3ActionPerformed(null);
 		}
@@ -1311,15 +1316,14 @@ public class MainGUI extends javax.swing.JFrame
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID="
-						 + actMeeting.getMeetingID();
+			String sql = "SELECT * FROM Protokollelement WHERE Geloescht = false AND SitzungsID = " + actMeeting.getMeetingID();
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
 			{
 				HashMap<String, String> fields = new HashMap<String, String>();
 				tbz_id = rst.getInt("TBZuordnung_ID");
-				fields.put("Thema", getTopicByID(getTopicIDByTBZ_ID(tbz_id)));
+				fields.put("TOP", rst.getString("Überschrift"));
 				fields.put("Inhalt", rst.getString("Inhalt"));
 				if (rst.getBoolean("WiedervorlageGesetzt"))
 				{
@@ -1450,16 +1454,16 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt = con.createStatement();
 			if (status.equals("Alle"))
 			{
-				sql =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_responsible_personnel ON "+
-						"Protokollelement.ToDoID = todo_responsible_personnel.todoID " +
-						"WHERE todo_responsible_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false";
+				sql = "SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_responsible_personnel ON "
+					  + "Protokollelement.ToDoID = todo_responsible_personnel.todoID "
+					  + "WHERE todo_responsible_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false";
 			}
 			else
 			{
-				sql =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_responsible_personnel ON "+
-						"Protokollelement.ToDoID = todo_responsible_personnel.todoID " +
-						"WHERE todo_responsible_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false " +
-						"AND Protokollelement.StatusID = " + getFinStatusIDByName(status);
+				sql = "SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_responsible_personnel ON "
+					  + "Protokollelement.ToDoID = todo_responsible_personnel.todoID "
+					  + "WHERE todo_responsible_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false "
+					  + "AND Protokollelement.StatusID = " + getFinStatusIDByName(status);
 			}
 
 			ResultSet rst = stmt.executeQuery(sql);
@@ -1520,16 +1524,16 @@ public class MainGUI extends javax.swing.JFrame
 			Statement stmt2 = con.createStatement();
 			if (status.equals("Alle"))
 			{
-				sql2 =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_involved_personnel ON " +
-						"Protokollelement.ToDoID = todo_involved_personnel.todoID " +
-						"WHERE todo_involved_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false";
+				sql2 = "SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_involved_personnel ON "
+					   + "Protokollelement.ToDoID = todo_involved_personnel.todoID "
+					   + "WHERE todo_involved_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false";
 			}
 			else
 			{
-				sql2 =	"SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_involved_personnel ON " +
-						"Protokollelement.ToDoID = todo_involved_personnel.todoID " +
-						"WHERE todo_involved_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false " +
-						"AND StatusID = " + getFinStatusIDByName(status);
+				sql2 = "SELECT Protokollelement.* FROM Protokollelement INNER JOIN todo_involved_personnel ON "
+					   + "Protokollelement.ToDoID = todo_involved_personnel.todoID "
+					   + "WHERE todo_involved_personnel.personnelID = " + empID + " AND Protokollelement.Geloescht = false "
+					   + "AND StatusID = " + getFinStatusIDByName(status);
 			}
 
 			ResultSet rst2 = stmt2.executeQuery(sql2);
@@ -2005,12 +2009,9 @@ public class MainGUI extends javax.swing.JFrame
 	{
 		// Lade Datum der zuletzt erstellten Sitzung aus Datenbank
 		actMeeting.clear();
-		jLabelMeetingDate.setForeground(new java.awt.Color(255, 0, 0));
-		jLabelMeetingDate.setText("No Data");
-		jLabelMeetingType.setForeground(new java.awt.Color(255, 0, 0));
-		jLabelMeetingType.setText(" - ");
-		jLabelMeetingPlace.setForeground(new java.awt.Color(255, 0, 0));
-		jLabelMeetingPlace.setText(" - ");
+		jLabelMeetingDate.setText("-");
+		jLabelMeetingType.setText("-");
+		jLabelMeetingPlace.setText("-");
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
@@ -2040,7 +2041,6 @@ public class MainGUI extends javax.swing.JFrame
 		DB_ToDo_Connect.closeDB(con);
 		if (actMeeting.getDate() != null)
 		{
-			jLabelMeetingDate.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingDate.setText(sdf.format(actMeeting.getDate()));
 		}
 
@@ -2051,7 +2051,6 @@ public class MainGUI extends javax.swing.JFrame
 
 		if (!actMeeting.getPlace().equals(""))
 		{
-			jLabelMeetingPlace.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingPlace.setText(actMeeting.getPlace());
 		}
 
@@ -2060,12 +2059,9 @@ public class MainGUI extends javax.swing.JFrame
 	public void getChosenMeeting(int mID)
 	{
 		actMeeting.clear();
-		jLabelMeetingDate.setForeground(new java.awt.Color(255, 0, 0));
-		jLabelMeetingDate.setText("No Data");
-		jLabelMeetingType.setForeground(new java.awt.Color(255, 0, 0));
-		jLabelMeetingType.setText(" - ");
-		jLabelMeetingPlace.setForeground(new java.awt.Color(255, 0, 0));
-		jLabelMeetingPlace.setText(" - ");
+		jLabelMeetingDate.setText("-");
+		jLabelMeetingType.setText("-");
+		jLabelMeetingPlace.setText("-");
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
 
@@ -2096,7 +2092,6 @@ public class MainGUI extends javax.swing.JFrame
 		DB_ToDo_Connect.closeDB(con);
 		if (actMeeting.getDate() != null)
 		{
-			jLabelMeetingDate.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingDate.setText(sdf.format(actMeeting.getDate()));
 		}
 
@@ -2107,7 +2102,6 @@ public class MainGUI extends javax.swing.JFrame
 
 		if (!actMeeting.getPlace().equals(""))
 		{
-			jLabelMeetingPlace.setForeground(new java.awt.Color(0, 0, 255));
 			jLabelMeetingPlace.setText(actMeeting.getPlace());
 		}
 
@@ -2128,7 +2122,6 @@ public class MainGUI extends javax.swing.JFrame
 
 			while (rst.next())
 			{
-				jLabelMeetingType.setForeground(new java.awt.Color(0, 0, 255));
 				actMeeting.setMeetingType(rst.getString("Name"));
 				jLabelMeetingType.setText(actMeeting.getMeetingType());
 			}
@@ -3167,7 +3160,7 @@ public class MainGUI extends javax.swing.JFrame
 
 			//get all existing relations
 			ArrayList<Integer> existingPersonnelIds = new ArrayList<Integer>();
-			while(resultSet.next())
+			while (resultSet.next())
 			{
 				existingPersonnelIds.add(resultSet.getInt("personnelID"));
 			}
@@ -3176,18 +3169,18 @@ public class MainGUI extends javax.swing.JFrame
 			statement.close();
 
 			//find new relations
-			for(int currentRelation : personnelIds)
+			for (int currentRelation : personnelIds)
 			{
-				if(!existingPersonnelIds.contains(currentRelation))
+				if (!existingPersonnelIds.contains(currentRelation))
 				{
 					insertRelation(openConnection, destinationTable, destinationColumn, currentRelation, destinationId);
 				}
 			}
 
 			//find removed relations
-			for(int currentRelation : existingPersonnelIds)
+			for (int currentRelation : existingPersonnelIds)
 			{
-				if(!personnelIds.contains(currentRelation))
+				if (!personnelIds.contains(currentRelation))
 				{
 					removeRelation(openConnection, destinationTable, destinationColumn, currentRelation, destinationId);
 				}
@@ -3264,14 +3257,13 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JComboBox jComboBoxEmployee;
     private javax.swing.JComboBox jComboBoxFinStatus;
     private javax.swing.JComboBox jComboMeetingType;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelAnalysis1;
     private javax.swing.JLabel jLabelCategory;
     private javax.swing.JLabel jLabelEmployee;
     private javax.swing.JLabel jLabelEmployee1;
     private javax.swing.JLabel jLabelEmployee2;
-    private javax.swing.JLabel jLabelError;
     private javax.swing.JLabel jLabelFinStatus;
-    private javax.swing.JLabel jLabelMeeting;
     private javax.swing.JLabel jLabelMeetingDate;
     private javax.swing.JLabel jLabelMeetingPlace;
     private javax.swing.JLabel jLabelMeetingType;

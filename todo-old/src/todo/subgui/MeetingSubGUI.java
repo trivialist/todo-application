@@ -11,14 +11,17 @@ import todo.core.Meeting;
 import todo.core.MeetingType;
 import todo.dbcon.DB_ToDo_Connect;
 import todo.dbcon.DB_Mitarbeiter_Connect;
-import todo.gui.MeetingTypeGUI;
-import todo.gui.ParticipantsGUI;
 import java.sql.*;
 import java.util.*;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.tree.TreePath;
+import todo.gui.MainGUI;
+import todo.tablemodel.EmployeeTreeModel;
+import todo.tablemodel.EmployeeTreeModel.Group;
+import todo.tablemodel.EmployeeTreeModel.NameLeaf;
+import todo.tablemodel.ParticipantsTableModel;
 
 /**
  *
@@ -28,15 +31,11 @@ public class MeetingSubGUI extends javax.swing.JFrame
 {
 	private int status = 0;
 	private int meetingID;
-	private String meetingType;
-	private String date;
-	private String otherPart;
 	private Meeting meet = new Meeting();
 	private static Connection con;
 	private static Connection con2;
 	private ArrayList<Integer> participants = new ArrayList<Integer>();
 	private Calendar cal = Calendar.getInstance();
-	private boolean reDateChange = false;
 	private boolean flagParticipants = false;  //true, falls Teilnehmer hinzugefügt wurden
 	// und somit schon Sitzung angelegt wurde.
 
@@ -46,17 +45,15 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	public MeetingSubGUI()
 	{
 		initComponents();
+		setLocationRelativeTo(null);
 	}
 
-	public MeetingSubGUI(int status, int meetingID, String meetingType,
-						 String date, String otherPart)
+	public MeetingSubGUI(int status, int meetingID, String meetingType, String date, String otherPart)
 	{
 		this.status = status;
 		this.meetingID = meetingID;
-		this.meetingType = meetingType;
-		this.date = date;
-		this.otherPart = otherPart;
 		initComponents();
+		setLocationRelativeTo(null);
 		if (status == 0)
 		{
 			//neue Sitzung anlegen
@@ -66,7 +63,27 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		{
 			//vorhandene Sitzung bearbeiten
 			editMeetingInit();
+			jTable2.setModel(new ParticipantsTableModel(participants, meetingID));
 		}
+
+		EmployeeTreeModel tm = (EmployeeTreeModel) jTreeParticipiants.getModel();
+		EmployeeTreeModel.Group etm = (Group) tm.getRoot();
+		ArrayList<Object> childs = etm.getChilds();
+		for (Object child : childs)
+		{
+			if (child.toString().equals("Verwaltung"))
+			{
+				Object path[] =
+				{
+					tm.getRoot(), child
+				};
+				TreePath tp = new TreePath(path);
+				jTreeParticipiants.expandPath(tp);
+				break;
+			}
+		}
+
+		jTextAreaOtherParticipants.setText(meet.getOtherPaticipants());
 	}
 
 	/** This method is called from within the constructor to
@@ -79,50 +96,41 @@ public class MeetingSubGUI extends javax.swing.JFrame
 
         jLabel1 = new javax.swing.JLabel();
         jComboBoxMeetingType = new javax.swing.JComboBox();
-        jButtonMeetingType = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldPlace = new javax.swing.JTextField();
         jComboBoxProt = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
-        jButtonParticipants = new javax.swing.JButton();
         jButtonSaveAndExit = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         jCalendarComboBoxDate = new de.wannawork.jcalendar.JCalendarComboBox();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPaneParticipants = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jButtonAddParticipant = new javax.swing.JButton();
+        jButtonRemoveParticipant = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTreeParticipiants = new javax.swing.JTree();
+        jTextAreaOtherParticipants = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sitzung verwalten");
-        setMinimumSize(new java.awt.Dimension(480, 210));
+        setMinimumSize(new java.awt.Dimension(520, 530));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Datum");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 40, -1));
-        getContentPane().add(jComboBoxMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 250, -1));
-
-        jButtonMeetingType.setText("Sitzungsarten...");
-        jButtonMeetingType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonMeetingTypeActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButtonMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 50, 120, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 40, -1));
+        getContentPane().add(jComboBoxMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 30, 240, -1));
 
         jLabel2.setText("Ort");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
-        getContentPane().add(jTextFieldPlace, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 140, -1));
-        getContentPane().add(jComboBoxProt, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 220, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
+        getContentPane().add(jTextFieldPlace, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 240, -1));
+        getContentPane().add(jComboBoxProt, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 80, 240, -1));
 
         jLabel4.setText("Protokollant");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 60, -1));
-
-        jButtonParticipants.setText("Teilnehmer verwalten");
-        jButtonParticipants.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonParticipantsActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButtonParticipants, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 80, 160, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 60, 60, -1));
 
         jButtonSaveAndExit.setText("Speichern und schliessen");
         jButtonSaveAndExit.addActionListener(new java.awt.event.ActionListener() {
@@ -130,21 +138,65 @@ public class MeetingSubGUI extends javax.swing.JFrame
                 jButtonSaveAndExitActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 160, -1, -1));
+        getContentPane().add(jButtonSaveAndExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 470, -1, -1));
 
-        jButton1.setText("Mitarbeiter verwalten");
-        jButton1.setEnabled(false);
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 110, 140, -1));
-
+        jCalendarComboBoxDate.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("Button.shadow")));
         jCalendarComboBoxDate.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jCalendarComboBoxDateStateChanged(evt);
             }
         });
-        getContentPane().add(jCalendarComboBoxDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, 140, 20));
+        getContentPane().add(jCalendarComboBoxDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 240, 20));
 
-        jLabel3.setText(" ");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 190, -1, -1));
+        jLabel5.setText("Sitzungsart");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 10, -1, -1));
+
+        jLabel6.setText("Alle Mitarbeiter");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
+
+        jLabel7.setText("Teilnehmer");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 110, -1, -1));
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPaneParticipants.setViewportView(jTable2);
+
+        getContentPane().add(jScrollPaneParticipants, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 130, 210, 230));
+
+        jButtonAddParticipant.setText(">");
+        jButtonAddParticipant.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddParticipantActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonAddParticipant, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 210, 50, -1));
+
+        jButtonRemoveParticipant.setText("<");
+        jButtonRemoveParticipant.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRemoveParticipantActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonRemoveParticipant, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 270, 50, -1));
+
+        jLabel8.setText("Sonstige Teilnehmer");
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, -1, -1));
+
+        jTreeParticipiants.setModel(new EmployeeTreeModel());
+        jTreeParticipiants.setRootVisible(false);
+        jTreeParticipiants.setShowsRootHandles(true);
+        jScrollPane1.setViewportView(jTreeParticipiants);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 210, 230));
+
+        jTextAreaOtherParticipants.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        getContentPane().add(jTextAreaOtherParticipants, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 390, 490, 70));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -154,20 +206,8 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	 *
 	 * @param evt
 	 */
-    private void jButtonParticipantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonParticipantsActionPerformed
-		// aktualisiere Daten der Sitzung vor Öffnen von ParticipantsGUI
-		refreshMeetingData();
-		if (meetingID == 0)
-		{
-			newMeeting();
-			getMeetingID();
-			flagParticipants = true;
-		}
-		ParticipantsGUI partGUI = new ParticipantsGUI(participants, otherPart, meetingID);
-		partGUI.setVisible(true);
-    }//GEN-LAST:event_jButtonParticipantsActionPerformed
-
     private void jButtonSaveAndExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveAndExitActionPerformed
+
 		switch (status)
 		{
 			case 0:         // status=0, neue Sitzung anlegen
@@ -191,13 +231,33 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			default:
 				JOptionPane.showMessageDialog(rootPane, "Fehler bei Ausführung des Befehls!");
 		}
+
+		getMeetingID();
+		String others = jTextAreaOtherParticipants.getText();
+		saveParticipants(meetingID, participants, others);
     }//GEN-LAST:event_jButtonSaveAndExitActionPerformed
 
-    private void jButtonMeetingTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMeetingTypeActionPerformed
-		//MeetingTypeGUI öffnen um Sitzungsarten zu bearbeiten
-		MeetingTypeGUI meetType = new MeetingTypeGUI();
-		meetType.setVisible(true);
-    }//GEN-LAST:event_jButtonMeetingTypeActionPerformed
+	public void saveParticipants(int meetingID, ArrayList<Integer> part, String othPart)
+	{
+		DB_ToDo_Connect.openDB();
+		con = DB_ToDo_Connect.getCon();
+
+		try
+		{
+			Statement stmt = con.createStatement();
+			String sql = "UPDATE Sitzungsdaten SET Sonstige = '" + othPart + "' WHERE SitzungsdatenID = " + meetingID;
+			stmt.executeUpdate(sql);
+			stmt.close();
+
+			MainGUI.updateRelations(con, "meeting_attendee_personnel", "meetingID", participants, meetingID);
+		}
+		catch (Exception ex)
+		{
+			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			GlobalError.showErrorAndExit();
+		}
+		DB_ToDo_Connect.closeDB(con);
+	}
 
     private void jCalendarComboBoxDateStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCalendarComboBoxDateStateChanged
 		if (evt.getSource() == jCalendarComboBoxDate)
@@ -205,9 +265,44 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			cal.set(jCalendarComboBoxDate.getCalendar().get(Calendar.YEAR),
 					jCalendarComboBoxDate.getCalendar().get(Calendar.MONTH) + 1,
 					jCalendarComboBoxDate.getCalendar().get(Calendar.DAY_OF_MONTH));
-			reDateChange = true;
 		}
 }//GEN-LAST:event_jCalendarComboBoxDateStateChanged
+
+	private void jButtonAddParticipantActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonAddParticipantActionPerformed
+	{//GEN-HEADEREND:event_jButtonAddParticipantActionPerformed
+		TreePath path = jTreeParticipiants.getSelectionPath();
+		Object selectedObject = path.getPath()[path.getPathCount() - 1];
+
+		if (selectedObject instanceof NameLeaf)
+		{
+			NameLeaf selectedName = (NameLeaf) selectedObject;
+			if (!participants.contains(selectedName.getId()))
+			{
+				participants.add(selectedName.getId());
+			}
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Namen aus und nicht das übergeordnete Gruppenelement.");
+		}
+		jTable2.setModel(new ParticipantsTableModel(participants, meetingID));
+}//GEN-LAST:event_jButtonAddParticipantActionPerformed
+
+	private void jButtonRemoveParticipantActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonRemoveParticipantActionPerformed
+	{//GEN-HEADEREND:event_jButtonRemoveParticipantActionPerformed
+		if (jTable2.getSelectedRow() != -1)
+		{
+			Object empID = jTable2.getValueAt(jTable2.getSelectedRow(), -1);
+			Integer temp = new Integer(String.valueOf(empID));
+			int ID = temp.intValue();
+			if (participants.contains(ID))
+			{
+				participants.remove((Integer) ID);
+			}
+		}
+
+		jTable2.setModel(new ParticipantsTableModel(participants, meetingID));
+}//GEN-LAST:event_jButtonRemoveParticipantActionPerformed
 
 	public void newMeetingInit()
 	{
@@ -266,7 +361,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		{
 			meet.setProt(1);
 		}
-		
+
 		if (!meet.getMeetingType().equals(""))
 		{
 			DB_ToDo_Connect.openDB();
@@ -315,7 +410,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 		{
 			meet.setProt(1);
 		}
-		
+
 		if (!meet.getMeetingType().equals(""))
 		{
 			DB_ToDo_Connect.openDB();
@@ -571,7 +666,7 @@ public class MeetingSubGUI extends javax.swing.JFrame
 			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		
+
 		DB_ToDo_Connect.closeDB(con);
 	}
 
@@ -612,21 +707,27 @@ public class MeetingSubGUI extends javax.swing.JFrame
 	public void refreshMeetingData()
 	{
 		getMeetingData();
-		otherPart = meet.getOtherPaticipants();
 		getAllParticipants();
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButtonMeetingType;
-    private javax.swing.JButton jButtonParticipants;
+    private javax.swing.JButton jButtonAddParticipant;
+    private javax.swing.JButton jButtonRemoveParticipant;
     private javax.swing.JButton jButtonSaveAndExit;
     private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxDate;
     private javax.swing.JComboBox jComboBoxMeetingType;
     private javax.swing.JComboBox jComboBoxProt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneParticipants;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTextArea jTextAreaOtherParticipants;
     private javax.swing.JTextField jTextFieldPlace;
+    private javax.swing.JTree jTreeParticipiants;
     // End of variables declaration//GEN-END:variables
 }

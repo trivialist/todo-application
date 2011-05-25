@@ -27,7 +27,6 @@ public class MeetingGUI extends javax.swing.JFrame
 {
 
 	private static MeetingGUI meetGUI = new MeetingGUI();
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private String keyword = "";
 	private String field = "";
 
@@ -35,6 +34,7 @@ public class MeetingGUI extends javax.swing.JFrame
 	public MeetingGUI()
 	{
 		initComponents();
+		setLocationRelativeTo(null);
 	}
 
 	/** This method is called from within the constructor to

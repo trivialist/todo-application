@@ -31,6 +31,7 @@ public class TodoGUI extends javax.swing.JFrame
 	{
 		this.meetingID = meetingID;
 		initComponents();
+		setLocationRelativeTo(null);
 		jTable1.setAutoCreateRowSorter(true);
 	}
 
