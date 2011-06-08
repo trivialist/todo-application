@@ -114,7 +114,6 @@ public class MainGUI extends javax.swing.JFrame
         jButtonManageTodo = new javax.swing.JButton();
         jButtonCreateProtocol = new javax.swing.JButton();
         jButtonCreatePersonalProtocolList = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
         jLabelAnalysis1 = new javax.swing.JLabel();
         jComboBoxEmployee = new javax.swing.JComboBox();
         jComboBoxFinStatus = new javax.swing.JComboBox();
@@ -141,6 +140,7 @@ public class MainGUI extends javax.swing.JFrame
         jSearchTerm = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         jMenuBar1 = new javax.swing.JMenuBar();
         Programm = new javax.swing.JMenu();
         jMenuItemNewMeeting = new javax.swing.JMenuItem();
@@ -160,9 +160,8 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11));
-        setMaximizedBounds(new java.awt.Rectangle(20, 20, 600, 800));
-        setMinimumSize(new java.awt.Dimension(590, 630));
+        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        setMinimumSize(new java.awt.Dimension(590, 530));
         setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
@@ -195,7 +194,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonManageMeetingActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonManageMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 180, -1));
+        jPanel1.add(jButtonManageMeeting, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 40, 180, -1));
 
         jButtonManageTodo.setText("Protokollelemente verwalten");
         jButtonManageTodo.addActionListener(new java.awt.event.ActionListener() {
@@ -203,7 +202,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonManageTodoActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonManageTodo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 180, -1));
+        jPanel1.add(jButtonManageTodo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 180, -1));
 
         jButtonCreateProtocol.setText("Langes Protokoll erstellen");
         jButtonCreateProtocol.addActionListener(new java.awt.event.ActionListener() {
@@ -211,7 +210,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateProtocolActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 180, -1));
+        jPanel1.add(jButtonCreateProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 180, -1));
 
         jButtonCreatePersonalProtocolList.setText("Liste");
         jButtonCreatePersonalProtocolList.addActionListener(new java.awt.event.ActionListener() {
@@ -219,21 +218,13 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreatePersonalProtocolListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreatePersonalProtocolList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 350, 140, 20));
-
-        jTextField2.setBackground(new java.awt.Color(0, 0, 0));
-        jTextField2.setEditable(false);
-        jTextField2.setText("jTextField1");
-        jTextField2.setEnabled(false);
-        jTextField2.setMinimumSize(new java.awt.Dimension(2, 20));
-        jTextField2.setRequestFocusEnabled(false);
-        jPanel1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 550, 5));
+        jPanel1.add(jButtonCreatePersonalProtocolList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 250, 140, 20));
 
         jLabelAnalysis1.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabelAnalysis1.setText("Auswertungen");
-        jPanel1.add(jLabelAnalysis1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 110, -1));
+        jPanel1.add(jLabelAnalysis1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 110, -1));
 
-        jPanel1.add(jComboBoxEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 370, 200, -1));
+        jPanel1.add(jComboBoxEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 200, -1));
 
         jComboBoxFinStatus.setToolTipText("Bitte den Bearbeitungsstatus für die Auswerrtung auswählen");
         jComboBoxFinStatus.addActionListener(new java.awt.event.ActionListener() {
@@ -241,16 +232,16 @@ public class MainGUI extends javax.swing.JFrame
                 jComboBoxFinStatusActionPerformed(evt);
             }
         });
-        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 430, 130, -1));
+        jPanel1.add(jComboBoxFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 330, 130, -1));
 
-        jPanel1.add(jComboBoxCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 200, -1));
+        jPanel1.add(jComboBoxCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 200, -1));
 
         jCalendarComboBoxReDate.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jCalendarComboBoxReDateStateChanged(evt);
             }
         });
-        jPanel1.add(jCalendarComboBoxReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 270, 130, 20));
+        jPanel1.add(jCalendarComboBoxReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 170, 130, 20));
 
         jButtonCreatePersonalProtocol.setText("Druckvorschau");
         jButtonCreatePersonalProtocol.addActionListener(new java.awt.event.ActionListener() {
@@ -258,7 +249,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreatePersonalProtocolActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreatePersonalProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 380, 140, 20));
+        jPanel1.add(jButtonCreatePersonalProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, 140, 20));
 
         jButtonCreateCategoryList.setText("Druckvorschau");
         jButtonCreateCategoryList.addActionListener(new java.awt.event.ActionListener() {
@@ -266,7 +257,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateCategoryListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateCategoryList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 460, 140, -1));
+        jPanel1.add(jButtonCreateCategoryList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 360, 140, -1));
 
         jButtonCreateReDateList.setText("Druckvorschau");
         jButtonCreateReDateList.addActionListener(new java.awt.event.ActionListener() {
@@ -274,7 +265,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateReDateListActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 530, 140, -1));
+        jPanel1.add(jButtonCreateReDateList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, 140, -1));
 
         jButtonCreateListProtocol.setText("Kurzes Protokoll erstellen");
         jButtonCreateListProtocol.addActionListener(new java.awt.event.ActionListener() {
@@ -282,7 +273,7 @@ public class MainGUI extends javax.swing.JFrame
                 jButtonCreateListProtocolActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonCreateListProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 80, 180, -1));
+        jPanel1.add(jButtonCreateListProtocol, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, 180, -1));
 
         CategoryListOutput.setText("Liste");
         CategoryListOutput.addActionListener(new java.awt.event.ActionListener() {
@@ -290,7 +281,7 @@ public class MainGUI extends javax.swing.JFrame
                 CategoryListOutputActionPerformed(evt);
             }
         });
-        jPanel1.add(CategoryListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 430, 140, -1));
+        jPanel1.add(CategoryListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 330, 140, -1));
 
         WvListOutput.setText("Liste");
         WvListOutput.setEnabled(false);
@@ -299,9 +290,9 @@ public class MainGUI extends javax.swing.JFrame
                 WvListOutputActionPerformed(evt);
             }
         });
-        jPanel1.add(WvListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 500, 140, -1));
+        jPanel1.add(WvListOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 400, 140, -1));
 
-        jPanel1.add(jComboMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 200, -1));
+        jPanel1.add(jComboMeetingType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 170, 200, -1));
 
         jButton1.setText("Liste");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -309,14 +300,14 @@ public class MainGUI extends javax.swing.JFrame
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 240, 150, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 140, 150, -1));
 
         jCalendarComboBoxReDate1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jCalendarComboBoxReDate1StateChanged(evt);
             }
         });
-        jPanel1.add(jCalendarComboBoxReDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 520, 200, 20));
+        jPanel1.add(jCalendarComboBoxReDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 420, 200, 20));
 
         jButton2.setText("Druckvorschau");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -324,44 +315,44 @@ public class MainGUI extends javax.swing.JFrame
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 270, 150, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 170, 150, -1));
 
         jLabelEmployee.setBackground(new java.awt.Color(255, 255, 255));
         jLabelEmployee.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "WV-Datum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 250, 150, 50));
+        jPanel1.add(jLabelEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 150, 150, 50));
 
         jLabelFinStatus.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Bearbeitungstatus", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
         jLabelFinStatus.setOpaque(true);
-        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 320, 150, 240));
+        jPanel1.add(jLabelFinStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 220, 150, 240));
 
         jLabelCategory.setBackground(new java.awt.Color(255, 255, 255));
         jLabelCategory.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Kategorie", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 530, 80));
+        jPanel1.add(jLabelCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 530, 70));
 
         jLabelReDate.setBackground(new java.awt.Color(255, 255, 255));
         jLabelReDate.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Wiedervorlagedatum", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 490, 530, 70));
+        jPanel1.add(jLabelReDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 390, 530, 70));
 
         jLabelOP_List1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Auswertungen nach Kategorie", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
-        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 550, 250));
+        jPanel1.add(jLabelOP_List1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 550, 250));
 
         jLabelOP_List.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "OP-Liste", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 9))); // NOI18N
-        jPanel1.add(jLabelOP_List, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 550, 80));
+        jPanel1.add(jLabelOP_List, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 550, 80));
 
         jLabelEmployee1.setBackground(new java.awt.Color(255, 255, 255));
         jLabelEmployee1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mitarbeiter", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, 530, 70));
+        jPanel1.add(jLabelEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 530, 70));
 
         jLabelEmployee2.setBackground(new java.awt.Color(255, 255, 255));
         jLabelEmployee2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sitzungsart", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 9))); // NOI18N
-        jPanel1.add(jLabelEmployee2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 250, 220, 50));
+        jPanel1.add(jLabelEmployee2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 220, 50));
 
         jSearchTerm.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jSearchTermKeyPressed(evt);
             }
         });
-        jPanel1.add(jSearchTerm, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 10, 130, -1));
+        jPanel1.add(jSearchTerm, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, 100, -1));
 
         jButton3.setText("Suchen");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -369,11 +360,12 @@ public class MainGUI extends javax.swing.JFrame
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 10, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 10, -1, -1));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel1.setText("Gewählte Sitzung:");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 590, 10));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -481,16 +473,9 @@ public class MainGUI extends javax.swing.JFrame
 
     private void jButtonCreateProtocolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateProtocolActionPerformed
 		String reportSource = applicationProperties.getProperty("JasperReportsTemplatePath") + "Protokoll.jrxml";
-		//String reportDest = "H:\\ToDo\\report\\results\\Protokoll_"
-		//                       + actMeeting.getDate() + "_"
-		//                    + actMeeting.getMeetingType() + ".html";
-		//String pdfDest = "R:\\Protokoll_" + actMeeting.getDate()
-		//                + "_" + actMeeting.getMeetingType() + ".pdf";
 		ArrayList<Integer> prot = new ArrayList<Integer>();
 		prot.add(actMeeting.getProt());
 
-		//erzeuge Tagesordnung
-		//StringBuilder agenda = new StringBuilder();
 		String agenda = "";
 		DB_ToDo_Connect.openDB();
 		con = DB_ToDo_Connect.getCon();
@@ -528,35 +513,15 @@ public class MainGUI extends javax.swing.JFrame
 		params.put("Teilnehmer", getNameAndLastNameByID(getPersonnelIdsFromItemId("meeting_attendee_personnel", "meetingID", actMeeting.getMeetingID())));
 		params.put("Sonstige", actMeeting.getOtherPaticipants());
 		params.put("IMAGE", applicationProperties.getProperty("JasperReportsTemplatePath") + "img\\logo_konzepte.gif");
-		params.put("Agenda", agenda);//.toString());
+		params.put("Agenda", agenda);
 		ArrayList<HashMap> td = loadTodoData();
 
 		JRMapCollectionDataSource dataSet = new JRMapCollectionDataSource(td);
 
-		/*if(data.isEmpty()) {
-		HashMap<String,String> fields= new HashMap<String,String>();
-		fields.put("Kategorie", "! FEHLER !");
-		fields.put("Inhalt", "!!! Für diese Sitzung wurden noch keine Daten eingegeben !!!");
-		fields.put("Verantwortliche", "Aktueller Benutzer");
-		data.add(fields);
-
-		}
-		 */
 		try
 		{
-			JasperReport jasperReport =
-						 JasperCompileManager.compileReport(reportSource);
-
-			JasperPrint jasperPrint =
-						JasperFillManager.fillReport(jasperReport, params, dataSet);
-
-			//++++++++++++++ HTML-Export  +++++++++++++++
-			//JasperExportManager.exportReportToHtmlFile(
-			//jasperPrint, reportDest);
-
-			//++++++++++++++  PDF-Export  ++++++++++++++++
-			//JasperExportManager.exportReportToPdfFile(jasperPrint, pdfDest);
-
+			JasperReport jasperReport = JasperCompileManager.compileReport(reportSource);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSet);
 			JasperViewer.viewReport(jasperPrint, false);
 		}
 		catch (JRException ex)
@@ -566,7 +531,6 @@ public class MainGUI extends javax.swing.JFrame
     }//GEN-LAST:event_jButtonCreateProtocolActionPerformed
 
     private void jMenuItemAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAreaActionPerformed
-		//AreaGUI öffnen um alle Bereiche anzuzeigen und zu bearbeiten
 		AreaGUI area = new AreaGUI();
 		area.setVisible(true);
     }//GEN-LAST:event_jMenuItemAreaActionPerformed
@@ -3287,6 +3251,6 @@ public class MainGUI extends javax.swing.JFrame
     private javax.swing.JMenu jMenuStammdaten;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jSearchTerm;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }
