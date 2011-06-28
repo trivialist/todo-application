@@ -126,7 +126,7 @@ public class MigrateFrame extends javax.swing.JFrame
 			try
 			{
 				Statement statement = personnelConn.createStatement();
-				ResultSet resultSet = statement.executeQuery("SELECT Personalnummer FROM stammdaten WHERE Personalnummer = " + token);
+				ResultSet resultSet = statement.executeQuery("SELECT Personalnummer FROM Stammdaten WHERE Personalnummer = " + token);
 
 				resultSet.next();
 
