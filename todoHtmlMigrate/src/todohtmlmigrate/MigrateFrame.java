@@ -360,14 +360,17 @@ public class MigrateFrame extends javax.swing.JFrame
 		jTextPane2.setText(content);
 		String html = mergeLines(migrateParagraphs(migrateLists(getTrimmedLines(content))));
 		htmledit.setText(html);
-		System.out.println(html);
-		System.out.println("-----------------------------------------------");
+		//System.out.println(html);
+		//System.out.println("-----------------------------------------------");
 
 		//sem.acquire();
 		
+                System.out.println(id);
+                
 		PreparedStatement pstmt = todoConn.prepareStatement("UPDATE Protokollelement SET Inhalt = ? WHERE ToDoID = ?");
 		pstmt.setString(1, html);
 		pstmt.setInt(2, id);
+                pstmt.executeUpdate();
 		pstmt.close();
 	}
 
