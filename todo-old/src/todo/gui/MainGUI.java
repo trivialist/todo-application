@@ -160,7 +160,7 @@ public class MainGUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Protokolldatenbank - Konzept-e für Bildung und Soziales GmbH");
-        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        setFont(new java.awt.Font("Tahoma", 0, 11));
         setMinimumSize(new java.awt.Dimension(590, 530));
         setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -425,6 +425,7 @@ public class MainGUI extends javax.swing.JFrame
         jMenuStammdaten.add(jMenuItemMeetingType);
 
         jMenuItemFinishingStatus.setText("Bearbeitungsstatus");
+        jMenuItemFinishingStatus.setEnabled(false);
         jMenuItemFinishingStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemFinishingStatusActionPerformed(evt);
@@ -433,6 +434,7 @@ public class MainGUI extends javax.swing.JFrame
         jMenuStammdaten.add(jMenuItemFinishingStatus);
 
         jMenuItemCategory.setText("Kategorie");
+        jMenuItemCategory.setEnabled(false);
         jMenuItemCategory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemCategoryActionPerformed(evt);
@@ -449,6 +451,7 @@ public class MainGUI extends javax.swing.JFrame
         jMenuStammdaten.add(jMenuItemInstitution);
 
         jMenuItemArea.setText("Bereich");
+        jMenuItemArea.setEnabled(false);
         jMenuItemArea.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemAreaActionPerformed(evt);
@@ -457,6 +460,7 @@ public class MainGUI extends javax.swing.JFrame
         jMenuStammdaten.add(jMenuItemArea);
 
         jMenuItemTopic.setText("Thema");
+        jMenuItemTopic.setEnabled(false);
         jMenuItemTopic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemTopicActionPerformed(evt);

@@ -83,6 +83,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFinishingStatus">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Bearbeitungsstatus"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemFinishingStatusActionPerformed"/>
@@ -91,6 +92,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemCategory">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Kategorie"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemCategoryActionPerformed"/>
@@ -107,6 +109,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemArea">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Bereich"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemAreaActionPerformed"/>
@@ -115,6 +118,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemTopic">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Thema"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemTopicActionPerformed"/>
