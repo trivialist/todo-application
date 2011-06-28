@@ -11,6 +11,7 @@
 package todohtmlmigrate;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -115,10 +116,10 @@ public class MigrateFrame extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
                     .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -362,12 +363,12 @@ public class MigrateFrame extends javax.swing.JFrame
 		System.out.println(html);
 		System.out.println("-----------------------------------------------");
 
-		sem.acquire();
+		//sem.acquire();
 		
-		/*PreparedStatement pstmt = todoConn.prepareStatement("UPDATE Protokollelement SET Inhalt = ? WHERE ToDoID = ?");
-		pstmt.setString(1, transformToHtml(content));
+		PreparedStatement pstmt = todoConn.prepareStatement("UPDATE Protokollelement SET Inhalt = ? WHERE ToDoID = ?");
+		pstmt.setString(1, html);
 		pstmt.setInt(2, id);
-		pstmt.close();*/
+		pstmt.close();
 	}
 
 	private void migrateAllElements() throws Exception
@@ -407,7 +408,7 @@ public class MigrateFrame extends javax.swing.JFrame
 
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
 	{//GEN-HEADEREND:event_jButton2ActionPerformed
-		sem.release();
+		//sem.release();
 	}//GEN-LAST:event_jButton2ActionPerformed
 
 	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
