@@ -35,19 +35,21 @@ import javax.swing.border.Border;
  * 
  * @author Bodo Tasche
  */
-public class DayLabel extends FlatButton implements ActionListener {
-
+public class DayLabel extends FlatButton implements ActionListener
+{
 	/**
 	 * Creates the DayLabel
 	 * @param day The Day of the Month for this Label
 	 * @param monthPanel The MonthPanel using this
 	 */
-	public DayLabel(int day, boolean today, JMonthPanel monthPanel) {
+	public DayLabel(int day, boolean today, JMonthPanel monthPanel)
+	{
 		super(Integer.toString(day));
 
 		_today = today;
-		
-		if (_today) {
+
+		if (_today)
+		{
 			super.setBorder(BorderFactory.createEtchedBorder());
 		}
 
@@ -66,10 +68,14 @@ public class DayLabel extends FlatButton implements ActionListener {
 	 * 
 	 * @param border the Border to use 
 	 */
-	public void setBorder(Border border) {
-		if (_today) {
+	public void setBorder(Border border)
+	{
+		if (_today)
+		{
 			super.setBorder(BorderFactory.createEtchedBorder());
-		} else {
+		}
+		else
+		{
 			super.setBorder(border);
 		}
 	}
@@ -78,14 +84,18 @@ public class DayLabel extends FlatButton implements ActionListener {
 	 * Sets the selction of this DayLabel
 	 * @param selected Selected ?
 	 */
-	public void setSelected(boolean selected) {
+	public void setSelected(boolean selected)
+	{
 		_selected = selected;
 
-		if (_selected) {
+		if (_selected)
+		{
 			setOpaque(true);
 			setBackground(JMonthPanel.SELECTED_BACKGROUND_COLOR);
 			setForeground(JMonthPanel.SELECTED_FONT_COLOR);
-		} else {
+		}
+		else
+		{
 			setOpaque(false);
 			setBackground(JMonthPanel.BACKGROUND_COLOR);
 			setForeground(JMonthPanel.FONT_COLOR);
@@ -96,23 +106,23 @@ public class DayLabel extends FlatButton implements ActionListener {
 	 * Is this DayLabel selected ?
 	 * @return Selected
 	 */
-	public boolean isSelected() {
+	public boolean isSelected()
+	{
 		return _selected;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e)
+	{
 		_monthPanel.setSelectedDayOfMonth(_day);
 		requestFocus();
 	}
-
 	/**
 	 * Is the showing Day the current day ?
 	 */
 	private boolean _today;
-
 	/**
 	 * The MonthPanel for this DayLabel
 	 */
@@ -125,5 +135,4 @@ public class DayLabel extends FlatButton implements ActionListener {
 	 * Is this DayLabel selected
 	 */
 	private boolean _selected = false;
-
 }

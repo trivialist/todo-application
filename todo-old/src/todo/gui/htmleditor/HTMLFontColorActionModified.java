@@ -1,7 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.gui.htmleditor;
 
 import java.awt.event.ActionEvent;
@@ -11,10 +17,6 @@ import javax.swing.text.StyledEditorKit;
 import net.atlanticbb.tantlinger.ui.text.HTMLUtils;
 import net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction;
 
-/**
- *
- * @author Sven
- */
 public class HTMLFontColorActionModified extends HTMLTextEditAction
 {
 	public HTMLFontColorActionModified()

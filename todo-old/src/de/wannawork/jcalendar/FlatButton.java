@@ -22,11 +22,11 @@ package de.wannawork.jcalendar;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.UIManager;
@@ -38,27 +38,31 @@ import javax.swing.border.Border;
  * 
  * @author Bodo Tasche, Dennis Urech
  */
-public class FlatButton extends JButton implements FocusListener, MouseListener{
-	
+public class FlatButton extends JButton implements FocusListener, MouseListener
+{
 	/**
 	 * Creates the Button
 	 * @param text Text in the Button
 	 */
-	public FlatButton(String text) {
+	public FlatButton(String text)
+	{
 		super(text);
-		
+
 		_focus = BorderFactory.createEtchedBorder();
-		_withoutfocus = BorderFactory.createEmptyBorder(2, 2, 2, 2); 
-		
+		_withoutfocus = BorderFactory.createEmptyBorder(2, 2, 2, 2);
+
 		setBorder(_withoutfocus);
-	
+
 		// Work-Around for Bug in jgoodies
-		if (UIManager.getLookAndFeel().getClass().toString().startsWith("class com.jgoodies")) {
+		if (UIManager.getLookAndFeel().getClass().toString().startsWith("class com.jgoodies"))
+		{
 			setOpaque(false);
-		} else {
+		}
+		else
+		{
 			setContentAreaFilled(false);
 		}
-		
+
 		addFocusListener(this);
 		addMouseListener(this);
 	}
@@ -66,46 +70,55 @@ public class FlatButton extends JButton implements FocusListener, MouseListener{
 	/* (non-Javadoc)
 	 * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
 	 */
-	public void focusGained(FocusEvent e) {
+	public void focusGained(FocusEvent e)
+	{
 		setBorder(_focus);
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
 	 */
-	public void focusLost(FocusEvent e) {
+	public void focusLost(FocusEvent e)
+	{
 		setBorder(_withoutfocus);
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
-	public void mouseClicked(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e)
+	{
+	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(MouseEvent e)
+	{
 		setBorder(_focus);
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(MouseEvent e)
+	{
 		setBorder(_withoutfocus);
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e)
+	{
+	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
-	public void mouseReleased(MouseEvent e) {}
-
+	public void mouseReleased(MouseEvent e)
+	{
+	}
 	/**
 	 * The focus-Border
 	 */

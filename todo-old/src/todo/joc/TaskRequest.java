@@ -1,29 +1,28 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.joc;
 
-import todo.gui.GlobalError;
+import todo.util.GlobalError;
 import com.moyosoft.connector.com.*;
 import com.moyosoft.connector.exception.*;
 import com.moyosoft.connector.ms.outlook.*;
 import com.moyosoft.connector.ms.outlook.folder.*;
 import com.moyosoft.connector.ms.outlook.task.*;
-
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
-/**
- *
- * @author hertel
- *
- */
 public class TaskRequest
 {
-
 	private String header = "";
 	private String area = "";
 	private String topic = "";
@@ -80,11 +79,12 @@ public class TaskRequest
 					//Empfänger(Verantwortliche/r) festlegen
 					task.getRecipients().add(enumResp.nextElement().toString());
 
-				} catch (Exception ex)
+				}
+				catch (Exception ex)
 				{
 					Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
-					JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-							"Beim Erstellen der Empfänger ist ein Fehler aufgetreten.\n" + "Bitte überprüfen Sie die E-Mail Adressen der Empfänger", "Fehler", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+														+ "Beim Erstellen der Empfänger ist ein Fehler aufgetreten.\n" + "Bitte überprüfen Sie die E-Mail Adressen der Empfänger", "Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 
@@ -93,12 +93,14 @@ public class TaskRequest
 			//freigeben der Anwendung
 			outlookApplication.dispose();
 
-		} catch (ComponentObjectModelException ex)
+		}
+		catch (ComponentObjectModelException ex)
 		{
 			Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(null, "COM-Fehler: " + ex.getMessage());
 			GlobalError.showErrorAndExit();
-		} catch (LibraryNotFoundException ex)
+		}
+		catch (LibraryNotFoundException ex)
 		{
 			// Wenn dieser Fehler auftritt, fehlt die Datei 'moyocore.dll' im Java-Lib-Pfad
 			Logger.getLogger(TaskRequest.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,38 +118,38 @@ public class TaskRequest
 	{
 		if (header.equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-					"Betreff konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+												+ "Betreff konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		if (area.equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-					"Bereich konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+												+ "Bereich konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		if (topic.equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-					"Thema konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+												+ "Thema konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		if (content.equals(""))
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-					"Inhalt konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+												+ "Inhalt konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		if (reDate == null)
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-					"WV-Datum konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+												+ "WV-Datum konnte nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		if (respVec == null)
 		{
-			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. " +
-					"Verantwortliche/r konnte/n nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen der Aufgabe. "
+												+ "Verantwortliche/r konnte/n nicht erstellt werden", "Fehler", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		else

@@ -1,29 +1,28 @@
-/*
- * TodoTableModel.java
- *
- * Created on 10. Januar 2007, 05:35
- *
- * To change this template, choose Tools | Options and locate the template under
- * the Source Creation and Management node. Right-click the template and choose
- * Open. You can then make changes to the template in the Source Editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.tablemodel;
 
-import todo.gui.GlobalError;
-import todo.core.Todo;
-import todo.dbcon.DB_ToDo_Connect;
+import todo.util.DateFormater;
+import todo.util.GlobalError;
+import todo.entity.Todo;
+import todo.db.DatabaseTodoConnect;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import java.sql.*;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import todo.util.DataReloadable;
 
-/**
- *
- * @author Marcus Hertel
- */
-public class TodoTableModel extends AbstractTableModel
+public class TodoTableModel extends AbstractTableModel implements DataReloadable
 {
 
 	/* Todo-Objekte welche zeilenweise agezeigt werden sollen */
@@ -37,7 +36,13 @@ public class TodoTableModel extends AbstractTableModel
 	{
 		this.meetingID = meetingID;
 		setColumnNames();
-		this.loadData();
+		loadData();
+	}
+	
+	public void reloadData()
+	{
+		todoObjects.clear();
+		loadData();
 	}
 
 	public Object getValueAt(final int zeile, final int spalte)
@@ -101,8 +106,7 @@ public class TodoTableModel extends AbstractTableModel
 
 	protected void loadData()
 	{
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 		Todo td = new Todo();
 
 		try
@@ -139,7 +143,7 @@ public class TodoTableModel extends AbstractTableModel
 			Logger.getLogger(TodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 	}
 
 	public void setColumnNames()
@@ -154,8 +158,7 @@ public class TodoTableModel extends AbstractTableModel
 	public String getCategoryByID(int catID)
 	{
 		String cat = "";
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 
 		try
 		{
@@ -174,15 +177,14 @@ public class TodoTableModel extends AbstractTableModel
 			Logger.getLogger(TodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 		return cat;
 	}
 
 	public String getTopicNameByTBZ_ID(int tbz_id)
 	{
 		String name = "";
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 
 		try
 		{
@@ -202,15 +204,14 @@ public class TodoTableModel extends AbstractTableModel
 			Logger.getLogger(TodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 		return name;
 	}
 
 	public String getAreaNameByTBZ_ID(int tbz_id)
 	{
 		String name = "";
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 
 		try
 		{
@@ -230,7 +231,7 @@ public class TodoTableModel extends AbstractTableModel
 			Logger.getLogger(TodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 		return name;
 	}
 

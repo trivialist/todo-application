@@ -1,16 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
 
-/*
- * TodoNoteSubGUI.java
- *
- * Created on 16.03.2010, 17:27:04
- */
 package todo.dialog;
 
-import todo.gui.GlobalError;
+import todo.util.GlobalError;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -19,17 +19,12 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import todo.core.Employee;
-import todo.dbcon.DB_Mitarbeiter_Connect;
-import todo.dbcon.DB_ToDo_Connect;
-import todo.subgui.MeetingSubGUI;
+import todo.entity.Employee;
+import todo.db.DatabaseEmployeeConnect;
+import todo.db.DatabaseTodoConnect;
 
-/**
- * @author Sven Skrabal
- */
 public class TodoNoteDialog extends javax.swing.JDialog
 {
-
 	/** Creates new form TodoNoteSubGUI */
 	public TodoNoteDialog(java.awt.Frame parent, boolean modal)
 	{
@@ -161,8 +156,8 @@ public class TodoNoteDialog extends javax.swing.JDialog
 	private ArrayList getAllEmployees()
 	{
 		ArrayList<Employee> employeeObjects = new ArrayList<Employee>();
-		DB_Mitarbeiter_Connect.openDB();
-		Connection con = DB_Mitarbeiter_Connect.getCon();
+		DatabaseEmployeeConnect.openDB();
+		Connection con = DatabaseEmployeeConnect.openDB();
 
 		try
 		{
@@ -173,23 +168,24 @@ public class TodoNoteDialog extends javax.swing.JDialog
 			while (rst.next())
 			{
 				employeeObjects.add(new Employee((rst.getInt("Personalnummer")),
-						rst.getString("Vorname"), rst.getString("Nachname")));
+												 rst.getString("Vorname"), rst.getString("Nachname")));
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(TodoNoteDialog.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_Mitarbeiter_Connect.closeDB(con);
+		DatabaseEmployeeConnect.closeDB(con);
 		return employeeObjects;
 	}
 
 	public static void showMemoPopup(int memoId)
 	{
-		DB_ToDo_Connect.openDB();
-		Connection con = DB_ToDo_Connect.getCon();
+		DatabaseTodoConnect.openDB();
+		Connection con = DatabaseTodoConnect.openDB();
 		try
 		{
 			Statement stmt = con.createStatement();
@@ -211,12 +207,11 @@ public class TodoNoteDialog extends javax.swing.JDialog
 		}
 		catch (Exception ex)
 		{
-			Logger.getLogger(MeetingSubGUI.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(TodoNoteDialog.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 	}
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private de.wannawork.jcalendar.JCalendarComboBox jCalendarComboBoxDate;

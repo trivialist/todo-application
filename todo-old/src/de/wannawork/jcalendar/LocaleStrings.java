@@ -22,6 +22,7 @@ package de.wannawork.jcalendar;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -33,12 +34,12 @@ import java.util.logging.Logger;
  * 
  * @author Bodo Tasche
  */
-public class LocaleStrings {
+public class LocaleStrings
+{
 	/**
 	 * Bundle-Name
 	 */
 	private static final String BUNDLE_NAME = "de.wannawork.jcalendar.jcalendar"; //$NON-NLS-1$
-
 	/**
 	 * Creates the ResourceBundle
 	 */
@@ -49,10 +50,14 @@ public class LocaleStrings {
 	 * @param key Key to get
 	 * @return localized String
 	 */
-	public static String getString(String key) {
-		try {
+	public static String getString(String key)
+	{
+		try
+		{
 			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException ex) {
+		}
+		catch (MissingResourceException ex)
+		{
 			Logger.getLogger(LocaleStrings.class.getName()).log(Level.SEVERE, null, ex);
 			return '!' + key + '!';
 		}

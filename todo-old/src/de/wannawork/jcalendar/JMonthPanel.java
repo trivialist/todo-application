@@ -42,13 +42,14 @@ import javax.swing.event.ChangeListener;
  * 
  * @author Bodo Tasche
  */
-public class JMonthPanel extends JPanel {
-
+public class JMonthPanel extends JPanel
+{
 	/**
 	 * Creates a JMonthPanel using the current Date and 
 	 * current Local settings.
 	 */
-	public JMonthPanel() {
+	public JMonthPanel()
+	{
 		init(Calendar.getInstance(), Locale.getDefault());
 	}
 
@@ -59,7 +60,8 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @param cal Calendar to use
 	 */
-	public JMonthPanel(Calendar cal) {
+	public JMonthPanel(Calendar cal)
+	{
 		init(cal, Locale.getDefault());
 	}
 
@@ -69,7 +71,8 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @param locale Locale to use
 	 */
-	public JMonthPanel(Locale locale) {
+	public JMonthPanel(Locale locale)
+	{
 		init(Calendar.getInstance(locale), locale);
 	}
 
@@ -80,7 +83,8 @@ public class JMonthPanel extends JPanel {
 	 * @param cal Calendar to use
 	 * @param locale Locale to use
 	 */
-	public JMonthPanel(Calendar cal, Locale locale) {
+	public JMonthPanel(Calendar cal, Locale locale)
+	{
 		init(cal, locale);
 	}
 
@@ -90,7 +94,8 @@ public class JMonthPanel extends JPanel {
 	 * @param cal Calendar to use
 	 * @param loc Locale to use
 	 */
-	private void init(Calendar cal, Locale loc) {
+	private void init(Calendar cal, Locale loc)
+	{
 		_cal = Calendar.getInstance(loc);
 		_cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH));
 		_cal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
@@ -102,7 +107,8 @@ public class JMonthPanel extends JPanel {
 	/**
 	 * Creates the GUI
 	 */
-	private void createGUI() {
+	private void createGUI()
+	{
 		setLayout(new BorderLayout());
 		add(createHeader(), BorderLayout.NORTH);
 		add(createTable(), BorderLayout.CENTER);
@@ -112,7 +118,8 @@ public class JMonthPanel extends JPanel {
 	 * Creates a JPanel containing the Header
 	 * @return Header
 	 */
-	private JPanel createHeader() {
+	private JPanel createHeader()
+	{
 		JPanel header = new JPanel();
 
 		header.setLayout(new GridLayout(1, 7, 1, 1));
@@ -123,18 +130,21 @@ public class JMonthPanel extends JPanel {
 
 		char[] letters = new char[7];
 
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 7; i++)
+		{
 			letters[cal.get(Calendar.DAY_OF_WEEK) - 1] = format.format(cal.getTime()).charAt(0);
 			cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 1);
 		}
 
 		int pos = cal.getFirstDayOfWeek() - 1;
 
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 7; i++)
+		{
 			JLabel empty = new JLabel(String.valueOf(letters[pos]));
-			
+
 			pos++;
-			if (pos > 6) {
+			if (pos > 6)
+			{
 				pos = 0;
 			}
 
@@ -149,7 +159,8 @@ public class JMonthPanel extends JPanel {
 	 * Creates a JPanel containing the Day-Table
 	 * @return Day Table
 	 */
-	private JPanel createTable() {
+	private JPanel createTable()
+	{
 		_days = new ArrayList();
 
 		JPanel table = new JPanel();
@@ -170,16 +181,21 @@ public class JMonthPanel extends JPanel {
 		int firstDay = cal.get(Calendar.DAY_OF_WEEK);
 
 		if (firstDay == 0)
+		{
 			firstDay--;
-		else {
+		}
+		else
+		{
 			firstDay -= cal.getFirstDayOfWeek();
 		}
 
-		if (firstDay < 0) {
+		if (firstDay < 0)
+		{
 			firstDay += 7;
 		}
 
-		while (position < firstDay) {
+		while (position < firstDay)
+		{
 			JLabel empty = new JLabel();
 			table.add(empty);
 			position++;
@@ -187,22 +203,25 @@ public class JMonthPanel extends JPanel {
 
 		int curDay = _cal.get(Calendar.DAY_OF_MONTH);
 
-		while ((position < 42) && (cal.get(Calendar.MONTH) == month)) {
-			
+		while ((position < 42) && (cal.get(Calendar.MONTH) == month))
+		{
+
 			boolean todayB = false;
-			
-			if ((cal.get(Calendar.YEAR) == today.get(Calendar.YEAR)) &&
-			    (cal.get(Calendar.MONTH) == today.get(Calendar.MONTH)) &&
-				(cal.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH))) {
+
+			if ((cal.get(Calendar.YEAR) == today.get(Calendar.YEAR))
+				&& (cal.get(Calendar.MONTH) == today.get(Calendar.MONTH))
+				&& (cal.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)))
+			{
 				todayB = true;
 			}
-			
+
 			DayLabel day = new DayLabel(cal.get(Calendar.DAY_OF_MONTH), todayB, this);
 			table.add(day);
 
 			_days.add(day);
 
-			if (curDay == cal.get(Calendar.DAY_OF_MONTH)) {
+			if (curDay == cal.get(Calendar.DAY_OF_MONTH))
+			{
 				day.setSelected(true);
 			}
 
@@ -210,7 +229,8 @@ public class JMonthPanel extends JPanel {
 			cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 1);
 		}
 
-		while (position < 42) {
+		while (position < 42)
+		{
 			JLabel empty = new JLabel();
 			table.add(empty);
 			position++;
@@ -224,7 +244,8 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @param cal Calendar to show
 	 */
-	public void setCalendar(Calendar cal) {
+	public void setCalendar(Calendar cal)
+	{
 		_cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH));
 		_cal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
 		_cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
@@ -232,17 +253,18 @@ public class JMonthPanel extends JPanel {
 		removeAll();
 		createGUI();
 		updateUI();
-		
+
 		DayLabel dayLabel = (DayLabel) _days.get(cal.get(Calendar.DAY_OF_MONTH) - 1);
 		dayLabel.grabFocus();
-		
+
 		setBackground(BACKGROUND_COLOR);
 	}
 
 	/**
 	 * Sets the Focus to the current selected Day
 	 */
-	public void grabFocus() {
+	public void grabFocus()
+	{
 		super.grabFocus();
 		DayLabel dayLabel = (DayLabel) _days.get(_cal.get(Calendar.DAY_OF_MONTH) - 1);
 		dayLabel.grabFocus();
@@ -253,7 +275,8 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @return current Date
 	 */
-	public Calendar getCalendar() {
+	public Calendar getCalendar()
+	{
 		return _cal;
 	}
 
@@ -262,9 +285,11 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @param day selected Day
 	 */
-	public void setSelectedDayOfMonth(int day) {
-		
-		if ( _enabled && (day > 0) && (day <= _days.size())) {
+	public void setSelectedDayOfMonth(int day)
+	{
+
+		if (_enabled && (day > 0) && (day <= _days.size()))
+		{
 			int oldday = _cal.get(Calendar.DAY_OF_MONTH);
 
 			DayLabel dayLabel = (DayLabel) _days.get(oldday - 1);
@@ -275,7 +300,7 @@ public class JMonthPanel extends JPanel {
 			dayLabel = (DayLabel) _days.get(day - 1);
 			dayLabel.setSelected(true);
 			updateUI();
-			
+
 			fireChangeEvent();
 		}
 
@@ -286,7 +311,8 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @return selected Day
 	 */
-	public int getSelectedDayOfMonth() {
+	public int getSelectedDayOfMonth()
+	{
 		return _cal.get(Calendar.DAY_OF_MONTH);
 	}
 
@@ -298,7 +324,8 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @param listener ChangeListener
 	 */
-	public void addChangeListener(ChangeListener listener) {
+	public void addChangeListener(ChangeListener listener)
+	{
 		_changeListener.add(listener);
 	}
 
@@ -307,7 +334,8 @@ public class JMonthPanel extends JPanel {
 	 * 
 	 * @param listener listener to remove
 	 */
-	public void removeChangeListener(ChangeListener listener) {
+	public void removeChangeListener(ChangeListener listener)
+	{
 		_changeListener.remove(listener);
 	}
 
@@ -315,19 +343,23 @@ public class JMonthPanel extends JPanel {
 	 * Gets all ChangeListeners
 	 * @return all ChangeListeners
 	 */
-	public ChangeListener[] getChangeListener() {
+	public ChangeListener[] getChangeListener()
+	{
 		return (ChangeListener[]) _changeListener.toArray(new ChangeListener[_changeListener.size()]);
 	}
 
 	/**
 	 * Fires the ChangeEvent
 	 */
-	protected void fireChangeEvent() {
-		if (!_fireingChangeEvent) {
+	protected void fireChangeEvent()
+	{
+		if (!_fireingChangeEvent)
+		{
 			_fireingChangeEvent = true;
 			ChangeEvent event = new ChangeEvent(this);
 
-			for (int i = 0; i < _changeListener.size(); i++) {
+			for (int i = 0; i < _changeListener.size(); i++)
+			{
 				((ChangeListener) _changeListener.get(i)).stateChanged(event);
 			}
 
@@ -340,7 +372,8 @@ public class JMonthPanel extends JPanel {
 	 * Enables/Disables the Panel
 	 * @param enabled Enabled ?
 	 */
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled)
+	{
 		_enabled = enabled;
 	}
 
@@ -348,15 +381,14 @@ public class JMonthPanel extends JPanel {
 	 * Is the Panel enabled ?
 	 * @return enabled ?
 	 */
-	public boolean isEnabled() {
+	public boolean isEnabled()
+	{
 		return _enabled;
 	}
-
 	/**
 	 * Component enabled ?
 	 */
 	private boolean _enabled = true;
-
 	/**
 	 * The current Calendar
 	 */
@@ -369,7 +401,6 @@ public class JMonthPanel extends JPanel {
 	 * All Day-Buttons in this MonthPanel
 	 */
 	private ArrayList _days;
-
 	/**
 	 * The list of ChangeListeners
 	 */
@@ -378,7 +409,6 @@ public class JMonthPanel extends JPanel {
 	 * Currently firing an ChangeEvent?
 	 */
 	private boolean _fireingChangeEvent = false;
-
 	/**
 	 * Color for the Background
 	 */
@@ -403,5 +433,4 @@ public class JMonthPanel extends JPanel {
 	 * Font Color for the Header
 	 */
 	public static final Color HEADER_FONT_COLOR = UIManager.getColor("TextField.inactiveBackground");
-
 }

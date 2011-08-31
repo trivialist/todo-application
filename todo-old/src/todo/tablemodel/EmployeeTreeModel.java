@@ -1,7 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.tablemodel;
 
 import java.sql.Connection;
@@ -13,21 +19,16 @@ import java.util.logging.Logger;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import todo.dbcon.DB_Mitarbeiter_Connect;
+import todo.db.DatabaseEmployeeConnect;
 
-/**
- *
- * @author sven
- */
 public class EmployeeTreeModel implements TreeModel
 {
-
 	private Group root = new Group("root", -1);
 
 	public EmployeeTreeModel()
 	{
-		DB_Mitarbeiter_Connect.openDB();
-		Connection dbConnection = DB_Mitarbeiter_Connect.getCon();
+		Connection dbConnection = DatabaseEmployeeConnect.openDB();
+
 		try
 		{
 			Statement dbStatement = dbConnection.createStatement();
@@ -39,13 +40,19 @@ public class EmployeeTreeModel implements TreeModel
 				Group currentGroup = new Group(primaryResultSet.getString("Name"), groupID);
 
 				Statement memberStatement = dbConnection.createStatement();
-				ResultSet secondaryResultSet = memberStatement.executeQuery("SELECT * FROM TPG INNER JOIN Stammdaten ON " +
-						"TPG.PersonID = Stammdaten.Personalnummer WHERE GruppenID = " + groupID +
-						" ORDER BY Nachname ASC, Vorname ASC");
+				ResultSet secondaryResultSet = memberStatement.executeQuery("SELECT * FROM TPG INNER JOIN Stammdaten ON "
+																			+ "TPG.PersonID = Stammdaten.Personalnummer WHERE GruppenID = " + groupID
+																			+ " ORDER BY Nachname ASC, Vorname ASC");
 
 				while (secondaryResultSet.next())
 				{
-					currentGroup.addChild(new NameLeaf(secondaryResultSet.getString("Nachname") + ", " + secondaryResultSet.getString("Vorname"), secondaryResultSet.getInt("PersonID")));
+					String lastName = secondaryResultSet.getString("Nachname");
+					String firstName = secondaryResultSet.getString("Vorname");
+					
+					if(lastName != null && firstName != null)
+					{
+						currentGroup.addChild(new NameLeaf(lastName + ", " + firstName, secondaryResultSet.getInt("PersonID")));
+					}
 				}
 
 				secondaryResultSet.close();
@@ -53,18 +60,20 @@ public class EmployeeTreeModel implements TreeModel
 
 				root.addChild(currentGroup);
 			}
+			
 			primaryResultSet.close();
 			dbStatement.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(MeetingTableModel.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		DB_Mitarbeiter_Connect.closeDB(dbConnection);
+
+		DatabaseEmployeeConnect.closeDB(dbConnection);
 	}
 
 	public static class Group
 	{
-
 		private String groupName;
 		private ArrayList<Object> childElements = new ArrayList<Object>();
 		private int dbId;
@@ -99,7 +108,6 @@ public class EmployeeTreeModel implements TreeModel
 
 	public static class NameLeaf
 	{
-
 		private String leafName;
 		private int dbId;
 

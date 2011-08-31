@@ -1,6 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
 
 package todo.tablemodel;
@@ -8,12 +13,8 @@ package todo.tablemodel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
-import todo.gui.GlobalDatabaseSearch.SearchHit;
+import todo.util.GlobalDatabaseSearch.SearchHit;
 
-/**
- *
- * @author Sven
- */
 public class SearchResultTableModel extends AbstractTableModel
 {
 	private ArrayList<SearchHit> searchResults = null;
@@ -27,15 +28,15 @@ public class SearchResultTableModel extends AbstractTableModel
 		this.searchResults = searchResults;
 		this.searchPhrase = searchPhrase;
 
-		assignedDescriptions.put("todo.core.Area", "Bereich");
-		assignedDescriptions.put("todo.core.Institution", "Institution");
-		assignedDescriptions.put("todo.core.Category", "Kategorie");
-		assignedDescriptions.put("todo.core.Memo", "Memo");
-		assignedDescriptions.put("todo.core.Todo", "Protokollelement");
-		assignedDescriptions.put("todo.core.MeetingType", "Sitzungsart");
-		assignedDescriptions.put("todo.core.Meeting", "Sitzung");
-		assignedDescriptions.put("todo.core.FinStatus", "Status");
-		assignedDescriptions.put("todo.core.Topic", "Thema");
+		assignedDescriptions.put("todo.entity.Area", "Bereich");
+		assignedDescriptions.put("todo.entity.Institution", "Institution");
+		assignedDescriptions.put("todo.entity.Category", "Kategorie");
+		assignedDescriptions.put("todo.entity.Memo", "Memo");
+		assignedDescriptions.put("todo.entity.Todo", "Protokollelement");
+		assignedDescriptions.put("todo.entity.MeetingType", "Sitzungsart");
+		assignedDescriptions.put("todo.entity.Meeting", "Sitzung");
+		assignedDescriptions.put("todo.entity.FinStatus", "Status");
+		assignedDescriptions.put("todo.entity.Topic", "Thema");
 
 		int highestRelevance = 0;
 		for (int i = 0; i < getRowCount(); i++)
@@ -89,7 +90,7 @@ public class SearchResultTableModel extends AbstractTableModel
 		{
 			reformattedHits.append(columnName);
 			reformattedHits.append(" -> ");
-			reformattedHits.append(searchHits.get(columnName).replaceAll("[\r\n]", " ").replaceAll("[ \t]+", " "));
+			reformattedHits.append(searchHits.get(columnName).replaceAll("[\r\n]", " ").replaceAll("[ \t]+", " ").replaceAll("<(.*?)>", ""));
 			reformattedHits.append("\n");
 		}
 

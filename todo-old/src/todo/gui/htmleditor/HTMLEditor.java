@@ -1,13 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
 
-/*
- * HTMLEditor.java
- *
- * Created on 18.05.2011, 15:15:44
- */
 package todo.gui.htmleditor;
 
 import java.awt.Color;
@@ -28,10 +28,6 @@ import net.atlanticbb.tantlinger.ui.text.actions.HTMLTextEditAction;
 import org.bushe.swing.action.ActionList;
 import org.bushe.swing.action.ActionManager;
 
-/**
- *
- * @author Sven
- */
 public class HTMLEditor extends javax.swing.JPanel
 {
 	private JEditorPane editorPane;

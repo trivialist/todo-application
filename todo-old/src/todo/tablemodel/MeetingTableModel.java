@@ -1,17 +1,19 @@
-/*
- * MeetingTableModel.java
- *
- * Created on 9. Januar 2007, 19:33
- *
- * To change this template, choose Tools | Options and locate the template under
- * the Source Creation and Management node. Right-click the template and choose
- * Open. You can then make changes to the template in the Source Editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.tablemodel;
 
-import todo.gui.GlobalError;
-import todo.core.Meeting;
-import todo.dbcon.DB_ToDo_Connect;
+import todo.util.DateFormater;
+import todo.util.GlobalError;
+import todo.entity.Meeting;
+import todo.db.DatabaseTodoConnect;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import java.sql.*;
@@ -20,10 +22,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Marcus Hertel
- */
 public class MeetingTableModel extends AbstractTableModel
 {
 
@@ -94,8 +92,7 @@ public class MeetingTableModel extends AbstractTableModel
 
 	protected void loadData(String keyword, String field)
 	{
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 
 		String whereCondition = "";
 		if (!keyword.equals("") && !field.equals(""))
@@ -148,7 +145,7 @@ public class MeetingTableModel extends AbstractTableModel
 			Logger.getLogger(MeetingTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 	}
 
 	public void setColumnNames()

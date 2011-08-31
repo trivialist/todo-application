@@ -6,16 +6,15 @@ package de.wannawork.jcalendar;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.util.Calendar;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  * A class that creates a Dialog with a JCalendar.
  * @author bodo
  */
-public class JCalendarDialog {
+public class JCalendarDialog
+{
 	/** Parent */
 	private Component _parentComponent;
 	/** Title of the Dialog */
@@ -24,13 +23,13 @@ public class JCalendarDialog {
 	private String _message;
 	/** JCalendar in the Dialog */
 	private JCalendarComboBox _calendarBox;
-
 	/** Which OptionType */
 	private int _optionType;
 	/** Wich MessageType */
 	private int _messageType;
 
-	public JCalendarDialog(Component parentComponent, String title, String message) {
+	public JCalendarDialog(Component parentComponent, String title, String message)
+	{
 		_parentComponent = parentComponent;
 		_title = title;
 		_message = message;
@@ -40,7 +39,8 @@ public class JCalendarDialog {
 		_messageType = JOptionPane.QUESTION_MESSAGE;
 	}
 
-	public JCalendarDialog(Component parentComponent, String title, String message, JCalendarComboBox calendarBox) {
+	public JCalendarDialog(Component parentComponent, String title, String message, JCalendarComboBox calendarBox)
+	{
 		_parentComponent = parentComponent;
 		_title = title;
 		_message = message;
@@ -50,7 +50,8 @@ public class JCalendarDialog {
 		_messageType = JOptionPane.QUESTION_MESSAGE;
 	}
 
-	public JCalendarDialog(Component parentComponent, String title, String message, JCalendarComboBox calendarBox, int optionType, int messageType) {
+	public JCalendarDialog(Component parentComponent, String title, String message, JCalendarComboBox calendarBox, int optionType, int messageType)
+	{
 		_parentComponent = parentComponent;
 		_title = title;
 		_message = message;
@@ -59,7 +60,8 @@ public class JCalendarDialog {
 		_messageType = messageType;
 	}
 
-	public JCalendarDialog(Component parentComponent, String title, String message, int optionType, int messageType) {
+	public JCalendarDialog(Component parentComponent, String title, String message, int optionType, int messageType)
+	{
 		_parentComponent = parentComponent;
 		_title = title;
 		_message = message;
@@ -70,28 +72,34 @@ public class JCalendarDialog {
 	}
 
 	/**	 * Gets the Calendar from the Dialog
-         */
-	public Calendar getCalendar() {
+	 */
+	public Calendar getCalendar()
+	{
 		return getCalendar(JOptionPane.OK_OPTION);
 	}
 
 	/** 
-         * Returns the Calendar if a certain MessageOption was
-         * returnd by the Dialog
-         */
-	public Calendar getCalendar(int messageOption) {
-		if (showConfirmDialog() == messageOption) {
+	 * Returns the Calendar if a certain MessageOption was
+	 * returnd by the Dialog
+	 */
+	public Calendar getCalendar(int messageOption)
+	{
+		if (showConfirmDialog() == messageOption)
+		{
 			return _calendarBox.getCalendar();
-		} else {
+		}
+		else
+		{
 			return null;
 		}
 	}
 
 	/**
-         * Creates the Dialog and returns the Result
-         * @param MessageOption that was pressed
-         */
-	private int showConfirmDialog() {
+	 * Creates the Dialog and returns the Result
+	 * @param MessageOption that was pressed
+	 */
+	private int showConfirmDialog()
+	{
 		JPanel calPanel = new JPanel();
 		FlowLayout layout = new FlowLayout();
 		layout.setAlignment(FlowLayout.LEFT);
@@ -100,7 +108,10 @@ public class JCalendarDialog {
 		calPanel.setLayout(layout);
 		calPanel.add(_calendarBox);
 
-		Object[] msg = { _message, calPanel };
+		Object[] msg =
+		{
+			_message, calPanel
+		};
 		int result = JOptionPane.showConfirmDialog(_parentComponent, msg, _title, _optionType, _messageType);
 		return result;
 	}

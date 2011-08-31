@@ -1,16 +1,23 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.tablemodel;
 
+import todo.util.DateFormater;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import todo.gui.GlobalError;
-import todo.core.Todo;
-import todo.dbcon.DB_ToDo_Connect;
+import todo.util.GlobalError;
+import todo.entity.Todo;
+import todo.db.DatabaseTodoConnect;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.table.AbstractTableModel;
@@ -20,10 +27,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- * @author Sven Skrabal
- */
 public class OpListTableModel extends AbstractTableModel
 {
 	protected ArrayList<Todo> ptdObjects = new ArrayList<Todo>();
@@ -62,7 +65,7 @@ public class OpListTableModel extends AbstractTableModel
 			case 2:
 				return this.ptdObjects.get(zeile).getHeading();
 			case 3:
-				return getTextByNumberOfCharacters(this.ptdObjects.get(zeile).getContent(), 100);
+				return getTextByNumberOfCharacters(this.ptdObjects.get(zeile).getContent(), 100).replaceAll("[\r\n]", " ").replaceAll("[ \t]+", " ").replaceAll("<(.*?)>", "");
 			default:
 				return null;
 		}
@@ -123,8 +126,7 @@ public class OpListTableModel extends AbstractTableModel
 
 	private void loadData(int meetingTypeId, Date wvDate)
 	{
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 
 		try
 		{
@@ -184,10 +186,10 @@ public class OpListTableModel extends AbstractTableModel
 		}
 		catch (Exception ex)
 		{
-			Logger.getLogger(TopicTodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(OpListTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 	}
 
 	public void setColumnNames()

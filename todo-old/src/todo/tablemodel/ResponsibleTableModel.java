@@ -1,17 +1,18 @@
-/*
- * ResponsibleTableModel.java
- *
- * Created on 22. Januar 2007, 05:21
- *
- * To change this template, choose Tools | Options and locate the template under
- * the Source Creation and Management node. Right-click the template and choose
- * Open. You can then make changes to the template in the Source Editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.tablemodel;
 
-import todo.gui.GlobalError;
-import todo.core.Employee;
-import todo.dbcon.DB_Mitarbeiter_Connect;
+import todo.util.GlobalError;
+import todo.entity.Employee;
+import todo.db.DatabaseEmployeeConnect;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import java.sql.*;
@@ -20,10 +21,6 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Marcus Hertel
- */
 public class ResponsibleTableModel extends AbstractTableModel
 {
 
@@ -90,8 +87,7 @@ public class ResponsibleTableModel extends AbstractTableModel
 
 	protected void loadData()
 	{
-		DB_Mitarbeiter_Connect.openDB();
-		con = DB_Mitarbeiter_Connect.getCon();
+		con = DatabaseEmployeeConnect.openDB();
 
 		for(int employeeID : responsible)
 		{
@@ -115,7 +111,7 @@ public class ResponsibleTableModel extends AbstractTableModel
 				GlobalError.showErrorAndExit();
 			}
 		}
-		DB_Mitarbeiter_Connect.closeDB(con);
+		DatabaseEmployeeConnect.closeDB(con);
 	}
 
 	public void setColumnNames()

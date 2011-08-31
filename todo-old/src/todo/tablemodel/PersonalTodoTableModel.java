@@ -1,13 +1,20 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of 'Todo Application'
+ * 
+ * @see			http://www.konzept-e.de/
+ * @copyright	2006-2011 Konzept-e für Bildung und Soziales GmbH
+ * @author		Marcus Hertel, Sven Skrabal
+ * @license		LGPL - http://www.gnu.org/licenses/lgpl.html
+ * 
  */
+
 package todo.tablemodel;
 
-import todo.gui.GlobalError;
-import todo.core.Todo;
-import todo.core.Employee;
-import todo.dbcon.DB_ToDo_Connect;
+import todo.util.DateFormater;
+import todo.util.GlobalError;
+import todo.entity.Todo;
+import todo.entity.Employee;
+import todo.db.DatabaseTodoConnect;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 import java.sql.*;
@@ -16,14 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Marcus Hertel
- */
 public class PersonalTodoTableModel extends AbstractTableModel
 {
 	/* Sitzungdaten-Objekte welche zeilenweise agezeigt werden sollen */
-
 	protected ArrayList<Todo> ptdObjects = new ArrayList<Todo>();
 	private Vector<String> columnNames = new Vector<String>();
 	private static Connection con;
@@ -66,7 +68,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 	@Override
 	public Class<?> getColumnClass(int columnIndex)
 	{
-		if(columnIndex == 2)
+		if (columnIndex == 2)
 		{
 			return DateFormater.class;
 		}
@@ -131,21 +133,20 @@ public class PersonalTodoTableModel extends AbstractTableModel
 
 	protected void loadData()
 	{
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID AS ToDoID, " +
-						"Thema.Name AS Thema, Kategorie.Name AS Kategorie, Protokollelement.Wiedervorlagedatum AS WV, " +
-						"Protokollelement.WiedervorlageGesetzt AS WiedervorlageGesetzt, Protokollelement.Inhalt AS Inhalt, " +
-						"Status.Name AS Status, todo_responsible_personnel.personnelID FROM (Kategorie INNER JOIN " +
-						"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) INNER JOIN (Status INNER JOIN Protokollelement " +
-						"ON Status.StatusID = Protokollelement.StatusID) ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON " +
-						"Kategorie.KategorieID = Protokollelement.KategorieID) INNER JOIN todo_responsible_personnel ON " +
-						"Protokollelement.ToDoID = todo_responsible_personnel.todoID " +
-						"WHERE (todo_responsible_personnel.personnelID = " + emp.getEmployeeID() + ")" + sStat;
+			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID AS ToDoID, "
+						 + "Thema.Name AS Thema, Kategorie.Name AS Kategorie, Protokollelement.Wiedervorlagedatum AS WV, "
+						 + "Protokollelement.WiedervorlageGesetzt AS WiedervorlageGesetzt, Protokollelement.Inhalt AS Inhalt, "
+						 + "Status.Name AS Status, todo_responsible_personnel.personnelID FROM (Kategorie INNER JOIN "
+						 + "((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) INNER JOIN (Status INNER JOIN Protokollelement "
+						 + "ON Status.StatusID = Protokollelement.StatusID) ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON "
+						 + "Kategorie.KategorieID = Protokollelement.KategorieID) INNER JOIN todo_responsible_personnel ON "
+						 + "Protokollelement.ToDoID = todo_responsible_personnel.todoID "
+						 + "WHERE (todo_responsible_personnel.personnelID = " + emp.getEmployeeID() + ")" + sStat;
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -164,7 +165,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 				td.setStatus(rst.getString("Status"));
 				td.setHeading(rst.getString("Überschrift"));
 				int id = rst.getInt("WV_Sitzungsart");
-				if(td.getReMeetingEnabled() && id != -1)
+				if (td.getReMeetingEnabled() && id != -1)
 				{
 					Statement stmt2 = con.createStatement();
 					sql = "SELECT Name FROM Sitzungsart WHERE SitzungsartID = " + id;
@@ -180,29 +181,29 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(PersonalTodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 	}
 
 	protected void loadOpData()
 	{
-		DB_ToDo_Connect.openDB();
-		con = DB_ToDo_Connect.getCon();
+		con = DatabaseTodoConnect.openDB();
 
 		try
 		{
 			Statement stmt = con.createStatement();
-			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, " +
-					"Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status " +
-					"FROM Kategorie INNER JOIN " +
-					"((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) " +
-					"INNER JOIN (Status INNER JOIN Protokollelement ON Status.StatusID = Protokollelement.StatusID) " +
-					"ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Kategorie.KategorieID = Protokollelement.KategorieID " +
-					"WHERE (Kategorie.Name <> 'Information' OR (Kategorie.Name = 'Information' AND WiedervorlageGesetzt = true)) " + sStat;
+			String sql = "SELECT Protokollelement.WV_Sitzungsart, Protokollelement.Überschrift, Protokollelement.ToDoID as ToDoID, Thema.Name as Thema, Kategorie.Name as Kategorie, "
+						 + "Protokollelement.Wiedervorlagedatum as WV, Protokollelement.WiedervorlageGesetzt as WiedervorlageGesetzt, Protokollelement.Inhalt as Inhalt, Status.Name as Status "
+						 + "FROM Kategorie INNER JOIN "
+						 + "((Thema INNER JOIN TBZ ON Thema.ThemaID = TBZ.ThemaID) "
+						 + "INNER JOIN (Status INNER JOIN Protokollelement ON Status.StatusID = Protokollelement.StatusID) "
+						 + "ON TBZ.TBZ_ID = Protokollelement.TBZuordnung_ID) ON Kategorie.KategorieID = Protokollelement.KategorieID "
+						 + "WHERE (Kategorie.Name <> 'Information' OR (Kategorie.Name = 'Information' AND WiedervorlageGesetzt = true)) " + sStat;
 			ResultSet rst = stmt.executeQuery(sql);
 
 			while (rst.next())
@@ -221,7 +222,7 @@ public class PersonalTodoTableModel extends AbstractTableModel
 				td.setStatus(rst.getString("Status"));
 				td.setHeading(rst.getString("Überschrift"));
 				int id = rst.getInt("WV_Sitzungsart");
-				if(td.getReMeetingEnabled() && id != -1)
+				if (td.getReMeetingEnabled() && id != -1)
 				{
 					Statement stmt2 = con.createStatement();
 					sql = "SELECT Name FROM Sitzungsart WHERE SitzungsartID = " + id;
@@ -237,12 +238,13 @@ public class PersonalTodoTableModel extends AbstractTableModel
 			}
 			rst.close();
 			stmt.close();
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			Logger.getLogger(PersonalTodoTableModel.class.getName()).log(Level.SEVERE, null, ex);
 			GlobalError.showErrorAndExit();
 		}
-		DB_ToDo_Connect.closeDB(con);
+		DatabaseTodoConnect.closeDB(con);
 	}
 
 	public void setColumnNames()

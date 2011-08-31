@@ -8,4 +8,6 @@
 <entry key="DatabaseDriver">sun.jdbc.odbc.JdbcOdbcDriver</entry>
 <entry key="DatabaseDsnMitarbeiter">jdbc:odbc:personal_db</entry>
 <entry key="DatabaseDsnTodo">jdbc:odbc:todo</entry>
+<entry key="HelpFile">E:\\ToDoAppLogfile.log</entry>
+<entry key="ProductionMode">false</entry>
 </properties>
